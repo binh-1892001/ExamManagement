@@ -7,7 +7,7 @@ import lombok.Setter;
 @MappedSuperclass
 @Getter
 @Setter
-public class BaseModel {
+public class BaseModel extends AuditableEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
