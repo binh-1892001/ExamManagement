@@ -16,11 +16,11 @@ import java.util.List;
 public class HistoryTest extends BaseModel {
     @ManyToOne
     @JoinColumn(name = "studentId",referencedColumnName = "id")
-    private User studentId;
+    private User student;
 
     @ManyToOne
     @JoinColumn(name = "teacherId",referencedColumnName = "id")
-    private User teacherId;
+    private User teacher;
 
     @ManyToOne
     @JoinColumn(name = "testId",referencedColumnName = "id")
