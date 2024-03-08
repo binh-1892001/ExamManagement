@@ -38,17 +38,20 @@ public class SubjectController {
     }
     @PostMapping("")
     public ResponseEntity<Subject> add(@RequestBody SubjectRequest subjectRequest) {
-        Subject subject = subjectService.add(subjectRequest);
+        Subject subject = subjectService.save(subjectRequest);
         return new ResponseEntity<>(subject, HttpStatus.CREATED);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<Subject> edit(
+    public ResponseEntity<?> edit(
             @PathVariable("id") Long id,
-            @RequestBody SubjectRequest productRequest
+            @RequestBody SubjectRequest subjectRequest
     ) {
-        Subject subject = subjectService.edit(productRequest, id);
+        Subject subject = subjectService.edit(subjectRequest, id);
+//        return new ResponseEntity<>(subject, HttpStatus.OK);
         return new ResponseEntity<>(subject, HttpStatus.OK);
+
     }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable("id") Long id) {
         subjectService.delete(id);

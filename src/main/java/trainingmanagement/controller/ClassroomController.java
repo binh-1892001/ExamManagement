@@ -51,7 +51,7 @@ public class ClassroomController {
             @RequestBody ClassroomRequest classroomRequest
     ) {
         classroomService.patchUpdate(updateClassroomId, classroomRequest);
-        return new ResponseEntity<>("Update classroom", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Update classroom", HttpStatus.OK);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable("id") Long id) {
