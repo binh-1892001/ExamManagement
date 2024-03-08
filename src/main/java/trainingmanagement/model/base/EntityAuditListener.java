@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 public class EntityAuditListener {
 	@PrePersist
-	public void beforePersit(AuditableEntity auditableEntity) {
+	public void beforePersist(AuditableEntity auditableEntity) {
 		LocalDate date = LocalDate.now();
 		auditableEntity.setCreatedDate(date);
 		auditableEntity.setModifyDate(date);
