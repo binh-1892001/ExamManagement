@@ -11,6 +11,8 @@ import trainingmanagement.model.entity.Subject;
 import trainingmanagement.repository.ClassroomRepository;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class IClassroomServiceImpl implements IClassroomService{
     @Autowired
@@ -21,6 +23,11 @@ public class IClassroomServiceImpl implements IClassroomService{
     }
 
     @Override
+    public Optional<Classroom> getById(Long classroomId) {
+        return classroomRepository.findById(classroomId);
+    }
+
+    @Override
     public Classroom save(ClassroomRequest classroomRequest) {
         Classroom classroom = Classroom.builder()
                 .nameClass(classroomRequest.getNameClass())
@@ -28,20 +35,8 @@ public class IClassroomServiceImpl implements IClassroomService{
                 .build();
         return classroomRepository.save(classroom);
     }
-
-
     @Override
-    public Classroom findById(Long id) {
-        return classroomRepository.findById(id).orElse(null);
-    }
-
-    @Override
-    public Classroom edit(ClassroomRequest classroomRequest, Long id) {
-        Classroom classroom = Classroom.builder()
-                .nameClass(classroomRequest.getNameClass())
-                .status(classroomRequest.getEStatusClass())
-                .build();
-        classroom.setId(id);
+    public Classroom edit(Classroom classroom, Long id) {
         return classroomRepository.save(classroom);
     }
 

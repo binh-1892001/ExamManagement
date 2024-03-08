@@ -16,6 +16,7 @@ import trainingmanagement.model.entity.Subject;
 import trainingmanagement.service.Classroom.IClassroomService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/admin/classroom")
@@ -43,19 +44,28 @@ public class ClassroomController {
         Classroom classroom = classroomService.save(classroomRequest);
         return new ResponseEntity<>(classroom, HttpStatus.CREATED);
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<Classroom> edit(
-            @PathVariable("id") Long id,
+    @PatchMapping("/{id}")
+    public ResponseEntity<?> edit(
+            @PathVariable("id") Long updateClassroomId,
             @RequestBody ClassroomRequest classroomRequest
     ) {
-        for(EStatusClass eStatusClass:EStatusClass.values()){
-            if (classroomRequest.getEStatusClass().equals(eStatusClass)){
-                classroomRequest.setEStatusClass(eStatusClass);
-                break;
+        Optional<Classroom> updateClassroom = classroomService.getById(updateClassroomId);
+        if(updateClassroom.isPresent()) {
+            Classroom classroom = updateClassroom.get();
+            if(classroomRequest.getNameClass() != null){
+                classroom.setNameClass(classroomRequest.getNameClass());
             }
+            if(classroomRequest.getStatus() != null){
+                if(classroomRequest.getStatus().toString().equalsIgnoreCase(EStatusClass.NEW.name()))
+                    classroom.setStatus(EStatusClass.NEW);
+                else if(classroomRequest.getStatus().toString().equalsIgnoreCase(EStatusClass.OJT.name()))
+                    classroom.setStatus(EStatusClass.OJT);
+                else classroom.setStatus(EStatusClass.FINISH);
+            }
+            classroom = classroomService.edit(classroom, updateClassroomId);
+            return new ResponseEntity<>(classroom, HttpStatus.OK);
         }
-        Classroom classroom = classroomService.edit(classroomRequest, id);
-        return new ResponseEntity<>(classroom, HttpStatus.OK);
+        return new ResponseEntity<>("Can not update classroom", HttpStatus.BAD_REQUEST);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable("id") Long id) {

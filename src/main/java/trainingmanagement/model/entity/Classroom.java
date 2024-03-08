@@ -25,6 +25,4 @@ public class Classroom extends BaseModel {
             inverseJoinColumns = @JoinColumn(name = "subject_id")
     )
     private Set<Subject> subjects;
-
-
 }

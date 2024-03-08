@@ -8,12 +8,13 @@ import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Subject;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IClassroomService {
     Page<Classroom> getAll(Pageable pageable);
+    Optional<Classroom> getById(Long classroomId);
     Classroom save(ClassroomRequest classroomRequest);
-    Classroom findById(Long id);
-    Classroom edit(ClassroomRequest classroomRequest, Long id);
+    Classroom edit(Classroom classroom, Long id);
     void delete(Long id);
     List<Classroom> searchByName(String name);
 }

@@ -10,5 +10,5 @@ import trainingmanagement.model.entity.Enum.EStatusClass;
 @Builder
 public class ClassroomRequest {
     private String nameClass;
-    private EStatusClass eStatusClass;
+    private String status;
 }
