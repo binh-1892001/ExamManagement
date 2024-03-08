@@ -79,7 +79,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<Test> getByNameOrDateTime(String nameTest, Date createDate) {
-        return testRepository.findByNameOrDateTime ( nameTest, createDate );
+    public List<Test> getByNameTest(String nameTest) {
+        return testRepository.findByNameTest ( nameTest);
     }
 }

@@ -67,10 +67,9 @@ public class TestControllerAdmin {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Test>> findByNameOrDateTime(
-            @RequestParam(name = "nameTest") String query,
-            @RequestParam(name = "date") Date createDate) {
-        List<Test> test = testService.getByNameOrDateTime ( query, createDate );
+    public ResponseEntity<List<Test>> findByNameTest(
+            @RequestParam(name = "nameTest") String query) {
+        List<Test> test = testService.getByNameTest ( query);
         return new ResponseEntity<> ( test, HttpStatus.OK );
     }
 }

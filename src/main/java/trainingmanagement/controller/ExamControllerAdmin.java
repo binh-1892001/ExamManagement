@@ -67,10 +67,9 @@ public class ExamControllerAdmin {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Exam>> findByNameOrDateTime(
-            @RequestParam(name = "examName") String query,
-            @RequestParam(name = "date") Date createDate) {
-        List<Exam> exams = examService.getByNameOrDateTime ( query, createDate );
+    public ResponseEntity<List<Exam>> findByExamName(
+            @RequestParam(name = "examName") String query) {
+        List<Exam> exams = examService.getByExamName ( query);
         return new ResponseEntity<> ( exams, HttpStatus.OK );
     }
 }

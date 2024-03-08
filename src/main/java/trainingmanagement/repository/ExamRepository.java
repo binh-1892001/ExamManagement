@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface ExamRepository extends JpaRepository<Exam, Long> {
-    @Query("SELECT ex from Exam ex WHERE ex.examName like %?1% Or ex.createdDate = :createDate")
-    List<Exam> findByNameOrDateTime(String examName, Date createDate);
+    List<Exam> findByExamName(String examName);
+    List<Exam> findByCreatedDate(Date createDate);
     boolean existsByExamName(String examName);
 }

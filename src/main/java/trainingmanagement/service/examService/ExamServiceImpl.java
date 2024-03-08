@@ -70,7 +70,7 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public List<Exam> getByNameOrDateTime(String examName, Date createDate) {
-        return examRepository.findByNameOrDateTime ( examName,createDate );
+    public List<Exam> getByExamName(String examName) {
+        return examRepository.findByExamName ( examName);
     }
 }

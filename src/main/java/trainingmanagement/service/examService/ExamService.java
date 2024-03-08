@@ -16,5 +16,5 @@ public interface ExamService {
     Exam edit(ExamRequest examRequest, Long id);
 
     void delete(Long id);
-    List<Exam> getByNameOrDateTime(String examName, Date createDate);
+    List<Exam> getByExamName(String examName);
 }

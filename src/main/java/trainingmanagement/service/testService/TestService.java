@@ -16,5 +16,5 @@ public interface TestService {
     Test edit(TestRequest testRequest, Long id);
 
     void delete(Long id);
-    List<Test> getByNameOrDateTime(String nameTest, Date createDate);
+    List<Test> getByNameTest(String nameTest);
 }
