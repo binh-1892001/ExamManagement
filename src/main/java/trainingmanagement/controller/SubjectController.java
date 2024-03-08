@@ -58,7 +58,7 @@ public class SubjectController {
         return new ResponseEntity<>("Xóa môn học thành công",HttpStatus.OK);
     }
     @GetMapping("/search")
-    public ResponseEntity<List<Subject>> searchProduct(@RequestParam(name = "name") String name) {
+    public ResponseEntity<List<Subject>> search(@RequestParam(name = "name") String name) {
         List<Subject> subjects = subjectService.getByName(name);
         return new ResponseEntity<>(subjects, HttpStatus.OK);
     }

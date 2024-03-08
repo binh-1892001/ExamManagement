@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface SubjectRepository extends JpaRepository<Subject,Long> {
-    List<Subject> findByNameSubject(String name);
+    List<Subject> findByNameSubjectContainingIgnoreCase(String name);
 }
