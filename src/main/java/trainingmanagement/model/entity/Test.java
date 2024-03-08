@@ -29,7 +29,7 @@ public class Test extends BaseModel {
 
     @OneToMany(mappedBy = "test")
     @JsonIgnore
-    List<HistoryTest> historyTests;
+    List<Result> historyTests;
 
     @ManyToOne
     @JoinColumn(name = "examId",referencedColumnName = "id")

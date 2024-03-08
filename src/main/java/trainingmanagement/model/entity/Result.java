@@ -1,11 +1,11 @@
 package trainingmanagement.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.cglib.core.internal.LoadingCache;
 import trainingmanagement.model.base.BaseModel;
 
-import java.util.List;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class HistoryTest extends BaseModel {
+public class Result extends BaseModel {
     @ManyToOne
     @JoinColumn(name = "studentId",referencedColumnName = "id")
     private User student;
@@ -25,4 +25,8 @@ public class HistoryTest extends BaseModel {
     @ManyToOne
     @JoinColumn(name = "testId",referencedColumnName = "id")
     private Test test;
+
+    private LocalDate dateDoTest;
+    private Double mark;
+    private Integer examTimes;
 }

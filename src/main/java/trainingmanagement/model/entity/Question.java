@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
+import trainingmanagement.model.entity.Enum.ELevelQuestion;
 import trainingmanagement.model.entity.Enum.ETypeQuestion;
 
 import java.util.List;
@@ -19,6 +20,8 @@ public class Question extends BaseModel {
     private String image;
     @Enumerated(EnumType.STRING)
     private ETypeQuestion typeQuestion;
+    @Enumerated(EnumType.STRING)
+    private ELevelQuestion levelQuestion;
     private Boolean status;
     @ManyToOne
     @JoinColumn(name = "testId",referencedColumnName = "id")
