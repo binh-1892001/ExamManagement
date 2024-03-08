@@ -26,3 +26,4 @@ public class Classroom extends BaseModel {
     )
     private Set<Subject> subjects;
 }
+

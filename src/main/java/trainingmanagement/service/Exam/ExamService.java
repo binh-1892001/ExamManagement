@@ -1,11 +1,10 @@
-package trainingmanagement.service.examService;
+package trainingmanagement.service.Exam;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import trainingmanagement.model.dto.requestEntity.ExamRequest;
 import trainingmanagement.model.entity.Exam;
 
-import java.sql.Date;
 import java.util.List;
 
 public interface ExamService {

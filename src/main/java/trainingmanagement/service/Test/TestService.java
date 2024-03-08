@@ -1,11 +1,10 @@
-package trainingmanagement.service.testService;
+package trainingmanagement.service.Test;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import trainingmanagement.model.dto.requestEntity.TestRequest;
 import trainingmanagement.model.entity.Test;
 
-import java.sql.Date;
 import java.util.List;
 
 public interface TestService {

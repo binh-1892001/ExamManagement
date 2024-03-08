@@ -1,4 +1,4 @@
-package trainingmanagement.service.testService;
+package trainingmanagement.service.Test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,9 +8,8 @@ import trainingmanagement.model.dto.requestEntity.TestRequest;
 import trainingmanagement.model.entity.Exam;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.repository.TestRepository;
-import trainingmanagement.service.examService.ExamService;
+import trainingmanagement.service.Exam.ExamService;
 
-import java.sql.Date;
 import java.util.List;
 
 @Service

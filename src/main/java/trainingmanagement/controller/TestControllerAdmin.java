@@ -10,9 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.model.dto.requestEntity.TestRequest;
 import trainingmanagement.model.entity.Test;
-import trainingmanagement.service.testService.TestService;
+import trainingmanagement.service.Test.TestService;
 
-import java.sql.Date;
 import java.util.List;
 
 @RestController
