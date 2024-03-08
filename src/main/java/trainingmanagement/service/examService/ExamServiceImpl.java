@@ -57,7 +57,7 @@ public class ExamServiceImpl implements ExamService {
         }
         Exam exam = Exam.builder ()
                 .examName ( examRequest.getExamName () )
-                .status (true)
+                .status (examRequest.getStatus ())
                 .subject ( subject )
                 .build ();
         exam.setId ( id );

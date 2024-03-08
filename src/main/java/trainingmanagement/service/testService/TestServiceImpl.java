@@ -45,7 +45,7 @@ public class TestServiceImpl implements TestService {
                 .status ( true )
                 .time ( testRequest.getTime () )
                 .resources ( testRequest.getResources () )
-                .typeTest (testRequest.getTypeTest ())
+                .typeTest ( testRequest.getTypeTest () )
                 .exam ( exam )
                 .build ();
         return testRepository.save ( test );
@@ -63,10 +63,10 @@ public class TestServiceImpl implements TestService {
         }
         Test test = Test.builder ()
                 .nameTest ( testRequest.getNameTest () )
-                .status ( true )
+                .status ( testRequest.getStatus () )
                 .time ( testRequest.getTime () )
                 .resources ( testRequest.getResources () )
-                .typeTest (testRequest.getTypeTest ())
+                .typeTest ( testRequest.getTypeTest () )
                 .exam ( exam )
                 .build ();
         test.setId ( id );
@@ -80,6 +80,6 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public List<Test> getByNameOrDateTime(String nameTest, Date createDate) {
-        return testRepository.findByNameOrDateTime ( nameTest,createDate );
+        return testRepository.findByNameOrDateTime ( nameTest, createDate );
     }
 }
