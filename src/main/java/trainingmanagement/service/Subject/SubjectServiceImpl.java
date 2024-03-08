@@ -11,7 +11,7 @@ import trainingmanagement.repository.SubjectRepository;
 import java.util.List;
 
 @Service
-public class ISubjectServiceImpl implements ISubjectService{
+public class SubjectServiceImpl implements SubjectService{
     @Autowired
     private SubjectRepository subjectRepository;
     @Override

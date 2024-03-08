@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import trainingmanagement.model.dto.SubjectRequest;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Subject;
-import trainingmanagement.service.Classroom.IClassroomService;
-import trainingmanagement.service.Subject.ISubjectService;
+import trainingmanagement.service.Subject.SubjectService;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ import java.util.List;
 @RequestMapping("/v1/admin/subject")
 public class SubjectController {
     @Autowired
-    private ISubjectService subjectService;
+    private SubjectService subjectService;
     @GetMapping("")
     public ResponseEntity<?> findALl(
             @RequestParam(defaultValue = "5", name = "limit") int limit,

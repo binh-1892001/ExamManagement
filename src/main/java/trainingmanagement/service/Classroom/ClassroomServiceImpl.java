@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import trainingmanagement.model.base.AuditableEntity;
 import trainingmanagement.model.dto.ClassroomRequest;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Enum.EStatusClass;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class IClassroomServiceImpl implements IClassroomService{
+public class ClassroomServiceImpl implements ClassroomService{
     @Autowired
     private ClassroomRepository classroomRepository;
     @Override
@@ -32,12 +33,38 @@ public class IClassroomServiceImpl implements IClassroomService{
         Classroom classroom = Classroom.builder()
                 .nameClass(classroomRequest.getNameClass())
                 .status(EStatusClass.NEW)
+
                 .build();
         return classroomRepository.save(classroom);
     }
+
     @Override
-    public Classroom edit(Classroom classroom, Long id) {
+    public Classroom save(Classroom classroom) {
         return classroomRepository.save(classroom);
+    }
+
+    @Override
+    public Classroom patchUpdate(Long classroomId, ClassroomRequest classroomRequest) {
+        Optional<Classroom> updateClassroom = getById(classroomId);
+        if(updateClassroom.isPresent()) {
+            Classroom classroom = updateClassroom.get();
+            AuditableEntity auditableEntity = updateClassroom.get();
+            if (auditableEntity.getCreatedDate() != null) {
+                auditableEntity.setCreatedDate(auditableEntity.getCreatedDate());
+            }
+            if (classroomRequest.getNameClass() != null) {
+                classroom.setNameClass(classroomRequest.getNameClass());
+            }
+            if (classroomRequest.getStatus() != null) {
+                if (classroomRequest.getStatus().equalsIgnoreCase(EStatusClass.NEW.name()))
+                    classroom.setStatus(EStatusClass.NEW);
+                else if (classroomRequest.getStatus().equalsIgnoreCase(EStatusClass.OJT.name()))
+                    classroom.setStatus(EStatusClass.OJT);
+                else classroom.setStatus(EStatusClass.FINISH);
+            }
+            return save(classroom);
+        }
+        return null;
     }
 
     @Override

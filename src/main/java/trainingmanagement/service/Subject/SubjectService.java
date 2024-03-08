@@ -7,7 +7,7 @@ import trainingmanagement.model.entity.Subject;
 
 import java.util.List;
 
-public interface ISubjectService {
+public interface SubjectService {
     Page<Subject> getAll(Pageable pageable);
     Subject add(SubjectRequest subjectRequest);
     Subject edit(SubjectRequest subjectRequest, Long id);

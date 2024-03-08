@@ -8,12 +8,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import trainingmanagement.model.base.AuditableEntity;
 import trainingmanagement.model.dto.ClassroomRequest;
 import trainingmanagement.model.dto.SubjectRequest;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Enum.EStatusClass;
 import trainingmanagement.model.entity.Subject;
-import trainingmanagement.service.Classroom.IClassroomService;
+import trainingmanagement.service.Classroom.ClassroomService;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +23,7 @@ import java.util.Optional;
 @RequestMapping("/v1/admin/classroom")
 public class ClassroomController {
     @Autowired
-    private IClassroomService classroomService;
+    private ClassroomService classroomService;
     @GetMapping("")
     public ResponseEntity<?> findALl(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
@@ -49,23 +50,8 @@ public class ClassroomController {
             @PathVariable("id") Long updateClassroomId,
             @RequestBody ClassroomRequest classroomRequest
     ) {
-        Optional<Classroom> updateClassroom = classroomService.getById(updateClassroomId);
-        if(updateClassroom.isPresent()) {
-            Classroom classroom = updateClassroom.get();
-            if(classroomRequest.getNameClass() != null){
-                classroom.setNameClass(classroomRequest.getNameClass());
-            }
-            if(classroomRequest.getStatus() != null){
-                if(classroomRequest.getStatus().toString().equalsIgnoreCase(EStatusClass.NEW.name()))
-                    classroom.setStatus(EStatusClass.NEW);
-                else if(classroomRequest.getStatus().toString().equalsIgnoreCase(EStatusClass.OJT.name()))
-                    classroom.setStatus(EStatusClass.OJT);
-                else classroom.setStatus(EStatusClass.FINISH);
-            }
-            classroom = classroomService.edit(classroom, updateClassroomId);
-            return new ResponseEntity<>(classroom, HttpStatus.OK);
-        }
-        return new ResponseEntity<>("Can not update classroom", HttpStatus.BAD_REQUEST);
+        classroomService.patchUpdate(updateClassroomId, classroomRequest);
+        return new ResponseEntity<>("Update classroom", HttpStatus.BAD_REQUEST);
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable("id") Long id) {
