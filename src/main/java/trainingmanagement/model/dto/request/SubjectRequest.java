@@ -1,15 +1,14 @@
-package trainingmanagement.model.dto;
+package trainingmanagement.model.dto.request;
 
 import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 public class SubjectRequest {
-    private String nameSubject;
+    private String subjectName;
     private String timeToStudy;
+    private Integer time;
     private Boolean status;
-    private int time;
 }

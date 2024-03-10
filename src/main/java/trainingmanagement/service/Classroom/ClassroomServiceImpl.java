@@ -1,64 +1,56 @@
 package trainingmanagement.service.Classroom;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import trainingmanagement.model.base.AuditableEntity;
-import trainingmanagement.model.dto.ClassroomRequest;
+import trainingmanagement.model.dto.request.ClassRequest;
+import trainingmanagement.model.dto.response.ClassResponse;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Enum.EStatusClass;
-import trainingmanagement.model.entity.Subject;
 import trainingmanagement.repository.ClassroomRepository;
-
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ClassroomServiceImpl implements ClassroomService{
-    @Autowired
-    private ClassroomRepository classroomRepository;
+    private final ClassroomRepository classroomRepository;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
-    public Page<Classroom> getAll(Pageable pageable) {
-        return classroomRepository.findAll(pageable);
+    public List<Classroom> getAllToList() {
+        return classroomRepository.findAll();
     }
-
+    public List<ClassResponse> getAllClassResponsesToList(){
+        return getAllToList().stream().map(this::entityMap).toList();
+    }
     @Override
     public Optional<Classroom> getById(Long classroomId) {
         return classroomRepository.findById(classroomId);
     }
-
-    @Override
-    public Classroom save(ClassroomRequest classroomRequest) {
-        Classroom classroom = Classroom.builder()
-                .nameClass(classroomRequest.getNameClass())
-                .status(EStatusClass.NEW)
-
-                .build();
-        return classroomRepository.save(classroom);
-    }
-
     @Override
     public Classroom save(Classroom classroom) {
         return classroomRepository.save(classroom);
     }
-
     @Override
-    public Classroom patchUpdate(Long classroomId, ClassroomRequest classroomRequest) {
+    public Classroom save(ClassRequest classRequest) {
+        return classroomRepository.save(entityMap(classRequest));
+    }
+    @Override
+    public Classroom patchUpdate(Long classroomId, ClassRequest classRequest) {
         Optional<Classroom> updateClassroom = getById(classroomId);
         if(updateClassroom.isPresent()) {
             Classroom classroom = updateClassroom.get();
             AuditableEntity auditableEntity = updateClassroom.get();
-            if (auditableEntity.getCreatedDate() != null) {
+            if (auditableEntity.getCreatedDate() != null)
                 auditableEntity.setCreatedDate(auditableEntity.getCreatedDate());
-            }
-            if (classroomRequest.getNameClass() != null) {
-                classroom.setNameClass(classroomRequest.getNameClass());
-            }
-            if (classroomRequest.getStatus() != null) {
-                if (classroomRequest.getStatus().equalsIgnoreCase(EStatusClass.NEW.name()))
+            if (classRequest.getClassName() != null)
+                classroom.setClassName(classRequest.getClassName());
+            if (classRequest.getStatus() != null) {
+                if (classRequest.getStatus().equalsIgnoreCase(EStatusClass.NEW.name()))
                     classroom.setStatus(EStatusClass.NEW);
-                else if (classroomRequest.getStatus().equalsIgnoreCase(EStatusClass.OJT.name()))
+                else if (classRequest.getStatus().equalsIgnoreCase(EStatusClass.OJT.name()))
                     classroom.setStatus(EStatusClass.OJT);
                 else classroom.setStatus(EStatusClass.FINISH);
             }
@@ -68,12 +60,33 @@ public class ClassroomServiceImpl implements ClassroomService{
     }
 
     @Override
-    public void delete(Long id) {
-        classroomRepository.deleteById(id);
+    public void deleteById(Long classId) {
+        classroomRepository.deleteById(classId);
     }
 
     @Override
-    public List<Classroom> searchByName(String keyword) {
-        return classroomRepository.findByNameClass(keyword);
+    public List<ClassResponse> findByClassName(String className) {
+        return classroomRepository.findByClassNameContainingIgnoreCase(className)
+                .stream().map(this::entityMap).toList();
+    }
+    @Override
+    public Classroom entityMap(ClassRequest classRequest) {
+        EStatusClass classStatus = switch (classRequest.getStatus()) {
+            case "NEW" -> EStatusClass.NEW;
+            case "OJT" -> EStatusClass.OJT;
+            case "FINISH" -> EStatusClass.FINISH;
+            default -> null;
+        };
+        return Classroom.builder()
+            .className(classRequest.getClassName())
+            .status(classStatus)
+            .build();
+    }
+    @Override
+    public ClassResponse entityMap(Classroom classroom) {
+        return ClassResponse.builder()
+                .className(classroom.getClassName())
+                .status(classroom.getStatus())
+                .build();
     }
 }

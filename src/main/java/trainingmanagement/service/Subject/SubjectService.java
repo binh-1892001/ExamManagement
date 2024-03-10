@@ -1,19 +1,20 @@
 package trainingmanagement.service.Subject;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import trainingmanagement.model.dto.SubjectRequest;
-import trainingmanagement.model.entity.Classroom;
+import trainingmanagement.model.dto.request.SubjectRequest;
+import trainingmanagement.model.dto.response.SubjectResponse;
 import trainingmanagement.model.entity.Subject;
-
 import java.util.List;
+import java.util.Optional;
 
 public interface SubjectService {
-    Page<Subject> getAll(Pageable pageable);
-    Subject save(SubjectRequest subjectRequest);
+    List<Subject> getAllToList();
+    List<SubjectResponse> getAllSubjectResponsesToList();
+    Optional<Subject> getById(Long subjectId);
     Subject save(Subject subject);
-    Subject edit(SubjectRequest subjectRequest, Long id);
-    Subject findById(Long id);
-    List<Subject> getByName(String name);
-    void delete(Long id);
+    Subject save(SubjectRequest subjectRequest);
+    Subject patchUpdate(Long subjectId, SubjectRequest subjectRequest);
+    List<SubjectResponse> findBySubjectName(String className);
+    void deleteById(Long subjectId);
+    SubjectResponse entityMap(Subject subject);
+    Subject entityMap(SubjectRequest subjectRequest);
 }

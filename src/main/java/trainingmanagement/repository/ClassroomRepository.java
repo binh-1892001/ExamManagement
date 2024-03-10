@@ -8,6 +8,6 @@ import trainingmanagement.model.entity.Subject;
 import java.util.List;
 
 @Repository
-public interface ClassroomRepository  extends JpaRepository<Classroom,Long> {
-    List<Classroom> findByNameClass(String name);
+public interface ClassroomRepository  extends JpaRepository<Classroom, Long> {
+    List<Classroom> findByClassNameContainingIgnoreCase(String className);
 }

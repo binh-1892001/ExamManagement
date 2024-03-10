@@ -1,6 +1,8 @@
 package trainingmanagement.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -8,58 +10,132 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import trainingmanagement.model.dto.SubjectRequest;
-import trainingmanagement.model.entity.Classroom;
+import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.request.SubjectRequest;
+import trainingmanagement.model.dto.response.SubjectResponse;
+import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.Subject;
+import trainingmanagement.service.CommonService;
 import trainingmanagement.service.Subject.SubjectService;
-
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/v1/admin/subject")
+@RequiredArgsConstructor
+@RequestMapping("/v1/admin/subjects")
 public class SubjectController {
-    @Autowired
-    private SubjectService subjectService;
-    @GetMapping("")
-    public ResponseEntity<?> findALl(
+    private final CommonService commonService;
+    private final SubjectService subjectService;
+    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    // * Get all subjects to pages.
+    @GetMapping
+    public ResponseEntity<?> getAllSubjectToPages(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "nameSubject", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
-    ){
+    ) throws CustomException{
         Pageable pageable;
-        if (order.equals("asc")) {
-            pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        } else {
-            pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            List<SubjectResponse> subjectResponses = subjectService.getAllSubjectResponsesToList();
+            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
+            if (!subjects.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                subjects.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Subjects page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Subjects page is out of range.");
         }
-        Page<Subject> subjects = subjectService.getAll(pageable);
-        return new ResponseEntity<>(subjects, HttpStatus.OK);
     }
-    @PostMapping("")
-    public ResponseEntity<Subject> add(@RequestBody SubjectRequest subjectRequest) {
+    // * Get subject by id.
+    @GetMapping("/{subjectId}")
+    public ResponseEntity<?> getClassById(@PathVariable("subjectId") Long subjectId) throws CustomException{
+        Optional<Subject> subject = subjectService.getById(subjectId);
+        if(subject.isEmpty())
+            throw new CustomException("Subject is not exists.");
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        subject.get()
+                ), HttpStatus.OK);
+    }
+    // * Create new subject.
+    @PostMapping
+    public ResponseEntity<?> createSubject(@RequestBody SubjectRequest subjectRequest) {
         Subject subject = subjectService.save(subjectRequest);
-        return new ResponseEntity<>(subject, HttpStatus.CREATED);
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.CREATED.value(),
+                        HttpStatus.CREATED.name(),
+                        subject
+                ), HttpStatus.CREATED);
     }
-    @PutMapping("/{id}")
-    public ResponseEntity<?> edit(
-            @PathVariable("id") Long id,
+    // * Update an existed subject.
+    @PatchMapping("/{subjectId}")
+    public ResponseEntity<?> pathUpdateSubject(
+            @PathVariable("subjectId") Long updateSubjectId,
             @RequestBody SubjectRequest subjectRequest
     ) {
-        Subject subject = subjectService.edit(subjectRequest, id);
-//        return new ResponseEntity<>(subject, HttpStatus.OK);
-        return new ResponseEntity<>(subject, HttpStatus.OK);
-
+        Subject subject = subjectService.patchUpdate(updateSubjectId, subjectRequest);
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        subject
+                ), HttpStatus.OK);
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteProduct(@PathVariable("id") Long id) {
-        subjectService.delete(id);
-        return new ResponseEntity<>("Xóa môn học thành công",HttpStatus.OK);
+    // * Delete an existed subject.
+    @DeleteMapping("/{subjectId}")
+    public ResponseEntity<?> deleteSubjectById(@PathVariable("subjectId") Long subjectId) {
+        subjectService.deleteById(subjectId);
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        "Delete Subject successfully."
+                ), HttpStatus.OK);
     }
+    // * Find subject by subjectName.
     @GetMapping("/search")
-    public ResponseEntity<List<Subject>> search(@RequestParam(name = "name") String name) {
-        List<Subject> subjects = subjectService.getByName(name);
-        return new ResponseEntity<>(subjects, HttpStatus.OK);
+    public ResponseEntity<?> searchAllSubjectToPages(
+        @RequestParam(name = "keyword") String keyword,
+        @RequestParam(defaultValue = "5", name = "limit") int limit,
+        @RequestParam(defaultValue = "0", name = "page") int page,
+        @RequestParam(defaultValue = "nameSubject", name = "sort") String sort,
+        @RequestParam(defaultValue = "asc", name = "order") String order
+    ) throws CustomException{
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            List<SubjectResponse> subjectResponses = subjectService.findBySubjectName(keyword);
+            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
+            if (!subjects.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                subjects.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Subjects page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Subjects page is out of range.");
+        }
     }
 }
