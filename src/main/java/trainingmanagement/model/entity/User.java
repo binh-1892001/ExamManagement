@@ -44,11 +44,11 @@ public class User extends BaseModel {
     private Set<Classroom> classrooms;
 
 
-    @OneToMany(mappedBy = "studentId")
+    @OneToMany(mappedBy = "student")
     @JsonIgnore
     private List<HistoryTest> historyTestsStudent;
 
-    @OneToMany(mappedBy = "teacherId")
+    @OneToMany(mappedBy = "teacher")
     @JsonIgnore
     private List<HistoryTest> historyTestsTeacher;
 
