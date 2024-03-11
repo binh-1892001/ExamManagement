@@ -24,7 +24,7 @@ public class Question extends BaseModel {
     private ELevelQuestion levelQuestion;
     private Boolean status;
     @ManyToOne
-    @JoinColumn(name = "testId",referencedColumnName = "id")
+    @JoinColumn(name = "test_id", referencedColumnName = "id")
     private Test test;
 
     @OneToMany(mappedBy = "question")

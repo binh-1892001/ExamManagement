@@ -8,8 +8,6 @@ import lombok.*;
 @Setter
 @Builder
 public class RequestOptionPutQuiz {
-
-    //dto sửa option trắc nghiệm
     String contentOptions;
     Boolean status;
 }

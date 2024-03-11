@@ -13,5 +13,5 @@ import trainingmanagement.model.entity.Enum.ERoles;
 @Builder
 public class Role extends BaseModel {
     @Enumerated(EnumType.STRING)
-    private ERoles name;
+    private ERoles roleName;
 }

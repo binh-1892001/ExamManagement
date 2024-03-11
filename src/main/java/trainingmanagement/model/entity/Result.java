@@ -2,11 +2,8 @@ package trainingmanagement.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.cglib.core.internal.LoadingCache;
 import trainingmanagement.model.base.BaseModel;
-
 import java.time.LocalDate;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,17 +12,14 @@ import java.time.LocalDate;
 @Builder
 public class Result extends BaseModel {
     @ManyToOne
-    @JoinColumn(name = "studentId",referencedColumnName = "id")
+    @JoinColumn(name = "student_id",referencedColumnName = "id")
     private User student;
-
     @ManyToOne
-    @JoinColumn(name = "teacherId",referencedColumnName = "id")
+    @JoinColumn(name = "teacher_id",referencedColumnName = "id")
     private User teacher;
-
     @ManyToOne
-    @JoinColumn(name = "testId",referencedColumnName = "id")
+    @JoinColumn(name = "test_id",referencedColumnName = "id")
     private Test test;
-
     private LocalDate dateDoTest;
     private Double mark;
     private Integer examTimes;
