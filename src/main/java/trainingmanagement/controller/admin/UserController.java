@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.model.dto.request.UserRegisterRequest;
+import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.User;
+import trainingmanagement.service.CommonService;
 import trainingmanagement.service.User.UserService;
 import java.util.List;
 
@@ -18,6 +20,7 @@ import java.util.List;
 @RequestMapping ("/v1/admin/users")
 public class UserController {
     private final UserService userService;
+    private final CommonService commonService;
     @GetMapping
     public ResponseEntity<?> getAllUser(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
@@ -29,7 +32,7 @@ public class UserController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         Page<User> users = userService.getAll(pageable);
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(users.getContent(), HttpStatus.OK);
     }
     @PostMapping
     public ResponseEntity<String> handleRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
@@ -51,7 +54,9 @@ public class UserController {
         if (user == null) {
             return new ResponseEntity<>("người dùng không tồn tại", HttpStatus.BAD_REQUEST);
         } else {
-            user.setStatus(!user.getStatus());
+            if(user.getStatus() == EActiveStatus.ACTIVE)
+                user.setStatus(EActiveStatus.INACTIVE);
+            else user.setStatus(EActiveStatus.ACTIVE);
             userService.save(user);
         }
         return new ResponseEntity<>(user, HttpStatus.OK);
