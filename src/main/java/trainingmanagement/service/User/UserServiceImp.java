@@ -41,6 +41,11 @@ public class UserServiceImp implements UserService {
     private AuthenticationProvider authenticationProvider;
 
     @Override
+    public List<User> getAllToList() {
+        return userRepository.findAll();
+    }
+
+    @Override
     public Page<User> getAll(Pageable pageable) {
         return userRepository.findAll(pageable);
     }

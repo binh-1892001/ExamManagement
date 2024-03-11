@@ -10,5 +10,7 @@ import java.util.List;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long> {
-    Role findByName(ERoles name);
+    Role findByRoleName(ERoles roleName);
+    @Query(value = "SELECT * FROM role r WHERE r.role_name LIKE CONCAT('%', ?1, '%')", nativeQuery = true)
+    List<Role> findAllByRoleNameContainingIgnoreCase(String roleName);
 }

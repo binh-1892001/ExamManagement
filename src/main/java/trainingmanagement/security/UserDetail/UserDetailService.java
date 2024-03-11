@@ -26,7 +26,7 @@ public class UserDetailService implements UserDetailsService {
                     user(user)
                     .authorities(user.getRoles()
                             .stream()
-                            .map(item -> new SimpleGrantedAuthority(item.getName().name()))
+                            .map(item -> new SimpleGrantedAuthority(item.getRoleName().name()))
                             .collect(Collectors.toSet()))
                     .build();
             return userPrincipal;

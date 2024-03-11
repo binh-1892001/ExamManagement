@@ -1,4 +1,4 @@
-package trainingmanagement.controller;
+package trainingmanagement.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -30,7 +30,7 @@ public class ClassroomController {
     public ResponseEntity<?> getAllClassesToPages(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "nameClass", name = "sort") String sort,
+            @RequestParam(defaultValue = "className", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
         Pageable pageable;
@@ -112,7 +112,7 @@ public class ClassroomController {
             @RequestParam(name = "keyword") String keyword,
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "nameClass", name = "sort") String sort,
+            @RequestParam(defaultValue = "className", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
         Pageable pageable;

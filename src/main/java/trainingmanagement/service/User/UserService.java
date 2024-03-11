@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
+    List<User> getAllToList();
     Page<User> getAll(Pageable pageable);
     JwtResponse handleLogin(UserLoginRequest userLogin);
     String addUser(UserRegisterRequest userRegisterRequest);
