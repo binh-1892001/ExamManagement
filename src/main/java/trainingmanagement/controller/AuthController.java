@@ -17,7 +17,7 @@ public class AuthController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/sign_in")
+    @PostMapping("/sign-in")
     public ResponseEntity<JwtResponse> handleLogin(@RequestBody UserLogin userLogin) {
         return new ResponseEntity<>(userService.handleLogin(userLogin), HttpStatus.OK);
     }
