@@ -7,7 +7,6 @@ import trainingmanagement.repository.UserRepository;
 
 @SpringBootApplication
 public class TrainingManagementApplication {
-	
 	public static void main(String[] args) {
 		SpringApplication.run(TrainingManagementApplication.class, args);
 	}

@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
 import trainingmanagement.model.entity.Enum.ETypeTest;
-
 import java.util.List;
 
 @Entity
@@ -21,16 +20,12 @@ public class Test extends BaseModel {
     @Enumerated(EnumType.STRING)
     private ETypeTest typeTest;
     private String resources;
-
-
     @OneToMany(mappedBy = "test")
     @JsonIgnore
     List<Question> questions ;
-
     @OneToMany(mappedBy = "test")
     @JsonIgnore
     List<HistoryTest> historyTests;
-
     @ManyToOne
     @JoinColumn(name = "examId",referencedColumnName = "id")
     private Exam exam;
