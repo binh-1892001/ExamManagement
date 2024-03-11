@@ -16,9 +16,8 @@ import java.util.List;
 @Builder
 public class Subject extends BaseModel {
     private String nameSubject;
-    private String timeToStudy;
     private Boolean status;
-    private int time;
+    private Integer timeToStudy;
 
     @OneToMany(mappedBy = "subject")
     @JsonIgnore
