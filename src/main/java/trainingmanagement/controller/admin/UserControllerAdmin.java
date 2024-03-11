@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import trainingmanagement.model.dto.requestEntity.UserRegister;
+import trainingmanagement.model.dto.request.UserRegisterRequest;
 import trainingmanagement.model.entity.Role;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.service.Role.RoleService;
@@ -43,13 +43,13 @@ public class UserControllerAdmin {
     }
 
     @PostMapping("")
-    public ResponseEntity<String> handleRegister(@RequestBody UserRegister userRegister) {
-        return new ResponseEntity<>(userService.addUser(userRegister),HttpStatus.CREATED);
+    public ResponseEntity<String> handleRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
+        return new ResponseEntity<>(userService.addUser(userRegisterRequest),HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<User> updateAccount(@RequestBody UserRegister userRegister,@PathVariable("id") Long id) {
-        User user = userService.updateAcc(userRegister, id);
+    public ResponseEntity<User> updateAccount(@RequestBody UserRegisterRequest userRegisterRequest, @PathVariable("id") Long id) {
+        User user = userService.updateAcc(userRegisterRequest, id);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 

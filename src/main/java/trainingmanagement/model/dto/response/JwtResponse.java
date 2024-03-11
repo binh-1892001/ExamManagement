@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.responseEntity;
+package trainingmanagement.model.dto.response;
 
 import lombok.*;
 

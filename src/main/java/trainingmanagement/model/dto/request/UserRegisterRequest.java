@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.requestEntity;
+package trainingmanagement.model.dto.request;
 
 import lombok.*;
 import trainingmanagement.model.entity.Enum.ERoles;
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Builder
-public class UserRegister {
+public class UserRegisterRequest {
     private String fullName;
     private String username;
     private String password;

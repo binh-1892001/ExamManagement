@@ -7,8 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import trainingmanagement.model.dto.requestEntity.UserLogin;
-import trainingmanagement.model.dto.responseEntity.JwtResponse;
+import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.request.UserLoginRequest;
+import trainingmanagement.model.dto.response.JwtResponse;
+import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.service.User.UserService;
 
 @RestController
@@ -18,7 +20,13 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/sign-in")
-    public ResponseEntity<JwtResponse> handleLogin(@RequestBody UserLogin userLogin) {
-        return new ResponseEntity<>(userService.handleLogin(userLogin), HttpStatus.OK);
+    public ResponseEntity<?> handleLogin(@RequestBody UserLoginRequest userLoginRequest) {
+        return new ResponseEntity<>(
+            new ResponseWrapper<>(
+                EHttpStatus.SUCCESS,
+                HttpStatus.OK.value(),
+                HttpStatus.OK.name(),
+                userService.handleLogin(userLoginRequest)
+            ), HttpStatus.OK);
     }
 }

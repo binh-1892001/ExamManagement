@@ -11,9 +11,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.requestEntity.UserLogin;
-import trainingmanagement.model.dto.requestEntity.UserRegister;
-import trainingmanagement.model.dto.responseEntity.JwtResponse;
+import trainingmanagement.model.dto.request.UserLoginRequest;
+import trainingmanagement.model.dto.request.UserRegisterRequest;
+import trainingmanagement.model.dto.response.JwtResponse;
 import trainingmanagement.model.entity.Role;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.repository.UserRepository;
@@ -21,7 +21,6 @@ import trainingmanagement.security.Jwt.JwtProvider;
 import trainingmanagement.security.UserDetail.UserPrincipal;
 import trainingmanagement.service.Role.RoleService;
 
-import java.sql.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -47,10 +46,10 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public JwtResponse handleLogin(UserLogin userLogin) {
+    public JwtResponse handleLogin(UserLoginRequest userLoginRequest) {
         Authentication authentication;
         try {
-            authentication = authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(userLogin.getUsername(),userLogin.getPassword()));
+            authentication = authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(userLoginRequest.getUsername(), userLoginRequest.getPassword()));
         } catch (AuthenticationException e) {
             throw new RuntimeException("tài khoản hoặc mật khẩu sai");
         }
@@ -70,24 +69,24 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public String addUser(UserRegister userRegister) {
-        if(userRepository.existsByUsername(userRegister.getUsername())) {
+    public String addUser(UserRegisterRequest userRegisterRequest) {
+        if(userRepository.existsByUsername(userRegisterRequest.getUsername())) {
             throw new RuntimeException("username is exists");
         }
 
         Set<Role> roles = new HashSet<>();
-        roles.add(roleService.findByRoleName(userRegister.getRole()));
+        roles.add(roleService.findByRoleName(userRegisterRequest.getRole()));
 
         User users = User.builder()
-                .fullName(userRegister.getFullName())
-                .username(userRegister.getUsername())
-                .password(passwordEncoder.encode(userRegister.getPassword()))
-                .email(userRegister.getEmail())
-                .avatar(userRegister.getAvatar())
-                .phone(userRegister.getPhone())
-                .dateOfBirth(userRegister.getDateOfBirth())
+                .fullName(userRegisterRequest.getFullName())
+                .username(userRegisterRequest.getUsername())
+                .password(passwordEncoder.encode(userRegisterRequest.getPassword()))
+                .email(userRegisterRequest.getEmail())
+                .avatar(userRegisterRequest.getAvatar())
+                .phone(userRegisterRequest.getPhone())
+                .dateOfBirth(userRegisterRequest.getDateOfBirth())
                 .status(true)
-                .gender(userRegister.getGender())
+                .gender(userRegisterRequest.getGender())
                 .roles(roles)
                 .build();
         userRepository.save(users);
@@ -110,8 +109,8 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User updateAcc(UserRegister userRegister, Long id) {
-        if(userRepository.existsByUsername(userRegister.getUsername())) {
+    public User updateAcc(UserRegisterRequest userRegisterRequest, Long id) {
+        if(userRepository.existsByUsername(userRegisterRequest.getUsername())) {
             throw new RuntimeException("username is exists");
         }
 
@@ -120,15 +119,15 @@ public class UserServiceImp implements UserService {
         Set<Role> roles = userOld.getRoles();
 
         User users = User.builder()
-                .fullName(userRegister.getFullName())
-                .username(userRegister.getUsername())
+                .fullName(userRegisterRequest.getFullName())
+                .username(userRegisterRequest.getUsername())
                 .password(userOld.getPassword())
-                .email(userRegister.getEmail())
-                .avatar(userRegister.getAvatar())
-                .phone(userRegister.getPhone())
-                .dateOfBirth(userRegister.getDateOfBirth())
+                .email(userRegisterRequest.getEmail())
+                .avatar(userRegisterRequest.getAvatar())
+                .phone(userRegisterRequest.getPhone())
+                .dateOfBirth(userRegisterRequest.getDateOfBirth())
                 .status(true)
-                .gender(userRegister.getGender())
+                .gender(userRegisterRequest.getGender())
                 .roles(roles)
                 .build();
         users.setId(id);

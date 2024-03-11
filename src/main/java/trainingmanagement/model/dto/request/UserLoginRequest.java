@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.requestEntity;
+package trainingmanagement.model.dto.request;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class UserLogin {
+public class UserLoginRequest {
     private String username;
     private String password;
 }
