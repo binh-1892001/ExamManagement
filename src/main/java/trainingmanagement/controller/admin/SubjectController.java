@@ -58,7 +58,7 @@ public class SubjectController {
     }
     // * Get subject by id.
     @GetMapping("/{subjectId}")
-    public ResponseEntity<?> getClassById(@PathVariable("subjectId") Long subjectId) throws CustomException{
+    public ResponseEntity<?> getSubjectById(@PathVariable("subjectId") Long subjectId) throws CustomException{
         Optional<Subject> subject = subjectService.getById(subjectId);
         if(subject.isEmpty())
             throw new CustomException("Subject is not exists.");

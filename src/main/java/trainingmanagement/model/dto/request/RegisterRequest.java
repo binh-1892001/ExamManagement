@@ -1,7 +1,6 @@
 package trainingmanagement.model.dto.request;
 
 import lombok.*;
-import trainingmanagement.model.entity.Enum.ERoles;
 
 import java.time.LocalDate;
 @NoArgsConstructor
@@ -9,7 +8,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Builder
-public class UserRegisterRequest {
+public class RegisterRequest {
     private String fullName;
     private String username;
     private String password;
@@ -17,6 +16,5 @@ public class UserRegisterRequest {
     private String phone;
     private LocalDate dateOfBirth;
     private String avatar;
-    private Boolean gender;
-    private ERoles role;
+    private String gender;
 }
