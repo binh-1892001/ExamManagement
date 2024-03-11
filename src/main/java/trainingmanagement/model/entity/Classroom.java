@@ -4,10 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
 import trainingmanagement.model.entity.Enum.EStatusClass;
-<<<<<<< HEAD
-
-=======
->>>>>>> developer
 import java.util.Set;
 
 @Entity
