@@ -1,6 +1,6 @@
-package trainingmanagement.security;
+package trainingmanagement.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -23,15 +23,12 @@ import trainingmanagement.model.entity.Enum.ERoles;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
-    @Autowired
-    private JwtEntryPoint jwtEntryPoint;
-    @Autowired
-    private JwtTokenFilter jwtTokenFilter;
-    @Autowired
-    private AccessDenied accessDenied;
-    @Autowired
-    private UserDetailService userDetailService;
+    private final JwtEntryPoint jwtEntryPoint;
+    private final JwtTokenFilter jwtTokenFilter;
+    private final AccessDenied accessDenied;
+    private final UserDetailService userDetailService;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{

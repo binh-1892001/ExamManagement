@@ -1,4 +1,4 @@
-package trainingmanagement.controller;
+package trainingmanagement.controller.admin;
 
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -33,7 +33,7 @@ public class SubjectController {
     public ResponseEntity<?> getAllSubjectToPages(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "nameSubject", name = "sort") String sort,
+            @RequestParam(defaultValue = "subjectName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException{
         Pageable pageable;
@@ -58,7 +58,7 @@ public class SubjectController {
     }
     // * Get subject by id.
     @GetMapping("/{subjectId}")
-    public ResponseEntity<?> getClassById(@PathVariable("subjectId") Long subjectId) throws CustomException{
+    public ResponseEntity<?> getSubjectById(@PathVariable("subjectId") Long subjectId) throws CustomException{
         Optional<Subject> subject = subjectService.getById(subjectId);
         if(subject.isEmpty())
             throw new CustomException("Subject is not exists.");
@@ -115,7 +115,7 @@ public class SubjectController {
         @RequestParam(name = "keyword") String keyword,
         @RequestParam(defaultValue = "5", name = "limit") int limit,
         @RequestParam(defaultValue = "0", name = "page") int page,
-        @RequestParam(defaultValue = "nameSubject", name = "sort") String sort,
+        @RequestParam(defaultValue = "subjectName", name = "sort") String sort,
         @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException{
         Pageable pageable;

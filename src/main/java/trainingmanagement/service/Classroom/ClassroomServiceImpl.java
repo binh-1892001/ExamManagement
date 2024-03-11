@@ -17,7 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ClassroomServiceImpl implements ClassroomService{
     private final ClassroomRepository classroomRepository;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     public List<Classroom> getAllToList() {
         return classroomRepository.findAll();
