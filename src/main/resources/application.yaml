@@ -10,3 +10,5 @@ spring:
       ddl-auto: update
   jooq:
     sql-dialect: org.hibernate.dialect.MySQLDialect
+jwt.secret-key: RikkeiAcademy
+jwt.expired: 864000000

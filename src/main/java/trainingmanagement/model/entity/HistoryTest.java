@@ -1,11 +1,8 @@
 package trainingmanagement.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
-
-import java.util.List;
 
 @Entity
 @NoArgsConstructor

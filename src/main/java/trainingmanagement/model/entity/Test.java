@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
 import trainingmanagement.model.entity.Enum.ETypeTest;
-
 import java.util.List;
 
 @Entity
