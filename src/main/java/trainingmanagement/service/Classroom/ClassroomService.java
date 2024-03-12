@@ -17,4 +17,5 @@ public interface ClassroomService {
     List<ClassResponse> findByClassName(String className);
     ClassResponse entityMap(Classroom classroom);
     Classroom entityMap(ClassRequest classRequest);
+    Optional<Classroom> findByUserId(Long userId);
 }

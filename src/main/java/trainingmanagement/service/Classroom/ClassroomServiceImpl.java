@@ -82,6 +82,12 @@ public class ClassroomServiceImpl implements ClassroomService{
             .status(classStatus)
             .build();
     }
+
+    @Override
+    public Optional<Classroom> findByUserId(Long userId) {
+        return classroomRepository.findByUserId(userId);
+    }
+
     @Override
     public ClassResponse entityMap(Classroom classroom) {
         return ClassResponse.builder()

@@ -1,5 +1,6 @@
 package trainingmanagement.service.User;
 
+import org.springframework.data.domain.Page;
 import trainingmanagement.model.dto.request.LoginRequest;
 import trainingmanagement.model.dto.request.RegisterRequest;
 import trainingmanagement.model.dto.response.JwtResponse;
@@ -22,4 +23,5 @@ public interface UserService {
     List<UserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword);
     UserResponse entityMap(User user);
     User entityMap(RegisterRequest userRequest);
+    List<UserResponse> getAllStudentInClassroom(Long userId);
 }

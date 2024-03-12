@@ -1,0 +1,64 @@
+package trainingmanagement.controller.Student;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.response.ClassResponse;
+import trainingmanagement.model.dto.response.UserResponse;
+import trainingmanagement.model.entity.Enum.EHttpStatus;
+import trainingmanagement.model.entity.User;
+import trainingmanagement.security.UserDetail.UserLogin;
+import trainingmanagement.service.Classroom.ClassroomService;
+import trainingmanagement.service.CommonService;
+import trainingmanagement.service.User.UserService;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/student")
+public class UserControllerStudent {
+    private final UserService userService;
+    private final UserLogin userLogin;
+    private final CommonService commonService;
+
+    @GetMapping("/allStudentInClass")
+    public ResponseEntity<?> getAllClassesToPages(
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "className", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order
+    ) throws CustomException {
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            User user = userLogin.userLogin();
+            List<UserResponse> userResponseList = userService.getAllStudentInClassroom(user.getId());
+            Page<?> users = commonService.convertListToPages(pageable, userResponseList);
+            if (!users.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                users.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Users page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Users page is out of range.");
+        }
+    }
+
+}

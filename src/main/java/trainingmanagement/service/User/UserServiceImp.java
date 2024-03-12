@@ -150,6 +150,13 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public List<UserResponse> getAllStudentInClassroom(Long userId) {
+        List<User> users = userRepository.getAllStudentInClassroom(userId);
+        return users.stream().map(this::entityMap).toList();
+    }
+
+
+    @Override
     public UserResponse entityMap(User user) {
         return UserResponse.builder()
             .fullName(user.getFullName())
