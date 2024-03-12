@@ -26,7 +26,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/admin/options")
-public class OptionControllerAdmin {
+public class AOptionController {
     private final OptionService optionService;
     private final QuestionService questionService;
     private final CommonService commonService;
@@ -106,20 +106,20 @@ public class OptionControllerAdmin {
     public ResponseEntity<?> patchUpdateOption(
             @PathVariable("optionId") Long optionId,
             @RequestBody OptionRequest optionRequest) {
-        Option optionUpdate = optionService.patchUpdateOption(optionId, optionRequest);
+        Option updatedOption = optionService.patchUpdateOption(optionId, optionRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
                 HttpStatus.OK.value(),
                 HttpStatus.OK.name(),
-                optionUpdate
+                updatedOption
             ), HttpStatus.OK);
     }
     // * Delete option by id.
     @DeleteMapping("/{optionId}")
     public ResponseEntity<?> deleteById(@PathVariable Long optionId) throws CustomException{
-        Optional<Option> deleteOption = optionService.getById(optionId);
-        if(deleteOption.isPresent()){
+        Optional<Option> deletedOption = optionService.getById(optionId);
+        if(deletedOption.isPresent()){
             optionService.deleteById(optionId);
             return new ResponseEntity<>(
                 new ResponseWrapper<>(

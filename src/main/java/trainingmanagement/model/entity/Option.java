@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
+import trainingmanagement.model.entity.Enum.EOptionStatus;
 
 @Entity
 @NoArgsConstructor
@@ -15,7 +16,9 @@ import trainingmanagement.model.entity.Enum.EActiveStatus;
 @Table(name = "options")
 public class Option extends BaseModel {
     private String contentOptions;
-    private EActiveStatus status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EOptionStatus status;
     @ManyToOne
     @JoinColumn(name = "question_id",referencedColumnName = "id")
     private Question question;

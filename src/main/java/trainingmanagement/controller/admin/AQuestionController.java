@@ -24,7 +24,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/admin/questions")
-public class QuestionControllerAdmin {
+public class AQuestionController {
     private final QuestionService questionService;
     private final CommonService commonService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -36,6 +36,7 @@ public class QuestionControllerAdmin {
             @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
+        // ! Cần thêm Exception nếu như có 1 trường enum bằng null.
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());

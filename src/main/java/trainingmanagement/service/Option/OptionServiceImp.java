@@ -3,13 +3,10 @@ package trainingmanagement.service.Option;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import trainingmanagement.model.dto.request.OptionRequest;
 import trainingmanagement.model.dto.response.OptionResponse;
-import trainingmanagement.model.entity.Enum.EActiveStatus;
-import trainingmanagement.model.entity.Enum.ELevelQuestion;
+import trainingmanagement.model.entity.Enum.EOptionStatus;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.repository.OptionRepository;
@@ -73,22 +70,23 @@ public class OptionServiceImp implements OptionService{
                 option.setQuestion(question);
             }
             if(optionRequest.getStatus() != null){
-                EActiveStatus activeStatus = switch (optionRequest.getStatus()) {
-                    case "INACTIVE" -> EActiveStatus.INACTIVE;
-                    case "ACTIVE" -> EActiveStatus.ACTIVE;
+                EOptionStatus activeStatus = switch (optionRequest.getStatus().toUpperCase()) {
+                    case "INCORRECT" -> EOptionStatus.INCORRECT;
+                    case "CORRECT" -> EOptionStatus.CORRECT;
                     default -> null;
                 };
                 option.setStatus(activeStatus);
             }
+            return optionRepository.save(option);
         }
         return null;
     }
 
     @Override
     public Option entityMap(OptionRequest optionRequest) {
-        EActiveStatus activeStatus = switch (optionRequest.getStatus()) {
-            case "INACTIVE" -> EActiveStatus.INACTIVE;
-            case "ACTIVE" -> EActiveStatus.ACTIVE;
+        EOptionStatus activeStatus = switch (optionRequest.getStatus().toUpperCase()) {
+            case "INCORRECT" -> EOptionStatus.INCORRECT;
+            case "CORRECT" -> EOptionStatus.CORRECT;
             default -> null;
         };
         return Option.builder()

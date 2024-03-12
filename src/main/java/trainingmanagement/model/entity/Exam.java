@@ -7,7 +7,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
-
 import java.util.List;
 
 @Entity

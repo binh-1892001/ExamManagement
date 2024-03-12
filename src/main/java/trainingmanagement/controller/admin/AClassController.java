@@ -22,7 +22,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/v1/admin/classes")
 @RequiredArgsConstructor
-public class ClassroomController {
+public class AClassController {
     private final CommonService commonService;
     private final ClassroomService classroomService;
     // * Get all classes to pages.
