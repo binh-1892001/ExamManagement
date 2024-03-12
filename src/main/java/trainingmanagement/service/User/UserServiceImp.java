@@ -155,6 +155,18 @@ public class UserServiceImp implements UserService {
         return users.stream().map(this::entityMap).toList();
     }
 
+    @Override
+    public List<UserResponse> getAllTeacher() {
+        List<User> users = userRepository.getAllTeacher();
+        return users.stream().map(this::entityMap).toList();
+    }
+
+    @Override
+    public List<UserResponse> getAllStudentByClassId(Long classId) {
+        List<User> users =  userRepository.getAllStudentByClassId(classId);
+        return users.stream().map(this::entityMap).toList();
+    }
+
 
     @Override
     public UserResponse entityMap(User user) {

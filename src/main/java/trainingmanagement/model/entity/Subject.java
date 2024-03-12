@@ -16,10 +16,13 @@ import java.util.List;
 public class Subject extends BaseModel {
     private String subjectName;
     private String timeToStudy;
-    private int time; // ? time ở đây là gì ?
     private Boolean status;
     // * Class - Subject: 1 - N.
     @OneToMany(mappedBy = "subject")
     @JsonIgnore
     List<Exam> exams;
+
+    @OneToMany(mappedBy = "subject")
+    @JsonIgnore
+    private List<ClassSubject> classSubjects;
 }

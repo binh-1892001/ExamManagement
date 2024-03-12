@@ -14,4 +14,6 @@ public interface ClassroomRepository  extends JpaRepository<Classroom, Long> {
     List<Classroom> findByClassNameContainingIgnoreCase(String className);
     @Query(value = "select c.* from classroom c join user_class uc on c.id=uc.class_id where user_id=:userId",nativeQuery = true)
     Optional<Classroom> findByUserId(Long userId);
+
+    
 }

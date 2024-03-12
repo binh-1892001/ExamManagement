@@ -12,6 +12,5 @@ import lombok.NoArgsConstructor;
 public class SubjectResponse {
     private String subjectName;
     private String timeToStudy;
-    private Integer time;
     private Boolean status;
 }

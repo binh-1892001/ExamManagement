@@ -138,4 +138,33 @@ public class SubjectController {
             throw new CustomException("Subjects page is out of range.");
         }
     }
+
+    @GetMapping("/class/{classId}")
+    public ResponseEntity<?> getAllSubjectByClassIdToPages(
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "subjectName", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @PathVariable Long classId
+    ) throws CustomException{
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            List<SubjectResponse> subjectResponses = subjectService.getAllByClassId(classId);
+            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
+            if (!subjects.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                subjects.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Subjects page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Subjects page is out of range.");
+        }
+    }
 }

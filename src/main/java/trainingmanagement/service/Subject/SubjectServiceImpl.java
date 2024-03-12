@@ -52,8 +52,6 @@ public class SubjectServiceImpl implements SubjectService{
                 subject.setSubjectName(subjectRequest.getSubjectName());
             if(subjectRequest.getTimeToStudy() != null)
                 subject.setTimeToStudy(subjectRequest.getTimeToStudy());
-            if(subjectRequest.getTime() != null)
-                subject.setTime(subjectRequest.getTime());
             if (subjectRequest.getStatus() != null)
                 subject.setSubjectName(subjectRequest.getSubjectName());
             return save(subject);
@@ -76,9 +74,14 @@ public class SubjectServiceImpl implements SubjectService{
         return Subject.builder()
             .subjectName(subjectRequest.getSubjectName())
             .timeToStudy(subjectRequest.getTimeToStudy())
-            .time(subjectRequest.getTime())
             .status(subjectRequest.getStatus())
             .build();
+    }
+
+    @Override
+    public List<SubjectResponse> getAllByClassId(Long classId) {
+        List<Subject> subjects = subjectRepository.getAllByClassId(classId);
+        return subjects.stream().map(this::entityMap).toList();
     }
 
     @Override
@@ -86,7 +89,6 @@ public class SubjectServiceImpl implements SubjectService{
         return SubjectResponse.builder()
             .subjectName(subject.getSubjectName())
             .timeToStudy(subject.getTimeToStudy())
-            .time(subject.getTime())
             .status(subject.getStatus())
             .build();
     }

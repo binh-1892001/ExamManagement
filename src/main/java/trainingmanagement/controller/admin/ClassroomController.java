@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.ClassRequest;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.request.ClassSubjectRequest;
 import trainingmanagement.model.dto.response.ClassResponse;
+import trainingmanagement.model.entity.ClassSubject;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
+import trainingmanagement.service.ClassSubject.ClassSubjectService;
 import trainingmanagement.service.Classroom.ClassroomService;
 import trainingmanagement.service.CommonService;
 import java.util.List;
@@ -25,6 +28,7 @@ import java.util.Optional;
 public class ClassroomController {
     private final CommonService commonService;
     private final ClassroomService classroomService;
+    private final ClassSubjectService classSubjectService;
     // * Get all classes to pages.
     @GetMapping
     public ResponseEntity<?> getAllClassesToPages(
@@ -135,4 +139,18 @@ public class ClassroomController {
             throw new CustomException("Classes page is out of range.");
         }
     }
-}
+    // * add subject to class
+    @PostMapping("/addSubject")
+    public ResponseEntity<?> addSubjectToClass(@RequestBody ClassSubjectRequest classSubjectRequest){
+        classSubjectService.save(classSubjectRequest);
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.CREATED.value(),
+                        HttpStatus.CREATED.name(),
+                        "Add complete"
+                ), HttpStatus.CREATED);
+    }
+
+
+ }

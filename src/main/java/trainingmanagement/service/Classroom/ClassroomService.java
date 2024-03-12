@@ -2,6 +2,7 @@ package trainingmanagement.service.Classroom;
 
 import trainingmanagement.model.dto.request.ClassRequest;
 import trainingmanagement.model.dto.response.ClassResponse;
+import trainingmanagement.model.entity.ClassSubject;
 import trainingmanagement.model.entity.Classroom;
 import java.util.List;
 import java.util.Optional;

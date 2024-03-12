@@ -1,9 +1,12 @@
 package trainingmanagement.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
 import trainingmanagement.model.entity.Enum.EStatusClass;
+
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,14 +18,16 @@ import java.util.Set;
 public class Classroom extends BaseModel {
     @Column(name = "class_name")
     private String className;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private EStatusClass status;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "class_subject",
-            joinColumns = @JoinColumn(name = "class_id"),
-            inverseJoinColumns = @JoinColumn(name = "subject_id")
-    )
-    private Set<Subject> subjects;
+
+    @OneToMany(mappedBy = "classroom")
+    @JsonIgnore
+    private List<ClassSubject> classSubjects;
+
+    @OneToMany(mappedBy = "classroom")
+    @JsonIgnore
+    private List<UserClass> userClasses;
 }

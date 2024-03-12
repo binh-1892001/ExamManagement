@@ -33,6 +33,7 @@ public class User extends BaseModel {
     @Column(name = "status")
     private EActiveStatus status;
     @ManyToMany(fetch = FetchType.EAGER)
+
     @JoinTable(
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -40,17 +41,15 @@ public class User extends BaseModel {
     )
     @JsonIgnore
     private Set<Role> roles;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_class",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "class_id")
-    )
-    @JsonIgnore
-    private Set<Classroom> classrooms;
+
     @OneToMany(mappedBy = "student")
     @JsonIgnore
     private List<HistoryTest> historyTestsStudent;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<UserClass> userClasses;
+
     @OneToMany(mappedBy = "teacher")
     @JsonIgnore
     private List<HistoryTest> historyTestsTeacher;
