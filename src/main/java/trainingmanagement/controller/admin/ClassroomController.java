@@ -57,15 +57,15 @@ public class ClassroomController {
     @GetMapping("/{classId}")
     public ResponseEntity<?> getClassById(@PathVariable("classId") Long classId) throws CustomException{
         Optional<Classroom> classroom = classroomService.getById(classId);
-        if(classroom.isEmpty())
-            throw new CustomException("Class is not exists.");
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                    EHttpStatus.SUCCESS,
-                    HttpStatus.OK.value(),
-                    HttpStatus.OK.name(),
-                    classroom.get()
-                ), HttpStatus.OK);
+        if(classroom.isPresent())
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        classroom.get()
+                    ), HttpStatus.OK);
+        throw new CustomException("Class is not exists.");
     }
     // * Create new classroom.
     @PostMapping
@@ -100,10 +100,10 @@ public class ClassroomController {
         classroomService.deleteById(classId);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
-                    EHttpStatus.SUCCESS,
-                    HttpStatus.OK.value(),
-                    HttpStatus.OK.name(),
-                    "Delete class successfully."
+                EHttpStatus.SUCCESS,
+                HttpStatus.OK.value(),
+                HttpStatus.OK.name(),
+                "Delete class successfully."
             ), HttpStatus.OK);
     }
     // * Find classroom by className.

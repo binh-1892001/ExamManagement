@@ -1,84 +1,116 @@
 package trainingmanagement.service.Question;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import trainingmanagement.model.dto.requestEntity.RequestQuestionPostQuiz;
-import trainingmanagement.model.dto.requestEntity.RequestQuestionPutQuiz;
-import trainingmanagement.model.dto.responseEntity.ResponseQuestionQuiz;
+import trainingmanagement.model.dto.request.QuestionRequest;
+import trainingmanagement.model.dto.response.QuestionResponse;
 import trainingmanagement.model.entity.Enum.ELevelQuestion;
 import trainingmanagement.model.entity.Enum.ETypeQuestion;
-import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.repository.QuestionRepository;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
+@RequiredArgsConstructor
 public class QuestionServiceImp implements QuestionService{
-    @Autowired
-    private QuestionRepository questionRepository;
+    private final QuestionRepository questionRepository;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Override
-    public Page<ResponseQuestionQuiz> getAll(Pageable pageable) {
-        Page<Question> questions = questionRepository.findAll(pageable);
-        return questions.map(this::displayQuestion);
+    public List<Question> getAllToList() {
+        return questionRepository.findAll();
     }
 
     @Override
-    public Question getById(Long id) {
-        return questionRepository.findById(id).orElse(null);
+    public List<QuestionResponse> getAllQuestionResponsesToList() {
+        return getAllToList().stream().map(this::entityMap).toList();
     }
 
     @Override
-    public Page<ResponseQuestionQuiz> findByName(String keyWord, Pageable pageable) {
-        Page<Question> questions = questionRepository.findAllByContentQuestionIsContainingIgnoreCase(pageable,keyWord);
-        return questions.map(this::displayQuestion);
+    public Optional<Question> getById(Long questionId) {
+        return questionRepository.findById(questionId);
     }
-
-
     @Override
     public Question save(Question question) {
         return questionRepository.save(question);
     }
-
     @Override
-    public void deleteById(Long id) {
-        questionRepository.deleteById(id);
+    public Question save(QuestionRequest questionRequest) {
+        return questionRepository.save(entityMap(questionRequest));
     }
 
     @Override
-    public ResponseQuestionQuiz displayQuestion(Question question) {
-        return ResponseQuestionQuiz.builder()
-                .contentQuestion(question.getContentQuestion())
-                .levelQuestion(question.getLevelQuestion())
-                .typeQuestion(question.getTypeQuestion())
-                .status(question.getStatus())
-                .build();
+    public List<QuestionResponse> findByQuestionContent(String questionContent) {
+        return questionRepository.findAllByContentQuestionIsContainingIgnoreCase(questionContent)
+                .stream().map(this::entityMap).toList();
+    }
+    @Override
+    public void deleteById(Long questionId) {
+        questionRepository.deleteById(questionId);
+    }
+    @Override
+    public Question patchUpdateQuestion(Long questionId, QuestionRequest questionRequest) {
+        Optional<Question> updateQuestion = questionRepository.findById(questionId);
+        if(updateQuestion.isPresent()){
+            Question question = updateQuestion.get();
+            if(questionRequest.getContentQuestion() != null)
+                question.setContentQuestion(questionRequest.getContentQuestion());
+            if(questionRequest.getLevelQuestion() != null){
+                ELevelQuestion levelQuestion = switch (questionRequest.getLevelQuestion()) {
+                    case "EASY" -> ELevelQuestion.EASY;
+                    case "NORMAL" -> ELevelQuestion.NORMAL;
+                    case "DIFFICULTY" -> ELevelQuestion.DIFFICULTY;
+                    default -> null;
+                };
+                question.setLevelQuestion(levelQuestion);
+            }
+            if(questionRequest.getTypeQuestion() != null){
+                ETypeQuestion typeQuestion = switch (questionRequest.getTypeQuestion()) {
+                    case "SINGLE" -> ETypeQuestion.SINGLE;
+                    case "MULTIPLE" -> ETypeQuestion.MULTIPLE;
+                    default -> null;
+                };
+                question.setTypeQuestion(typeQuestion);
+            }
+            if(questionRequest.getImage() != null)
+                question.setImage(questionRequest.getImage());
+            return questionRepository.save(question);
+        }
+        return null;
     }
 
     @Override
-    public Question addQuestion(RequestQuestionPostQuiz questionQuiz) {
-        Question question = new Question();
-        question.setContentQuestion(questionQuiz.getContentQuestion());
-        question.setLevelQuestion(ELevelQuestion.valueOf(questionQuiz.getLevelQuestion()));
-        question.setTypeQuestion(ETypeQuestion.valueOf(questionQuiz.getTypeQuestion()));
-        question.setImage(questionQuiz.getImage());
-        question.setStatus(true);
-        return questionRepository.save(question);
+    public Question entityMap(QuestionRequest questionRequest) {
+        ELevelQuestion levelQuestion = switch (questionRequest.getLevelQuestion()) {
+            case "EASY" -> ELevelQuestion.EASY;
+            case "NORMAL" -> ELevelQuestion.NORMAL;
+            case "DIFFICULTY" -> ELevelQuestion.DIFFICULTY;
+            default -> null;
+        };
+        ETypeQuestion typeQuestion = switch (questionRequest.getTypeQuestion()){
+            case "SINGLE" -> ETypeQuestion.SINGLE;
+            case "MULTIPLE" -> ETypeQuestion.MULTIPLE;
+            default -> null;
+        };
+        return Question.builder()
+            .contentQuestion(questionRequest.getContentQuestion())
+            .levelQuestion(levelQuestion)
+            .typeQuestion(typeQuestion)
+            .image(questionRequest.getImage())
+            .build();
     }
 
     @Override
-    public Question updateQuestion(RequestQuestionPutQuiz requestQuestionPutQuiz, Long idQuestion) {
-        Question question = getById(idQuestion);
-        question.setContentQuestion(requestQuestionPutQuiz.getContentQuestion());
-        question.setTypeQuestion(ETypeQuestion.valueOf(requestQuestionPutQuiz.getTypeQuestion()));
-        question.setImage(requestQuestionPutQuiz.getImage());
-        question.setLevelQuestion(ELevelQuestion.valueOf(requestQuestionPutQuiz.getLevelQuestion()));
-//        question.builder()
-//                .contentQuestion(requestQuestionPutQuiz.getContentQuestion())
-//                .typeQuestion(ETypeQuestion.valueOf(requestQuestionPutQuiz.getTypeQuestion()))
-//                .image(requestQuestionPutQuiz.getImage())
-//                .levelQuestion(ELevelQuestion.valueOf(requestQuestionPutQuiz.getLevelQuestion()))
-//                .build();
-        return questionRepository.save(question);
+    public QuestionResponse entityMap(Question question) {
+        return QuestionResponse.builder()
+            .questionId(question.getId())
+            .contentQuestion(question.getContentQuestion())
+            .levelQuestion(question.getLevelQuestion().name())
+            .typeQuestion(question.getTypeQuestion().name())
+            .image(question.getImage())
+            .build();
     }
 }

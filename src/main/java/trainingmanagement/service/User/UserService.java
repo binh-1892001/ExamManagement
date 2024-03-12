@@ -5,7 +5,6 @@ import trainingmanagement.model.dto.request.RegisterRequest;
 import trainingmanagement.model.dto.response.JwtResponse;
 import trainingmanagement.model.dto.response.UserResponse;
 import trainingmanagement.model.entity.User;
-
 import java.util.List;
 import java.util.Optional;
 

@@ -1,22 +1,21 @@
 package trainingmanagement.service.Option;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import trainingmanagement.model.dto.requestEntity.RequestOptionPostQuiz;
-import trainingmanagement.model.dto.requestEntity.RequestOptionPutQuiz;
-import trainingmanagement.model.dto.responseEntity.ResponseOptionQuiz;
+import trainingmanagement.model.dto.request.OptionRequest;
+import trainingmanagement.model.dto.response.OptionResponse;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
-
 import java.util.List;
+import java.util.Optional;
 
 public interface OptionService {
-    Page<Option> getAll(Pageable pageable);
-    Option getById(Long id);
+    List<Option> getAllToList();
+    List<OptionResponse> getAllOptionResponsesToList();
+    Optional<Option> getById(Long optionId);
+    List<OptionResponse> findAllByQuestion(Question question);
     Option save(Option option);
-    void deleteById(Long id);
-    List<ResponseOptionQuiz> findAllByQuestion(Question question);
-    ResponseOptionQuiz displayOption(Option option);
-    Option addOption(RequestOptionPostQuiz requestOptionQuiz);
-    Option updateOption(RequestOptionPutQuiz requestOptionPutQuiz,Long idOption);
+    Option save(OptionRequest optionRequest);
+    void deleteById(Long optionId);
+    Option patchUpdateOption(Long optionId, OptionRequest optionRequest);
+    Option entityMap(OptionRequest optionRequest);
+    OptionResponse entityMap(Option option);
 }

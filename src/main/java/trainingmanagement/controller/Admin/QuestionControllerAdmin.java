@@ -1,6 +1,8 @@
-package trainingmanagement.controller.Admin;
+package trainingmanagement.controller.admin;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -8,82 +10,131 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import trainingmanagement.model.dto.requestEntity.RequestQuestionPostQuiz;
-import trainingmanagement.model.dto.requestEntity.RequestQuestionPutQuiz;
-import trainingmanagement.model.dto.responseEntity.Response;
-import trainingmanagement.model.dto.responseEntity.ResponseQuestionQuiz;
-import trainingmanagement.model.entity.Enum.EStatusCode;
+import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.request.QuestionRequest;
+import trainingmanagement.model.dto.response.QuestionResponse;
+import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.Question;
+import trainingmanagement.service.CommonService;
 import trainingmanagement.service.Question.QuestionService;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/v1/admin/question")
+@RequiredArgsConstructor
+@RequestMapping("/v1/admin/questions")
 public class QuestionControllerAdmin {
-    @Autowired
-    private QuestionService questionService;
-
-    @GetMapping("")
-    public ResponseEntity<?> getAll(
+    private final QuestionService questionService;
+    private final CommonService commonService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    // * Get all questions to pages.
+    @GetMapping
+    public ResponseEntity<?> getAllQuestionsToPages(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "id", name = "sort") String sort) {
-        Pageable pageable = PageRequest.of(page, limit, Sort.by(sort));
-        Page<ResponseQuestionQuiz> questions = questionService.getAll(pageable);
-        return new ResponseEntity<>(questions, HttpStatus.OK);
+            @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order
+    ) throws CustomException {
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            List<QuestionResponse> questionResponses = questionService.getAllQuestionResponsesToList();
+            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
+            if (!questions.isEmpty()) {
+                return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        questions.getContent()
+                    ), HttpStatus.OK);
+            }
+            throw new CustomException("Questions page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Questions page is out of range.");
+        }
     }
-
+    // * Get question by id.
+    @GetMapping("/{questionId}")
+    public ResponseEntity<?> getQuestionById(@PathVariable("questionId") Long questionId) throws CustomException{
+        Optional<Question> question = questionService.getById(questionId);
+        if(question.isEmpty())
+            throw new CustomException("Class is not exists.");
+        return new ResponseEntity<>(
+            new ResponseWrapper<>(
+                EHttpStatus.SUCCESS,
+                HttpStatus.OK.value(),
+                HttpStatus.OK.name(),
+                question.get()
+            ), HttpStatus.OK);
+    }
+    // * Create new question.
+    @PostMapping
+    public ResponseEntity<?> createNewQuestion(@RequestBody QuestionRequest questionRequest) {
+        Question question = questionService.save(questionRequest);
+        return new ResponseEntity<>(
+            new ResponseWrapper<>(
+                EHttpStatus.SUCCESS,
+                HttpStatus.CREATED.value(),
+                HttpStatus.CREATED.name(),
+                question
+            ), HttpStatus.CREATED);
+    }
+    @PatchMapping("/{questionId}")
+    public ResponseEntity<?> patchUpdateQuestion(
+            @PathVariable("questionId") Long questionId,
+            @RequestBody QuestionRequest questionRequest) {
+        Question question = questionService.patchUpdateQuestion(questionId, questionRequest);
+        return new ResponseEntity<>(
+            new ResponseWrapper<>(
+                EHttpStatus.SUCCESS,
+                HttpStatus.OK.value(),
+                HttpStatus.OK.name(),
+                question
+            ), HttpStatus.OK);
+    }
+    // * Delete an exists question.
+    @DeleteMapping("/{questionId}")
+    public ResponseEntity<?> deleteQuestionById(@PathVariable Long questionId) {
+        // ! Cần kiểm tra question tồn tại thì mới cho phép xoá, không thì bắn CustomException.
+        questionService.deleteById(questionId);
+        return new ResponseEntity<>(
+            new ResponseWrapper<>(
+                EHttpStatus.SUCCESS,
+                HttpStatus.OK.value(),
+                HttpStatus.OK.name(),
+                "Delete question successfully."
+            ), HttpStatus.OK);
+    }
+    // * Find Question by contentQuestion.
     @GetMapping("/search")
     public ResponseEntity<?> search(
-            @RequestParam String keyWord,
+            @RequestParam String keyword,
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "id", name = "sort") String sort
-    ) {
-        Pageable pageable = PageRequest.of(page, limit, Sort.by(sort));
-        Page<ResponseQuestionQuiz> questions = questionService.findByName(keyWord,pageable);
-        return new ResponseEntity<>(
-                new Response<>(
-                        EStatusCode.SUCCESS,
-                        HttpStatus.OK.name(),
-                        HttpStatus.OK.value(),
-                        questions.getContent()
-                ), HttpStatus.OK);
+            @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order
+    ) throws CustomException {
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            List<QuestionResponse> questionResponses = questionService.findByQuestionContent(keyword);
+            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
+            if (!questions.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                questions.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Questions page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Questions page is out of range.");
+        }
     }
-
-    @PostMapping("")
-    public ResponseEntity<?> add(@RequestBody RequestQuestionPostQuiz requestQuestionQuiz) {
-        Question question = questionService.addQuestion(requestQuestionQuiz);
-        return new ResponseEntity<>(
-                new Response<>(
-                        EStatusCode.SUCCESS,
-                        HttpStatus.OK.name(),
-                        HttpStatus.OK.value(),
-                        question
-                ), HttpStatus.OK);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@RequestBody RequestQuestionPutQuiz requestQuestionPutQuiz, @PathVariable Long id) {
-        Question questionUpdate = questionService.updateQuestion(requestQuestionPutQuiz,id);
-        return new ResponseEntity<>(
-                new Response<>(
-                        EStatusCode.SUCCESS,
-                        HttpStatus.OK.name(),
-                        HttpStatus.OK.value(),
-                        questionUpdate
-                ), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        questionService.deleteById(id);
-        return new ResponseEntity<>(
-                new Response<>(
-                        EStatusCode.SUCCESS,
-                        HttpStatus.OK.name(),
-                        HttpStatus.OK.value(),
-                        "Delete complete"
-                ), HttpStatus.OK);
-    }
-
 }

@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.requestEntity;
+package trainingmanagement.model.dto.request;
 
 import lombok.*;
 
@@ -7,8 +7,8 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class RequestOptionPostQuiz {
+public class OptionRequest {
     String contentOptions;
-    Boolean status;
     Long questionId;
+    String status;
 }

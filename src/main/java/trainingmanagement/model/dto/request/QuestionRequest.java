@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.requestEntity;
+package trainingmanagement.model.dto.request;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class RequestQuestionPutQuiz {
+public class QuestionRequest {
     String contentQuestion;
     String levelQuestion;
     String typeQuestion;
