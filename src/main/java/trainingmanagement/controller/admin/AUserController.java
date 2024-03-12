@@ -23,7 +23,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping ("/v1/admin/users")
-public class UserController {
+public class AUserController {
     private final UserService userService;
     private final RoleService roleService;
     private final CommonService commonService;

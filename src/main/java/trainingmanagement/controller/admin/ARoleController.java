@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/admin/roles")
-public class RoleController {
+public class ARoleController {
     private final RoleService roleService;
     private final CommonService commonService;
     @GetMapping

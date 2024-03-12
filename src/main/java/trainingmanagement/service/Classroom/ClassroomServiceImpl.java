@@ -42,9 +42,6 @@ public class ClassroomServiceImpl implements ClassroomService{
         Optional<Classroom> updateClassroom = getById(classroomId);
         if(updateClassroom.isPresent()) {
             Classroom classroom = updateClassroom.get();
-            AuditableEntity auditableEntity = updateClassroom.get();
-            if (auditableEntity.getCreatedDate() != null)
-                auditableEntity.setCreatedDate(auditableEntity.getCreatedDate());
             if (classRequest.getClassName() != null)
                 classroom.setClassName(classRequest.getClassName());
             if (classRequest.getStatus() != null) {
