@@ -23,6 +23,10 @@ public class Classroom extends BaseModel {
     @Column(name = "status")
     private EStatusClass status;
 
+    @ManyToOne
+    @JoinColumn(name = "teacherId",referencedColumnName = "id")
+    private User teacher;
+
     @OneToMany(mappedBy = "classroom")
     @JsonIgnore
     private List<ClassSubject> classSubjects;

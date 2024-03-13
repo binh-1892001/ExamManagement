@@ -7,10 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.response.ClassResponse;
@@ -32,19 +29,20 @@ public class UserControllerStudent {
     private final UserLogin userLogin;
     private final CommonService commonService;
 
-    @GetMapping("/allStudentInClass")
+    @GetMapping("/allStudentInClass/{classId}")
     public ResponseEntity<?> getAllClassesToPages(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "className", name = "sort") String sort,
-            @RequestParam(defaultValue = "asc", name = "order") String order
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @PathVariable Long classId
     ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
             User user = userLogin.userLogin();
-            List<UserResponse> userResponseList = userService.getAllStudentInClassroom(user.getId());
+            List<UserResponse> userResponseList = userService.getAllStudentByClassId(classId);
             Page<?> users = commonService.convertListToPages(pageable, userResponseList);
             if (!users.isEmpty()) {
                 return new ResponseEntity<>(

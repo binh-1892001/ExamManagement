@@ -1,8 +1,8 @@
 package trainingmanagement.service.UserClass;
 
+import trainingmanagement.model.dto.request.UserClassRequest;
 import trainingmanagement.model.entity.UserClass;
 
 public interface UserClassService {
-    UserClass addStudent(UserClass userClass);
-    UserClass addTeacher(UserClass userClass);
+    void saveStudent(UserClassRequest userClassRequest);
 }

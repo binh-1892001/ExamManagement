@@ -12,6 +12,7 @@ import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.ClassRequest;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.ClassSubjectRequest;
+import trainingmanagement.model.dto.request.UserClassRequest;
 import trainingmanagement.model.dto.response.ClassResponse;
 import trainingmanagement.model.entity.ClassSubject;
 import trainingmanagement.model.entity.Classroom;
@@ -19,6 +20,8 @@ import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.service.ClassSubject.ClassSubjectService;
 import trainingmanagement.service.Classroom.ClassroomService;
 import trainingmanagement.service.CommonService;
+import trainingmanagement.service.UserClass.UserClassService;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +32,7 @@ public class ClassroomController {
     private final CommonService commonService;
     private final ClassroomService classroomService;
     private final ClassSubjectService classSubjectService;
+    private final UserClassService userClassService;
     // * Get all classes to pages.
     @GetMapping
     public ResponseEntity<?> getAllClassesToPages(
@@ -152,5 +156,17 @@ public class ClassroomController {
                 ), HttpStatus.CREATED);
     }
 
+    // * add student to class
+    @PostMapping("/saveStudent")
+    public ResponseEntity<?> saveStudent(@RequestBody UserClassRequest userClassRequest){
+        userClassService.saveStudent(userClassRequest);
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.CREATED.value(),
+                        HttpStatus.CREATED.name(),
+                        "Save complete"
+                ), HttpStatus.CREATED);
+    }
 
  }

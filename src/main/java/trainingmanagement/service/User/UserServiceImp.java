@@ -15,6 +15,7 @@ import trainingmanagement.model.dto.response.JwtResponse;
 import trainingmanagement.model.dto.response.UserResponse;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Enum.EGender;
+import trainingmanagement.model.entity.Enum.ERoles;
 import trainingmanagement.model.entity.Role;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.repository.UserRepository;
@@ -149,11 +150,11 @@ public class UserServiceImp implements UserService {
             .build();
     }
 
-    @Override
-    public List<UserResponse> getAllStudentInClassroom(Long userId) {
-        List<User> users = userRepository.getAllStudentInClassroom(userId);
-        return users.stream().map(this::entityMap).toList();
-    }
+//    @Override
+//    public List<UserResponse> getAllStudentInClassroom(Long userId) {
+//        List<User> users = userRepository.getAllStudentByClassId(userId);
+//        return users.stream().map(this::entityMap).toList();
+//    }
 
     @Override
     public List<UserResponse> getAllTeacher() {
@@ -163,7 +164,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public List<UserResponse> getAllStudentByClassId(Long classId) {
-        List<User> users =  userRepository.getAllStudentByClassId(classId);
+        List<User> users =  userRepository.getAllByClassIdAndRole(ERoles.ROLE_STUDENT,classId);
         return users.stream().map(this::entityMap).toList();
     }
 

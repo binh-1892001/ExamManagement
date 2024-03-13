@@ -9,4 +9,5 @@ import lombok.*;
 public class ClassRequest {
     private String className;
     private String status;
+    private Long teacherId;
 }
