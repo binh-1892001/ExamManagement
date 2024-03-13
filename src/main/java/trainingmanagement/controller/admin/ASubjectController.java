@@ -24,7 +24,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/admin/subjects")
-public class SubjectController {
+public class ASubjectController {
     private final CommonService commonService;
     private final SubjectService subjectService;
     private Logger logger = LoggerFactory.getLogger(this.getClass());

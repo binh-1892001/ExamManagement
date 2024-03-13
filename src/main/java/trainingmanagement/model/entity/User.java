@@ -1,6 +1,5 @@
 package trainingmanagement.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,11 +43,11 @@ public class User extends BaseModel {
 
     @OneToMany(mappedBy = "student")
     @JsonIgnore
-    private List<HistoryTest> historyTestsStudent;
+    private List<Result> resultsStudent;
 
     @OneToMany(mappedBy = "teacher")
     @JsonIgnore
-    private List<HistoryTest> historyTestsTeacher;
+    private List<Result> resultsTeacher;
 
     @OneToMany(mappedBy = "user")
     @JsonIgnore

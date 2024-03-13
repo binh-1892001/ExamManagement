@@ -22,11 +22,11 @@ public class Test extends BaseModel {
     private String resources;
     @OneToMany(mappedBy = "test")
     @JsonIgnore
-    List<Question> questions ;
+    List<Question> questions;
     @OneToMany(mappedBy = "test")
     @JsonIgnore
-    List<HistoryTest> historyTests;
+    List<Result> historyTests;
     @ManyToOne
-    @JoinColumn(name = "examId",referencedColumnName = "id")
+    @JoinColumn(name = "exam_id",referencedColumnName = "id")
     private Exam exam;
 }

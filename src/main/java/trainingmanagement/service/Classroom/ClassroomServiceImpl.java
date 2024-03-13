@@ -43,14 +43,18 @@ public class ClassroomServiceImpl implements ClassroomService{
     public Classroom save(ClassRequest classRequest) {
         return classroomRepository.save(entityMap(classRequest));
     }
+    /**
+     * @param classroomId
+     * @param classRequest
+     * @return
+     * author:
+     * */
+
     @Override
     public Classroom patchUpdate(Long classroomId, ClassRequest classRequest) {
         Optional<Classroom> updateClassroom = getById(classroomId);
         if(updateClassroom.isPresent()) {
             Classroom classroom = updateClassroom.get();
-            AuditableEntity auditableEntity = updateClassroom.get();
-            if (auditableEntity.getCreatedDate() != null)
-                auditableEntity.setCreatedDate(auditableEntity.getCreatedDate());
             if (classRequest.getClassName() != null)
                 classroom.setClassName(classRequest.getClassName());
             if (classRequest.getStatus() != null) {
