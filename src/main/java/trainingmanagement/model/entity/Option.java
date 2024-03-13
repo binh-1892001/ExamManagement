@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
+import trainingmanagement.model.entity.Enum.EActiveStatus;
+import trainingmanagement.model.entity.Enum.EOptionStatus;
 
 @Entity
 @NoArgsConstructor
@@ -11,10 +13,12 @@ import trainingmanagement.model.base.BaseModel;
 @Getter
 @Setter
 @Builder
-@Table(name = "Options")
+@Table(name = "options")
 public class Option extends BaseModel {
     private String contentOptions;
-    private Boolean status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EOptionStatus status;
     @ManyToOne
     @JoinColumn(name = "question_id",referencedColumnName = "id")
     private Question question;

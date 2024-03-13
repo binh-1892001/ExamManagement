@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ExamManagement?createDatabaseIfNotExist=true
+    username: root
+    password: S0meth!ng976431
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  jooq:
+    sql-dialect: org.hibernate.dialect.MySQLDialect
+jwt.secret-key: RikkeiAcademy
+jwt.expired: 864000000
+server:
+  port: 8888

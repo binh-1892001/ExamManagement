@@ -7,7 +7,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
-
+import trainingmanagement.model.entity.Enum.EActiveStatus;
 import java.util.List;
 
 @Entity
@@ -18,12 +18,10 @@ import java.util.List;
 @Builder
 public class Exam extends BaseModel {
     private String examName;
-    private Boolean status;
-
+    private EActiveStatus status;
     @ManyToOne
     @JoinColumn(name = "subject_id",referencedColumnName = "id")
     private Subject subject;
-
     @OneToMany(mappedBy = "exam")
     @JsonIgnore
     private List<Test> tests;

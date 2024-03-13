@@ -1,14 +1,13 @@
-package trainingmanagement.model.dto.requestEntity;
+package trainingmanagement.model.dto.request;
 
 import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 public class ExamRequest {
     private String examName;
-    private Boolean status;
+    private String status;
     private Long subjectId;
 }

@@ -11,5 +11,5 @@ import java.util.List;
 public interface ExamRepository extends JpaRepository<Exam, Long> {
     List<Exam> findByExamName(String examName);
     List<Exam> findByCreatedDate(Date createDate);
-    boolean existsByExamName(String examName);
+    Boolean existsByExamName(String examName);
 }

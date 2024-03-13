@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import trainingmanagement.model.dto.requestEntity.TestRequest;
+import trainingmanagement.model.dto.request.TestRequest;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.service.Test.TestService;
 

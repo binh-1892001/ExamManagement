@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.requestEntity;
+package trainingmanagement.model.dto.request;
 
 import lombok.*;
 import trainingmanagement.model.entity.Enum.ETypeTest;

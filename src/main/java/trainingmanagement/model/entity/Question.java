@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
+import trainingmanagement.model.entity.Enum.EActiveStatus;
+import trainingmanagement.model.entity.Enum.ELevelQuestion;
 import trainingmanagement.model.entity.Enum.ETypeQuestion;
 
 import java.util.List;
@@ -19,11 +21,12 @@ public class Question extends BaseModel {
     private String image;
     @Enumerated(EnumType.STRING)
     private ETypeQuestion typeQuestion;
-    private Boolean status;
+    @Enumerated(EnumType.STRING)
+    private ELevelQuestion levelQuestion;
+    private EActiveStatus status;
     @ManyToOne
-    @JoinColumn(name = "testId",referencedColumnName = "id")
+    @JoinColumn(name = "test_id", referencedColumnName = "id")
     private Test test;
-
     @OneToMany(mappedBy = "question")
     @JsonIgnore
     private List<Option> options;
