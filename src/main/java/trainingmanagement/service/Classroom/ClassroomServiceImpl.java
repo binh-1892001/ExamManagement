@@ -37,6 +37,13 @@ public class ClassroomServiceImpl implements ClassroomService{
     public Classroom save(ClassRequest classRequest) {
         return classroomRepository.save(entityMap(classRequest));
     }
+    /**
+     * @param classroomId
+     * @param classRequest
+     * @return
+     * author:
+     * */
+
     @Override
     public Classroom patchUpdate(Long classroomId, ClassRequest classRequest) {
         Optional<Classroom> updateClassroom = getById(classroomId);
