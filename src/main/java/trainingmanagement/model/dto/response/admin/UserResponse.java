@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.response;
+package trainingmanagement.model.dto.response.admin;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

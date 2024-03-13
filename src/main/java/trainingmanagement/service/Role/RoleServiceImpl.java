@@ -2,7 +2,7 @@ package trainingmanagement.service.Role;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.response.RoleResponse;
+import trainingmanagement.model.dto.response.admin.RoleResponse;
 import trainingmanagement.model.entity.Enum.ERoles;
 import trainingmanagement.model.entity.Role;
 import trainingmanagement.repository.RoleRepository;

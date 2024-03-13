@@ -2,7 +2,7 @@ package trainingmanagement.service.Test;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import trainingmanagement.model.dto.request.TestRequest;
+import trainingmanagement.model.dto.request.admin.TestRequest;
 import trainingmanagement.model.entity.Test;
 import java.util.List;
 

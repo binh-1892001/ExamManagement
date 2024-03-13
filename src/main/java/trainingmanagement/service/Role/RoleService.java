@@ -1,5 +1,5 @@
 package trainingmanagement.service.Role;
-import trainingmanagement.model.dto.response.RoleResponse;
+import trainingmanagement.model.dto.response.admin.RoleResponse;
 import trainingmanagement.model.entity.Enum.ERoles;
 import trainingmanagement.model.entity.Role;
 import java.util.List;

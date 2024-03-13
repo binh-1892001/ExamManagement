@@ -1,7 +1,7 @@
 package trainingmanagement.service.Subject;
 
-import trainingmanagement.model.dto.request.SubjectRequest;
-import trainingmanagement.model.dto.response.SubjectResponse;
+import trainingmanagement.model.dto.request.admin.SubjectRequest;
+import trainingmanagement.model.dto.response.admin.SubjectResponse;
 import trainingmanagement.model.entity.Subject;
 import java.util.List;
 import java.util.Optional;

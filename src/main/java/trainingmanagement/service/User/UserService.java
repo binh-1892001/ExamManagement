@@ -1,9 +1,9 @@
 package trainingmanagement.service.User;
 
-import trainingmanagement.model.dto.request.LoginRequest;
-import trainingmanagement.model.dto.request.RegisterRequest;
-import trainingmanagement.model.dto.response.JwtResponse;
-import trainingmanagement.model.dto.response.UserResponse;
+import trainingmanagement.model.dto.request.admin.LoginRequest;
+import trainingmanagement.model.dto.request.admin.RegisterRequest;
+import trainingmanagement.model.dto.response.admin.JwtResponse;
+import trainingmanagement.model.dto.response.admin.UserResponse;
 import trainingmanagement.model.entity.User;
 import java.util.List;
 import java.util.Optional;
