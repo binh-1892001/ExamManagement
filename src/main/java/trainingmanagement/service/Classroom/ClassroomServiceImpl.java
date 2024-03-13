@@ -8,8 +8,13 @@ import trainingmanagement.model.base.AuditableEntity;
 import trainingmanagement.model.dto.request.ClassRequest;
 import trainingmanagement.model.dto.response.ClassResponse;
 import trainingmanagement.model.entity.Classroom;
+import trainingmanagement.model.entity.Enum.ERoles;
 import trainingmanagement.model.entity.Enum.EStatusClass;
+import trainingmanagement.model.entity.Role;
+import trainingmanagement.model.entity.User;
 import trainingmanagement.repository.ClassroomRepository;
+import trainingmanagement.repository.UserRepository;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +22,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ClassroomServiceImpl implements ClassroomService{
     private final ClassroomRepository classroomRepository;
+    private final UserRepository userRepository;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     public List<Classroom> getAllToList() {
@@ -54,6 +60,11 @@ public class ClassroomServiceImpl implements ClassroomService{
                     classroom.setStatus(EStatusClass.OJT);
                 else classroom.setStatus(EStatusClass.FINISH);
             }
+            if (classRequest.getTeacherId()!=null){
+                if (userRoleTeacher(classRequest)!=null){
+                    classroom.setTeacher(userRoleTeacher(classRequest));
+                }
+            }
             return save(classroom);
         }
         return null;
@@ -77,15 +88,32 @@ public class ClassroomServiceImpl implements ClassroomService{
             case "FINISH" -> EStatusClass.FINISH;
             default -> null;
         };
-        return Classroom.builder()
-            .className(classRequest.getClassName())
-            .status(classStatus)
-            .build();
+        if (userRoleTeacher(classRequest)!=null){
+            return Classroom.builder()
+                    .teacher(userRoleTeacher(classRequest))
+                    .className(classRequest.getClassName())
+                    .status(classStatus)
+                    .build();
+        }
+        return null;
     }
 
     @Override
     public Optional<Classroom> findByUserId(Long userId) {
         return classroomRepository.findByUserId(userId);
+    }
+    //* User khi check la teacher
+    public User userRoleTeacher(ClassRequest classRequest){
+        Optional<User> userOptional = userRepository.findById(classRequest.getTeacherId());
+        if (userOptional.isPresent()){
+            User user = userOptional.get();
+            for(Role role: user.getRoles()){
+                if (role.getRoleName().equals(ERoles.ROLE_TEACHER)){
+                    return user;
+                }
+            }
+        }
+        return null;
     }
 
     @Override

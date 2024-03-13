@@ -23,7 +23,7 @@ public class UserClassServiceImp implements UserClassService{
     private final UserRepository userRepository;
     private final ClassroomRepository classroomRepository;
     @Override
-    public void saveStudent(UserClassRequest userClassRequest) {
+    public UserClass saveStudent(UserClassRequest userClassRequest) {
         Optional<User> userOptional = userRepository.findById(userClassRequest.getUserId());
         Optional<Classroom> classroomOptional = classroomRepository.findById(userClassRequest.getClassId());
         UserClass userClass = new UserClass();
@@ -35,11 +35,12 @@ public class UserClassServiceImp implements UserClassService{
                     if (userClassRepository.findByUserAndClassroom(user,classroom)==null){
                         userClass.setUser(user);
                         userClass.setClassroom(classroom);
-                        userClassRepository.save(userClass);
+                        return userClassRepository.save(userClass);
                     }
                 }
             }
         }
+        return null;
     }
 //
 //    @Override

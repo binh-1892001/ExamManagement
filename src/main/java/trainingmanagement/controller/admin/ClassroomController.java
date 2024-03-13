@@ -17,6 +17,7 @@ import trainingmanagement.model.dto.response.ClassResponse;
 import trainingmanagement.model.entity.ClassSubject;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
+import trainingmanagement.model.entity.UserClass;
 import trainingmanagement.service.ClassSubject.ClassSubjectService;
 import trainingmanagement.service.Classroom.ClassroomService;
 import trainingmanagement.service.CommonService;
@@ -159,13 +160,13 @@ public class ClassroomController {
     // * add student to class
     @PostMapping("/saveStudent")
     public ResponseEntity<?> saveStudent(@RequestBody UserClassRequest userClassRequest){
-        userClassService.saveStudent(userClassRequest);
+        UserClass userClass = userClassService.saveStudent(userClassRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
                         HttpStatus.CREATED.value(),
                         HttpStatus.CREATED.name(),
-                        "Save complete"
+                        userClass
                 ), HttpStatus.CREATED);
     }
 

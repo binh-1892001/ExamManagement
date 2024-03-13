@@ -4,5 +4,5 @@ import trainingmanagement.model.dto.request.UserClassRequest;
 import trainingmanagement.model.entity.UserClass;
 
 public interface UserClassService {
-    void saveStudent(UserClassRequest userClassRequest);
+    UserClass saveStudent(UserClassRequest userClassRequest);
 }
