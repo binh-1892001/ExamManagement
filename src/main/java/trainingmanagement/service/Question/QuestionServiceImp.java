@@ -4,12 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import trainingmanagement.model.dto.request.QuestionRequest;
-import trainingmanagement.model.dto.response.QuestionResponse;
+import trainingmanagement.model.dto.admin.request.QuestionRequest;
+import trainingmanagement.model.dto.admin.response.QuestionResponse;
 import trainingmanagement.model.entity.Enum.ELevelQuestion;
 import trainingmanagement.model.entity.Enum.ETypeQuestion;
 import trainingmanagement.model.entity.Question;
+import trainingmanagement.model.entity.Test;
 import trainingmanagement.repository.QuestionRepository;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -112,5 +115,10 @@ public class QuestionServiceImp implements QuestionService{
             .typeQuestion(question.getTypeQuestion().name())
             .image(question.getImage())
             .build();
+    }
+
+    @Override
+    public List<Question> createTestByQuiz(Test test) {
+        return null;
     }
 }

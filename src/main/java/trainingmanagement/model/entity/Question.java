@@ -23,7 +23,9 @@ public class Question extends BaseModel {
     private ETypeQuestion typeQuestion;
     @Enumerated(EnumType.STRING)
     private ELevelQuestion levelQuestion;
-    private EActiveStatus status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EActiveStatus eActiveStatus;
     @ManyToOne
     @JoinColumn(name = "test_id", referencedColumnName = "id")
     private Test test;

@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.response.UserResponse;
+import trainingmanagement.model.dto.admin.response.UserResponse;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.User;
@@ -145,7 +145,7 @@ public class AUserController {
             throw new CustomException("Users page is out of range.");
         }
     }
-
+    // * lấy về danh sách teacher
     @GetMapping("/allTeacher")
     public ResponseEntity<?> getAllTeacherToPages(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
@@ -174,6 +174,7 @@ public class AUserController {
         }
     }
 
+    // * lấy về danh sách sinh viên theo class
     @GetMapping("/allStudent/{classId}")
     public ResponseEntity<?> getAllStudentByClassToPages(
             @RequestParam(defaultValue = "5", name = "limit") int limit,

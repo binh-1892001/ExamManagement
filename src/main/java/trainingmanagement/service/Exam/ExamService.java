@@ -1,8 +1,8 @@
 package trainingmanagement.service.Exam;
 
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.request.ExamRequest;
-import trainingmanagement.model.dto.response.ExamResponse;
+import trainingmanagement.model.dto.admin.request.ExamRequest;
+import trainingmanagement.model.dto.admin.response.ExamResponse;
 import trainingmanagement.model.entity.Exam;
 
 import java.util.List;

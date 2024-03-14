@@ -5,8 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import trainingmanagement.model.base.AuditableEntity;
-import trainingmanagement.model.dto.request.SubjectRequest;
-import trainingmanagement.model.dto.response.SubjectResponse;
+import trainingmanagement.model.dto.admin.request.SubjectRequest;
+import trainingmanagement.model.dto.admin.response.SubjectResponse;
+import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Subject;
 import trainingmanagement.repository.SubjectRepository;
 import java.util.List;
@@ -52,8 +53,8 @@ public class SubjectServiceImpl implements SubjectService{
                 subject.setSubjectName(subjectRequest.getSubjectName());
             if(subjectRequest.getTimeToStudy() != null)
                 subject.setTimeToStudy(subjectRequest.getTimeToStudy());
-            if (subjectRequest.getStatus() != null)
-                subject.setSubjectName(subjectRequest.getSubjectName());
+            if (subjectRequest.getEActiveStatus() != null)
+                subject.setEActiveStatus(EActiveStatus.valueOf(subjectRequest.getEActiveStatus()));
             return save(subject);
         }
         return null;
@@ -74,7 +75,7 @@ public class SubjectServiceImpl implements SubjectService{
         return Subject.builder()
             .subjectName(subjectRequest.getSubjectName())
             .timeToStudy(subjectRequest.getTimeToStudy())
-            .status(subjectRequest.getStatus())
+            .eActiveStatus(EActiveStatus.valueOf(subjectRequest.getEActiveStatus()))
             .build();
     }
 
@@ -89,7 +90,6 @@ public class SubjectServiceImpl implements SubjectService{
         return SubjectResponse.builder()
             .subjectName(subject.getSubjectName())
             .timeToStudy(subject.getTimeToStudy())
-            .status(subject.getStatus())
             .build();
     }
 }

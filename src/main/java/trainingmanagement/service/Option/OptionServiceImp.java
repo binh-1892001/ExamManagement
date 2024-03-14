@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.request.OptionRequest;
-import trainingmanagement.model.dto.response.OptionResponse;
+import trainingmanagement.model.dto.admin.request.OptionRequest;
+import trainingmanagement.model.dto.admin.response.OptionResponse;
 import trainingmanagement.model.entity.Enum.EOptionStatus;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
@@ -75,7 +75,7 @@ public class OptionServiceImp implements OptionService{
                     case "CORRECT" -> EOptionStatus.CORRECT;
                     default -> null;
                 };
-                option.setStatus(activeStatus);
+                option.setIsCorrect(activeStatus);
             }
             return optionRepository.save(option);
         }
@@ -92,7 +92,7 @@ public class OptionServiceImp implements OptionService{
         return Option.builder()
             .contentOptions(optionRequest.getContentOptions())
             .question(questionService.getById(optionRequest.getQuestionId()).orElse(null))
-            .status(activeStatus)
+            .isCorrect(activeStatus)
             .build();
     }
 
@@ -101,7 +101,7 @@ public class OptionServiceImp implements OptionService{
         return OptionResponse.builder()
             .optionId(option.getId())
             .contentOptions(option.getContentOptions())
-            .status(option.getStatus().name())
+            .status(option.getIsCorrect().name())
             .build();
     }
 }

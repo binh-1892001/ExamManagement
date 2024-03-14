@@ -2,7 +2,7 @@ package trainingmanagement.service.ClassSubject;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.request.ClassSubjectRequest;
+import trainingmanagement.model.dto.admin.request.ClassSubjectRequest;
 import trainingmanagement.model.entity.ClassSubject;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Subject;

@@ -17,8 +17,8 @@ import trainingmanagement.model.entity.Enum.EOptionStatus;
 public class Option extends BaseModel {
     private String contentOptions;
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private EOptionStatus status;
+    @Column(name = "is_correct")
+    private EOptionStatus isCorrect;
     @ManyToOne
     @JoinColumn(name = "question_id",referencedColumnName = "id")
     private Question question;

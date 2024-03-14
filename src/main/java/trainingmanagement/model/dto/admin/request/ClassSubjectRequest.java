@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.request;
+package trainingmanagement.model.dto.admin.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class UserClassRequest {
+public class ClassSubjectRequest {
     private Long classId;
-    private Long userId;
+    private Long subjectId;
 }

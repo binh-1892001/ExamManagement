@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.response;
+package trainingmanagement.model.dto.teacher.request;
 
 import lombok.*;
 
@@ -7,8 +7,8 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class OptionResponse {
-    private Long optionId;
+public class OptionRequestTeacher {
     private String contentOptions;
+    private Long questionId;
     private String status;
 }

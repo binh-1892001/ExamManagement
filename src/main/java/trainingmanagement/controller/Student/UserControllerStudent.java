@@ -10,12 +10,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.response.ClassResponse;
-import trainingmanagement.model.dto.response.UserResponse;
+import trainingmanagement.model.dto.admin.response.UserResponse;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.security.UserDetail.UserLogin;
-import trainingmanagement.service.Classroom.ClassroomService;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.User.UserService;
 

@@ -4,7 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.request.TestRequest;
+import trainingmanagement.model.dto.admin.request.TestRequest;
+import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Exam;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.repository.TestRepository;
@@ -40,7 +41,7 @@ public class TestServiceImpl implements TestService {
             throw new RuntimeException("Không tồn tại bai thi!");
         Test test = Test.builder()
                 .nameTest(testRequest.getNameTest())
-                .status(true)
+                .eActiveStatus(EActiveStatus.ACTIVE)
                 .time(testRequest.getTime())
                 .resources(testRequest.getResources())
                 .typeTest(testRequest.getTypeTest())
@@ -59,7 +60,7 @@ public class TestServiceImpl implements TestService {
             throw new RuntimeException("Không tồn tại bai thi!");
         Test test = Test.builder()
                 .nameTest(testRequest.getNameTest())
-                .status(testRequest.getStatus())
+                .eActiveStatus(EActiveStatus.valueOf(testRequest.getEActiveStatus()))
                 .time(testRequest.getTime())
                 .resources(testRequest.getResources())
                 .typeTest(testRequest.getTypeTest())

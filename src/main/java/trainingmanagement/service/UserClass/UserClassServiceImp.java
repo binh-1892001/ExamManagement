@@ -3,7 +3,7 @@ package trainingmanagement.service.UserClass;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.request.UserClassRequest;
+import trainingmanagement.model.dto.admin.request.UserClassRequest;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Enum.ERoles;
 import trainingmanagement.model.entity.Role;
@@ -13,7 +13,6 @@ import trainingmanagement.repository.ClassroomRepository;
 import trainingmanagement.repository.UserClassRepository;
 import trainingmanagement.repository.UserRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service

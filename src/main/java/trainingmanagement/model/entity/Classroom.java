@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
+import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Enum.EStatusClass;
 
 import java.util.List;
@@ -20,8 +21,12 @@ public class Classroom extends BaseModel {
     private String className;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
+    @Column(name = "class_status")
     private EStatusClass status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EActiveStatus eActiveStatus;
 
     @ManyToOne
     @JoinColumn(name = "teacherId",referencedColumnName = "id")

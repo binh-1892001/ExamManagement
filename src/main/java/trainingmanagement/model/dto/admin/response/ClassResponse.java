@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.response;
+package trainingmanagement.model.dto.admin.response;
 
 import lombok.*;
 import trainingmanagement.model.entity.Enum.EStatusClass;

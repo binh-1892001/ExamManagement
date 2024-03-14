@@ -1,6 +1,7 @@
-package trainingmanagement.model.dto.request;
+package trainingmanagement.model.dto.admin.request;
 
 import lombok.*;
+import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Enum.ETypeTest;
 
 @NoArgsConstructor
@@ -10,7 +11,7 @@ import trainingmanagement.model.entity.Enum.ETypeTest;
 @Builder
 public class TestRequest {
     private String nameTest;
-    private Boolean status;
+    private String eActiveStatus;
     private int time;
     private ETypeTest typeTest;
     private String resources;

@@ -1,11 +1,9 @@
 package trainingmanagement.service.Question;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import trainingmanagement.model.dto.request.QuestionRequest;
-import trainingmanagement.model.dto.response.ClassResponse;
-import trainingmanagement.model.dto.response.QuestionResponse;
+import trainingmanagement.model.dto.admin.request.QuestionRequest;
+import trainingmanagement.model.dto.admin.response.QuestionResponse;
 import trainingmanagement.model.entity.Question;
+import trainingmanagement.model.entity.Test;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +19,5 @@ public interface QuestionService {
     List<QuestionResponse> findByQuestionContent(String questionContent);
     Question entityMap(QuestionRequest questionRequest);
     QuestionResponse entityMap(Question question);
+    List<Question> createTestByQuiz(Test test);
 }

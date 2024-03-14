@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.response;
+package trainingmanagement.model.dto.teacher.response;
 
 import lombok.*;
 
@@ -7,11 +7,10 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class QuestionResponse {
+public class QuestionResponseTeacher {
     private Long questionId;
     private String contentQuestion;
     private String typeQuestion;
     private String levelQuestion;
     private String image;
-    private String status;
 }

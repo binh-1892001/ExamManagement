@@ -1,10 +1,11 @@
 package trainingmanagement.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
+import trainingmanagement.model.entity.Enum.EActiveStatus;
+
 import java.util.List;
 
 @Entity
@@ -16,7 +17,9 @@ import java.util.List;
 public class Subject extends BaseModel {
     private String subjectName;
     private String timeToStudy;
-    private Boolean status;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EActiveStatus eActiveStatus;
     // * Class - Subject: 1 - N.
     @OneToMany(mappedBy = "subject")
     @JsonIgnore

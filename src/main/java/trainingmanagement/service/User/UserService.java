@@ -1,10 +1,9 @@
 package trainingmanagement.service.User;
 
-import org.springframework.data.domain.Page;
-import trainingmanagement.model.dto.request.LoginRequest;
-import trainingmanagement.model.dto.request.RegisterRequest;
-import trainingmanagement.model.dto.response.JwtResponse;
-import trainingmanagement.model.dto.response.UserResponse;
+import trainingmanagement.model.dto.admin.request.LoginRequest;
+import trainingmanagement.model.dto.admin.request.RegisterRequest;
+import trainingmanagement.model.dto.admin.response.JwtResponse;
+import trainingmanagement.model.dto.admin.response.UserResponse;
 import trainingmanagement.model.entity.User;
 import java.util.List;
 import java.util.Optional;
