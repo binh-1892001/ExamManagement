@@ -1,6 +1,9 @@
 package trainingmanagement.model.dto.admin.response;
 
 import lombok.*;
+import trainingmanagement.model.entity.Enum.EActiveStatus;
+
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,5 +16,7 @@ public class QuestionResponse {
     private String typeQuestion;
     private String levelQuestion;
     private String image;
-    private String status;
+    private String eActiveStatus;
+    private String createdDate;
+    private List<OptionResponse> optionResponses;
 }

@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface TestRepository extends JpaRepository<Test,Long> {
     List<Test> findByNameTest(String nameTest);
-    List<Test> findByCreatedDate(Date createDate);
+//    List<Test> findByCreatedDate(Date createDate);
     boolean existsByNameTest(String nameTest);
 }

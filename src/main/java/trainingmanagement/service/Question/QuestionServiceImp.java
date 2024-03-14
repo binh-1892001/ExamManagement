@@ -5,21 +5,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import trainingmanagement.model.dto.admin.request.QuestionRequest;
+import trainingmanagement.model.dto.admin.response.OptionResponse;
 import trainingmanagement.model.dto.admin.response.QuestionResponse;
 import trainingmanagement.model.entity.Enum.ELevelQuestion;
 import trainingmanagement.model.entity.Enum.ETypeQuestion;
+import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.repository.QuestionRepository;
+import trainingmanagement.service.Option.OptionService;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class QuestionServiceImp implements QuestionService{
+public class QuestionServiceImp implements QuestionService {
     private final QuestionRepository questionRepository;
+    private final OptionService optionService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -36,10 +41,12 @@ public class QuestionServiceImp implements QuestionService{
     public Optional<Question> getById(Long questionId) {
         return questionRepository.findById(questionId);
     }
+
     @Override
     public Question save(Question question) {
         return questionRepository.save(question);
     }
+
     @Override
     public Question save(QuestionRequest questionRequest) {
         return questionRepository.save(entityMap(questionRequest));
@@ -50,18 +57,20 @@ public class QuestionServiceImp implements QuestionService{
         return questionRepository.findAllByContentQuestionIsContainingIgnoreCase(questionContent)
                 .stream().map(this::entityMap).toList();
     }
+
     @Override
     public void deleteById(Long questionId) {
         questionRepository.deleteById(questionId);
     }
+
     @Override
     public Question patchUpdateQuestion(Long questionId, QuestionRequest questionRequest) {
         Optional<Question> updateQuestion = questionRepository.findById(questionId);
-        if(updateQuestion.isPresent()){
+        if (updateQuestion.isPresent()) {
             Question question = updateQuestion.get();
-            if(questionRequest.getContentQuestion() != null)
+            if (questionRequest.getContentQuestion() != null)
                 question.setContentQuestion(questionRequest.getContentQuestion());
-            if(questionRequest.getLevelQuestion() != null){
+            if (questionRequest.getLevelQuestion() != null) {
                 ELevelQuestion levelQuestion = switch (questionRequest.getLevelQuestion()) {
                     case "EASY" -> ELevelQuestion.EASY;
                     case "NORMAL" -> ELevelQuestion.NORMAL;
@@ -70,7 +79,7 @@ public class QuestionServiceImp implements QuestionService{
                 };
                 question.setLevelQuestion(levelQuestion);
             }
-            if(questionRequest.getTypeQuestion() != null){
+            if (questionRequest.getTypeQuestion() != null) {
                 ETypeQuestion typeQuestion = switch (questionRequest.getTypeQuestion()) {
                     case "SINGLE" -> ETypeQuestion.SINGLE;
                     case "MULTIPLE" -> ETypeQuestion.MULTIPLE;
@@ -78,7 +87,7 @@ public class QuestionServiceImp implements QuestionService{
                 };
                 question.setTypeQuestion(typeQuestion);
             }
-            if(questionRequest.getImage() != null)
+            if (questionRequest.getImage() != null)
                 question.setImage(questionRequest.getImage());
             return questionRepository.save(question);
         }
@@ -93,32 +102,50 @@ public class QuestionServiceImp implements QuestionService{
             case "DIFFICULTY" -> ELevelQuestion.DIFFICULTY;
             default -> null;
         };
-        ETypeQuestion typeQuestion = switch (questionRequest.getTypeQuestion()){
+        ETypeQuestion typeQuestion = switch (questionRequest.getTypeQuestion()) {
             case "SINGLE" -> ETypeQuestion.SINGLE;
             case "MULTIPLE" -> ETypeQuestion.MULTIPLE;
             default -> null;
         };
         return Question.builder()
-            .contentQuestion(questionRequest.getContentQuestion())
-            .levelQuestion(levelQuestion)
-            .typeQuestion(typeQuestion)
-            .image(questionRequest.getImage())
-            .build();
+                .contentQuestion(questionRequest.getContentQuestion())
+                .levelQuestion(levelQuestion)
+                .typeQuestion(typeQuestion)
+                .image(questionRequest.getImage())
+                .options(questionRequest.getOptionRequests().stream().map(optionService::entityMap).toList())
+                .build();
     }
 
     @Override
     public QuestionResponse entityMap(Question question) {
         return QuestionResponse.builder()
-            .questionId(question.getId())
-            .contentQuestion(question.getContentQuestion())
-            .levelQuestion(question.getLevelQuestion().name())
-            .typeQuestion(question.getTypeQuestion().name())
-            .image(question.getImage())
-            .build();
+                .questionId(question.getId())
+                .contentQuestion(question.getContentQuestion())
+                .levelQuestion(question.getLevelQuestion().name())
+                .typeQuestion(question.getTypeQuestion().name())
+                .image(question.getImage())
+                .eActiveStatus(question.getEActiveStatus().name())
+                .createdDate(question.getCreatedDate().toString())
+                .optionResponses(question.getOptions().stream().map(optionService::entityMap).toList())
+                .build();
     }
 
     @Override
-    public List<Question> createTestByQuiz(Test test) {
-        return null;
+    public List<QuestionResponse> getAllByTest(Test test) {
+        List<Question> questions = questionRepository.getAllByTest(test);
+        return questions.stream().map(this::entityMap).toList();
     }
+
+    @Override
+    public List<QuestionResponse> getAllByCreatedDate(LocalDate date) {
+        List<Question> questions = questionRepository.getAllByCreatedDate(date);
+        return questions.stream().map(this::entityMap).toList();
+    }
+
+    @Override
+    public List<QuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd) {
+        List<Question> questions = questionRepository.getAllFromDayToDay(dateStart,dateEnd);
+        return questions.stream().map(this::entityMap).toList();
+    }
+
 }

@@ -10,5 +10,5 @@ import lombok.*;
 public class OptionResponse {
     private Long optionId;
     private String contentOptions;
-    private String status;
+    private String isCorrect;
 }

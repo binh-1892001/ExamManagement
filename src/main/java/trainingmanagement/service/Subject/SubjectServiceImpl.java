@@ -51,8 +51,6 @@ public class SubjectServiceImpl implements SubjectService{
                 auditableEntity.setCreatedDate(auditableEntity.getCreatedDate());
             if (subjectRequest.getSubjectName() != null)
                 subject.setSubjectName(subjectRequest.getSubjectName());
-            if(subjectRequest.getTimeToStudy() != null)
-                subject.setTimeToStudy(subjectRequest.getTimeToStudy());
             if (subjectRequest.getEActiveStatus() != null)
                 subject.setEActiveStatus(EActiveStatus.valueOf(subjectRequest.getEActiveStatus()));
             return save(subject);
@@ -74,7 +72,6 @@ public class SubjectServiceImpl implements SubjectService{
     public Subject entityMap(SubjectRequest subjectRequest) {
         return Subject.builder()
             .subjectName(subjectRequest.getSubjectName())
-            .timeToStudy(subjectRequest.getTimeToStudy())
             .eActiveStatus(EActiveStatus.valueOf(subjectRequest.getEActiveStatus()))
             .build();
     }
@@ -89,7 +86,6 @@ public class SubjectServiceImpl implements SubjectService{
     public SubjectResponse entityMap(Subject subject) {
         return SubjectResponse.builder()
             .subjectName(subject.getSubjectName())
-            .timeToStudy(subject.getTimeToStudy())
             .build();
     }
 }

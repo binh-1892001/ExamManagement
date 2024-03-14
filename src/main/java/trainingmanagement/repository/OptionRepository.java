@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface OptionRepository extends JpaRepository<Option, Long> {
     List<Option> findAllByQuestion(Question question);
+
 }

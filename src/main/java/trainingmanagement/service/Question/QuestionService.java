@@ -5,6 +5,7 @@ import trainingmanagement.model.dto.admin.response.QuestionResponse;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.model.entity.Test;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,5 +20,7 @@ public interface QuestionService {
     List<QuestionResponse> findByQuestionContent(String questionContent);
     Question entityMap(QuestionRequest questionRequest);
     QuestionResponse entityMap(Question question);
-    List<Question> createTestByQuiz(Test test);
+    List<QuestionResponse> getAllByTest(Test test);
+    List<QuestionResponse> getAllByCreatedDate(LocalDate date);
+    List<QuestionResponse> getAllFromDayToDay(String dateStart,String dateEnd);
 }

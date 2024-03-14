@@ -10,6 +10,7 @@ import trainingmanagement.model.entity.Enum.EOptionStatus;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.repository.OptionRepository;
+import trainingmanagement.repository.QuestionRepository;
 import trainingmanagement.service.Question.QuestionService;
 
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OptionServiceImp implements OptionService{
     private final OptionRepository optionRepository;
-    private final QuestionService questionService;
+    private final QuestionRepository questionRepository;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -66,11 +67,11 @@ public class OptionServiceImp implements OptionService{
             if(optionRequest.getContentOptions() != null)
                 option.setContentOptions(optionRequest.getContentOptions());
             if(optionRequest.getQuestionId() != null){
-                Question question = questionService.getById(optionRequest.getQuestionId()).orElse(null);
+                Question question = questionRepository.findById(optionRequest.getQuestionId()).orElse(null);
                 option.setQuestion(question);
             }
-            if(optionRequest.getStatus() != null){
-                EOptionStatus activeStatus = switch (optionRequest.getStatus().toUpperCase()) {
+            if(optionRequest.getIsCorrect() != null){
+                EOptionStatus activeStatus = switch (optionRequest.getIsCorrect().toUpperCase()) {
                     case "INCORRECT" -> EOptionStatus.INCORRECT;
                     case "CORRECT" -> EOptionStatus.CORRECT;
                     default -> null;
@@ -84,14 +85,14 @@ public class OptionServiceImp implements OptionService{
 
     @Override
     public Option entityMap(OptionRequest optionRequest) {
-        EOptionStatus activeStatus = switch (optionRequest.getStatus().toUpperCase()) {
+        EOptionStatus activeStatus = switch (optionRequest.getIsCorrect().toUpperCase()) {
             case "INCORRECT" -> EOptionStatus.INCORRECT;
             case "CORRECT" -> EOptionStatus.CORRECT;
             default -> null;
         };
         return Option.builder()
             .contentOptions(optionRequest.getContentOptions())
-            .question(questionService.getById(optionRequest.getQuestionId()).orElse(null))
+            .question(questionRepository.findById(optionRequest.getQuestionId()).orElse(null))
             .isCorrect(activeStatus)
             .build();
     }
@@ -101,7 +102,7 @@ public class OptionServiceImp implements OptionService{
         return OptionResponse.builder()
             .optionId(option.getId())
             .contentOptions(option.getContentOptions())
-            .status(option.getIsCorrect().name())
+            .isCorrect(option.getIsCorrect().name())
             .build();
     }
 }

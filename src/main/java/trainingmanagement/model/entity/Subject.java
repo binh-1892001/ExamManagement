@@ -16,7 +16,6 @@ import java.util.List;
 @Builder
 public class Subject extends BaseModel {
     private String subjectName;
-    private String timeToStudy;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private EActiveStatus eActiveStatus;

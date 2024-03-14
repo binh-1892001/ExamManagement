@@ -1,8 +1,9 @@
 package trainingmanagement.model.dto.admin.request;
 
 import lombok.*;
-import org.hibernate.mapping.List;
 import trainingmanagement.model.entity.Option;
+
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,5 +15,5 @@ public class QuestionRequest {
     String levelQuestion;
     String typeQuestion;
     String image;
-    List optionsList;
+    List<OptionRequest> optionRequests;
 }
