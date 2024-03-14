@@ -1,7 +1,7 @@
 package trainingmanagement.service.Option;
 
-import trainingmanagement.model.dto.request.OptionRequest;
-import trainingmanagement.model.dto.response.OptionResponse;
+import trainingmanagement.model.dto.admin.request.OptionRequest;
+import trainingmanagement.model.dto.admin.response.OptionResponse;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
 import java.util.List;

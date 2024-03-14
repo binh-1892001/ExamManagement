@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.request.TestRequest;
+import trainingmanagement.model.dto.admin.request.TestRequest;
 import trainingmanagement.model.entity.Exam;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.repository.TestRepository;

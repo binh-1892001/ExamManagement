@@ -1,10 +1,7 @@
 package trainingmanagement.service.Question;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import trainingmanagement.model.dto.request.QuestionRequest;
-import trainingmanagement.model.dto.response.ClassResponse;
-import trainingmanagement.model.dto.response.QuestionResponse;
+import trainingmanagement.model.dto.admin.request.QuestionRequest;
+import trainingmanagement.model.dto.admin.response.QuestionResponse;
 import trainingmanagement.model.entity.Question;
 
 import java.util.List;

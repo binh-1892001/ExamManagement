@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.base.AuditableEntity;
-import trainingmanagement.model.dto.request.ClassRequest;
-import trainingmanagement.model.dto.response.ClassResponse;
+import trainingmanagement.model.dto.admin.request.ClassRequest;
+import trainingmanagement.model.dto.admin.response.ClassResponse;
+import trainingmanagement.model.dto.teacher.response.ClassroomResponse;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Enum.EStatusClass;
 import trainingmanagement.repository.ClassroomRepository;
@@ -22,6 +22,18 @@ public class ClassroomServiceImpl implements ClassroomService{
     public List<Classroom> getAllToList() {
         return classroomRepository.findAll();
     }
+
+    @Override
+    public List<ClassroomResponse> teacherGetListClassrooms() {
+        return getAllToList().stream().map(this::teacherEntityMap).toList();
+    }
+
+    @Override
+    public Optional<ClassroomResponse> teacherGetClassById(Long classroomId) {
+        return getById(classroomId).map(this::teacherEntityMap);
+    }
+
+
     public List<ClassResponse> getAllClassResponsesToList(){
         return getAllToList().stream().map(this::entityMap).toList();
     }
@@ -73,6 +85,13 @@ public class ClassroomServiceImpl implements ClassroomService{
         return classroomRepository.findByClassNameContainingIgnoreCase(className)
                 .stream().map(this::entityMap).toList();
     }
+
+    @Override
+    public List<ClassroomResponse> teacherFindClassByName(String className) {
+        return classroomRepository.findByClassNameContainingIgnoreCase(className)
+                .stream().map(this::teacherEntityMap).toList();
+    }
+
     @Override
     public Classroom entityMap(ClassRequest classRequest) {
         EStatusClass classStatus = switch (classRequest.getStatus()) {
@@ -86,6 +105,15 @@ public class ClassroomServiceImpl implements ClassroomService{
             .status(classStatus)
             .build();
     }
+
+    @Override
+    public ClassroomResponse teacherEntityMap(Classroom classroom) {
+        return ClassroomResponse.builder()
+                .className(classroom.getClassName())
+                .status(classroom.getStatus())
+                .build();
+    }
+
     @Override
     public ClassResponse entityMap(Classroom classroom) {
         return ClassResponse.builder()
