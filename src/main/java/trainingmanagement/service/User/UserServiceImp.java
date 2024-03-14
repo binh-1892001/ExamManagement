@@ -92,6 +92,11 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public Optional<UserResponse> getUserResponseById(Long userId) {
+        return Optional.ofNullable(entityMap(userRepository.findByUserId(userId).orElse(null)));
+    }
+
+    @Override
     public void deleteById(Long userId) {
         userRepository.deleteById(userId);
     }

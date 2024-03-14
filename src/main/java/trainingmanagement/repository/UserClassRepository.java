@@ -14,4 +14,6 @@ import java.util.List;
 public interface UserClassRepository extends JpaRepository<UserClass,Long> {
 
     UserClass findByUserAndClassroom(User user, Classroom classroom);
+    @Query("select uc from UserClass uc where uc.classroom.id = :classId")
+    List<UserClass> findStudentByClassId(Long classId);
 }

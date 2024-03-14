@@ -16,6 +16,8 @@ import java.util.Set;
 @Repository
 public interface UserRepository extends JpaRepository<User,Long> {
     Optional<User> findByUsername(String username);
+    @Query("select u from User u where u.id = :userId")
+    Optional<User> findByUserId(Long userId);
     Page<User> findAll(Pageable pageable);
     boolean existsByUsername(String username);
     @Query(value = "SELECT * FROM user u where u.username LIKE CONCAT('%', :keyword, '%') OR u.full_name LIKE CONCAT('%', :keyword, '%')"
