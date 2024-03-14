@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.admin.response;
+package trainingmanagement.model.dto.teacher.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,8 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class SubjectResponse {
+public class TSubjectResponse {
     private String subjectName;
-    private String timeToStudy;
-    private String status;
 }

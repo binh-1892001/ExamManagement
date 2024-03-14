@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import trainingmanagement.model.base.AuditableEntity;
 import trainingmanagement.model.dto.admin.request.SubjectRequest;
 import trainingmanagement.model.dto.admin.response.SubjectResponse;
+import trainingmanagement.model.dto.teacher.response.TSubjectResponse;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Subject;
 import trainingmanagement.repository.SubjectRepository;
@@ -51,8 +52,8 @@ public class SubjectServiceImpl implements SubjectService{
                 auditableEntity.setCreatedDate(auditableEntity.getCreatedDate());
             if (subjectRequest.getSubjectName() != null)
                 subject.setSubjectName(subjectRequest.getSubjectName());
-            if (subjectRequest.getEActiveStatus() != null)
-                subject.setEActiveStatus(EActiveStatus.valueOf(subjectRequest.getEActiveStatus()));
+            if (subjectRequest.getStatus () != null)
+                subject.setStatus ( EActiveStatus.valueOf ( subjectRequest.getStatus () ) );
             return save(subject);
         }
         return null;
@@ -64,15 +65,25 @@ public class SubjectServiceImpl implements SubjectService{
                 .stream().map(this::entityMap).toList();
     }
     @Override
+    public List<TSubjectResponse> findBySubjectNameRoleTeacher(String subjectName) {
+        return subjectRepository.findBySubjectNameContainingIgnoreCase ( subjectName )
+                .stream ().map ( this::entityMapRoleTeacher ).toList ();
+    }
+    @Override
     public void deleteById(Long subjectId) {
         subjectRepository.deleteById(subjectId);
     }
 
     @Override
     public Subject entityMap(SubjectRequest subjectRequest) {
+        EActiveStatus activeStatus = switch (subjectRequest.getStatus ().toUpperCase()) {
+            case "INACTIVE" -> EActiveStatus.ACTIVE;
+            case "ACTIVE" -> EActiveStatus.INACTIVE;
+            default -> null;
+        };
         return Subject.builder()
             .subjectName(subjectRequest.getSubjectName())
-            .eActiveStatus(EActiveStatus.valueOf(subjectRequest.getEActiveStatus()))
+            .status (activeStatus)
             .build();
     }
 
@@ -86,6 +97,37 @@ public class SubjectServiceImpl implements SubjectService{
     public SubjectResponse entityMap(Subject subject) {
         return SubjectResponse.builder()
             .subjectName(subject.getSubjectName())
+                .status ( subject.getStatus ().name () )
             .build();
+    }
+    @Override
+    public TSubjectResponse entityMapRoleTeacher(Subject subject) {
+        return TSubjectResponse.builder ()
+                .subjectName ( subject.getSubjectName () )
+                .build ();
+    }
+    //Lấy danh sách Subject với trạng thái Active
+    @Override
+    public List<Subject> getAllSubjectWithActiveStatus(){
+        return subjectRepository.getAllByStatus (EActiveStatus.ACTIVE);
+    }
+    @Override
+    public List<TSubjectResponse> getAllSubjectResponsesToListRoleTeacher() {
+        return getAllSubjectWithActiveStatus ().stream ().map ( this::entityMapRoleTeacher ).toList ();
+    }
+    // Lấy ra Subject theo id với trạng thái Active
+    @Override
+    public Optional<Subject> getSubjectByIdWithActiveStatus(Long subjectId) {
+        return subjectRepository.findByIdAndStatus (subjectId, EActiveStatus.ACTIVE);
+    }
+
+    @Override
+    public Optional<TSubjectResponse> getSubjectResponsesByIdWithActiveStatus(Long subjectId) {
+        Optional<Subject> TSubject = getSubjectByIdWithActiveStatus (subjectId);
+        if (TSubject.isPresent()){
+            Subject subject = TSubject.get();
+            return Optional.ofNullable(entityMapRoleTeacher (subject));
+        }
+        return Optional.empty();
     }
 }

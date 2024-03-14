@@ -11,5 +11,5 @@ public class SubjectRequest {
     private String subjectName;
     private String timeToStudy;
     private Integer time;
-    private String eActiveStatus;
+    private String status;
 }

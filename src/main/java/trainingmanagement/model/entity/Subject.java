@@ -17,8 +17,7 @@ import java.util.List;
 public class Subject extends BaseModel {
     private String subjectName;
     @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private EActiveStatus eActiveStatus;
+    private EActiveStatus status;
     // * Class - Subject: 1 - N.
     @OneToMany(mappedBy = "subject")
     @JsonIgnore
