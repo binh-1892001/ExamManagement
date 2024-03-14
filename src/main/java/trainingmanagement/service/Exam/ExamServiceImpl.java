@@ -5,11 +5,14 @@ import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.admin.request.ExamRequest;
 import trainingmanagement.model.dto.admin.response.ExamResponse;
+import trainingmanagement.model.dto.teacher.response.ExamResponseTeacher;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Exam;
 import trainingmanagement.model.entity.Subject;
 import trainingmanagement.repository.ExamRepository;
 import trainingmanagement.service.Subject.SubjectService;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,6 +92,47 @@ public class ExamServiceImpl implements ExamService {
                 .examName(exam.getExamName())
                 .status(exam.getStatus().name())
                 .subject(exam.getSubject())
+                .createdDate(exam.getCreatedDate().toString())
                 .build();
+    }
+    @Override
+    public ExamResponseTeacher entityMapTeacher(Exam exam) {
+        return ExamResponseTeacher.builder()
+                .examId(exam.getId())
+                .examName(exam.getExamName())
+                .subject(exam.getSubject())
+                .build();
+    }
+    //Lấy danh sách Exam với trạng thái Active (Teacher)
+    @Override
+    public List<Exam> getAllExamsToListWithActiveStatus() {
+        return examRepository.getAllByStatus(EActiveStatus.ACTIVE);
+    }
+
+    @Override
+    public List<ExamResponseTeacher> getAllExamResponsesToListWithActiveStatus() {
+        return getAllExamsToListWithActiveStatus().stream().map(this::entityMapTeacher).toList();
+    }
+    // Lấy ra Exam theo id với trang thái Active(Teacher)
+    @Override
+    public Optional<Exam> getExamByIdWithActiveStatus(Long examId) {
+        return examRepository.findByIdAndStatus(examId, EActiveStatus.ACTIVE);
+    }
+
+    @Override
+    public Optional<ExamResponseTeacher> getExamResponsesByIdWithActiveStatus(Long examId) {
+        Optional<Exam> optionalExam = getExamByIdWithActiveStatus(examId);
+        if (optionalExam.isPresent()){
+            Exam exam = optionalExam.get();
+            return Optional.ofNullable(entityMapTeacher(exam));
+        }
+        return Optional.empty();
+    }
+
+    //Lấy danh sách Exam theo ngày tạo
+
+    @Override
+    public List<ExamResponse> getAllExamByCreatedDate(LocalDate date) {
+        return examRepository.findByCreatedDate(date).stream().map(this::entityMap).toList();
     }
 }
