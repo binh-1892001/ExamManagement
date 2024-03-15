@@ -30,4 +30,13 @@ public class ApplicationHandler {
 				e.getMessage()
 			), HttpStatus.BAD_REQUEST);
 	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Map<String,String>> handleValidException(MethodArgumentNotValidException ex) {
+		Map<String,String> errors = new HashMap<>();
+		ex.getFieldErrors().forEach(err -> {
+			errors.put(err.getField(),err.getDefaultMessage());
+		});
+		return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+	}
 }

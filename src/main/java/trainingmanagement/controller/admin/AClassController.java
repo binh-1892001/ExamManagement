@@ -1,5 +1,6 @@
 package trainingmanagement.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -66,7 +67,7 @@ public class AClassController {
     }
     // * Create new classroom.
     @PostMapping
-    public ResponseEntity<?> createClass(@RequestBody AClassRequest AClassRequest) {
+    public ResponseEntity<?> createClass(@RequestBody @Valid AClassRequest AClassRequest) {
         Classroom classroom = classroomService.save(AClassRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
@@ -80,7 +81,7 @@ public class AClassController {
     @PatchMapping("/{classId}")
     public ResponseEntity<?> patchUpdateClass(
             @PathVariable("classId") Long updateClassroomId,
-            @RequestBody AClassRequest AClassRequest
+            @RequestBody @Valid AClassRequest AClassRequest
     ) {
         Classroom classroom = classroomService.patchUpdate(updateClassroomId, AClassRequest);
         return new ResponseEntity<>(
