@@ -4,14 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.admin.request.OptionRequest;
-import trainingmanagement.model.dto.admin.response.OptionResponse;
+import trainingmanagement.model.dto.request.admin.OptionRequest;
+import trainingmanagement.model.dto.response.admin.OptionResponse;
 import trainingmanagement.model.entity.Enum.EOptionStatus;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.repository.OptionRepository;
 import trainingmanagement.service.Question.QuestionService;
-
 import java.util.List;
 import java.util.Optional;
 

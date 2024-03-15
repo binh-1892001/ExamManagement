@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import trainingmanagement.model.dto.admin.request.QuestionRequest;
-import trainingmanagement.model.dto.admin.response.QuestionResponse;
-import trainingmanagement.model.entity.Enum.ELevelQuestion;
-import trainingmanagement.model.entity.Enum.ETypeQuestion;
+import trainingmanagement.model.dto.request.admin.QuestionRequest;
+import trainingmanagement.model.dto.response.admin.QuestionResponse;
+import trainingmanagement.model.entity.Enum.EQuestionLevel;
+import trainingmanagement.model.entity.Enum.EQuestionType;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.repository.QuestionRepository;
 import java.util.List;
@@ -59,18 +59,18 @@ public class QuestionServiceImp implements QuestionService{
             if(questionRequest.getContentQuestion() != null)
                 question.setContentQuestion(questionRequest.getContentQuestion());
             if(questionRequest.getLevelQuestion() != null){
-                ELevelQuestion levelQuestion = switch (questionRequest.getLevelQuestion()) {
-                    case "EASY" -> ELevelQuestion.EASY;
-                    case "NORMAL" -> ELevelQuestion.NORMAL;
-                    case "DIFFICULTY" -> ELevelQuestion.DIFFICULTY;
+                EQuestionLevel levelQuestion = switch (questionRequest.getLevelQuestion()) {
+                    case "EASY" -> EQuestionLevel.EASY;
+                    case "NORMAL" -> EQuestionLevel.NORMAL;
+                    case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
                     default -> null;
                 };
                 question.setLevelQuestion(levelQuestion);
             }
             if(questionRequest.getTypeQuestion() != null){
-                ETypeQuestion typeQuestion = switch (questionRequest.getTypeQuestion()) {
-                    case "SINGLE" -> ETypeQuestion.SINGLE;
-                    case "MULTIPLE" -> ETypeQuestion.MULTIPLE;
+                EQuestionType typeQuestion = switch (questionRequest.getTypeQuestion()) {
+                    case "SINGLE" -> EQuestionType.SINGLE;
+                    case "MULTIPLE" -> EQuestionType.MULTIPLE;
                     default -> null;
                 };
                 question.setTypeQuestion(typeQuestion);
@@ -84,15 +84,15 @@ public class QuestionServiceImp implements QuestionService{
 
     @Override
     public Question entityMap(QuestionRequest questionRequest) {
-        ELevelQuestion levelQuestion = switch (questionRequest.getLevelQuestion()) {
-            case "EASY" -> ELevelQuestion.EASY;
-            case "NORMAL" -> ELevelQuestion.NORMAL;
-            case "DIFFICULTY" -> ELevelQuestion.DIFFICULTY;
+        EQuestionLevel levelQuestion = switch (questionRequest.getLevelQuestion()) {
+            case "EASY" -> EQuestionLevel.EASY;
+            case "NORMAL" -> EQuestionLevel.NORMAL;
+            case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
             default -> null;
         };
-        ETypeQuestion typeQuestion = switch (questionRequest.getTypeQuestion()){
-            case "SINGLE" -> ETypeQuestion.SINGLE;
-            case "MULTIPLE" -> ETypeQuestion.MULTIPLE;
+        EQuestionType typeQuestion = switch (questionRequest.getTypeQuestion()){
+            case "SINGLE" -> EQuestionType.SINGLE;
+            case "MULTIPLE" -> EQuestionType.MULTIPLE;
             default -> null;
         };
         return Question.builder()

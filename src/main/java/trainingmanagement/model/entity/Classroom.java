@@ -1,9 +1,19 @@
+/**
+ * * The Classroom is entity for class table in database.
+ * @param className (class_name column in database).
+ * @param status (status column in database): to soft delete.
+ *
+ * @author NguyenDucHai.
+ * @since 13/3/2024.
+ * */
+
 package trainingmanagement.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
-import trainingmanagement.model.entity.Enum.EStatusClass;
+import trainingmanagement.model.entity.Enum.EActiveStatus;
+import trainingmanagement.model.entity.Enum.EClassStatus;
 import java.util.Set;
 
 @Entity
@@ -16,8 +26,11 @@ public class Classroom extends BaseModel {
     @Column(name = "class_name")
     private String className;
     @Enumerated(EnumType.STRING)
+    @Column(name = "class_status")
+    private EClassStatus classStatus;
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private EStatusClass status;
+    private EActiveStatus status;
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "class_subject",

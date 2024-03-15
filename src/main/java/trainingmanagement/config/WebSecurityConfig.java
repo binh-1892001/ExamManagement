@@ -18,7 +18,7 @@ import trainingmanagement.security.Jwt.AccessDenied;
 import trainingmanagement.security.Jwt.JwtEntryPoint;
 import trainingmanagement.security.Jwt.JwtTokenFilter;
 import trainingmanagement.security.UserDetail.UserDetailService;
-import trainingmanagement.model.entity.Enum.ERoles;
+import trainingmanagement.model.entity.Enum.ERoleName;
 
 @Configuration
 @EnableWebSecurity
@@ -37,9 +37,9 @@ public class WebSecurityConfig {
                 .authenticationProvider(authenticationProvider())
                 .authorizeHttpRequests(
                         (auth)->auth.requestMatchers("/v1/auth/**").permitAll()
-                                .requestMatchers("/v1/admin/**").hasAnyAuthority(String.valueOf(ERoles.ROLE_ADMIN))
-                                .requestMatchers("/v1/teacher/**").hasAnyAuthority(String.valueOf(ERoles.ROLE_TEACHER))
-                                .requestMatchers("/v1/student/**").hasAnyAuthority(String.valueOf(ERoles.ROLE_STUDENT))
+                                .requestMatchers("/v1/admin/**").hasAnyAuthority(String.valueOf(ERoleName.ROLE_ADMIN))
+                                .requestMatchers("/v1/teacher/**").hasAnyAuthority(String.valueOf(ERoleName.ROLE_TEACHER))
+                                .requestMatchers("/v1/student/**").hasAnyAuthority(String.valueOf(ERoleName.ROLE_STUDENT))
                                 .anyRequest().authenticated()
                 ).
                 exceptionHandling(

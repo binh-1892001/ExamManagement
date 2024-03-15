@@ -1,16 +1,14 @@
-package trainingmanagement.model.dto.teacher.response;
+package trainingmanagement.model.dto.request.teacher;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import trainingmanagement.model.entity.Enum.EStatusClass;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
-public class ClassroomResponse {
+public class TClassRequest {
     private String className;
-    private EStatusClass status;
 }

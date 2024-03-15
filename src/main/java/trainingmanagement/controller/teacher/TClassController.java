@@ -10,9 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.admin.response.ClassResponse;
-import trainingmanagement.model.dto.teacher.response.ClassroomResponse;
-import trainingmanagement.model.entity.Classroom;
+import trainingmanagement.model.dto.response.teacher.TClassResponse;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.service.Classroom.ClassroomService;
 import trainingmanagement.service.CommonService;
@@ -21,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/v1/teacher/class")
+@RequestMapping("/v1/teacher/classes")
 @RequiredArgsConstructor
 public class TClassController {
     private final CommonService commonService;
@@ -40,16 +38,16 @@ public class TClassController {
             pageable = PageRequest.of(page,limit,Sort.by(sort).descending());
         }
         try {
-            List<ClassroomResponse> classroomResponses = classroomService.teacherGetListClassrooms();
-            Page<?> classroom = commonService.convertListToPages(pageable, classroomResponses);
+            List<TClassResponse> TClassRespons = classroomService.teacherGetListClassrooms();
+            Page<?> classroom = commonService.convertListToPages(pageable, TClassRespons);
             if (!classroom.isEmpty()) {
                 return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                classroom.getContent()
-                        ), HttpStatus.OK);
+                    new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        classroom.getContent()
+                    ), HttpStatus.OK);
             }
             throw new CustomException("Classes page is empty.");
         }catch (IllegalArgumentException illegalArgumentException){
@@ -58,7 +56,7 @@ public class TClassController {
     }
     @GetMapping("/{classId}")
     public ResponseEntity<?> getClassById(@PathVariable("classId") Long classId) throws CustomException{
-        Optional<ClassroomResponse> classroom = classroomService.teacherGetClassById(classId);
+        Optional<TClassResponse> classroom = classroomService.teacherGetClassById(classId);
         if(classroom.isPresent())
             return new ResponseEntity<>(
                     new ResponseWrapper<>(
@@ -81,8 +79,8 @@ public class TClassController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ClassroomResponse> classroomResponses = classroomService.teacherFindClassByName(keyword);
-            Page<?> classrooms = commonService.convertListToPages(pageable, classroomResponses);
+            List<TClassResponse> TClassRespons = classroomService.teacherFindClassByName(keyword);
+            Page<?> classrooms = commonService.convertListToPages(pageable, TClassRespons);
             if (!classrooms.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

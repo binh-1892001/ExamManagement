@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.admin.response;
+package trainingmanagement.model.dto.response.admin;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

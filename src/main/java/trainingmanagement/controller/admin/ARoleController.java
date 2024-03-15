@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.admin.response.RoleResponse;
+import trainingmanagement.model.dto.response.admin.RoleResponse;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.Role.RoleService;

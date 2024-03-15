@@ -1,5 +1,5 @@
 package trainingmanagement.model.entity.Enum;
 
-public enum ERoles {
+public enum ERoleName {
     ROLE_ADMIN, ROLE_TEACHER, ROLE_STUDENT
 }

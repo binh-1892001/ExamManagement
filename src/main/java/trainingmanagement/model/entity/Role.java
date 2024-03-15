@@ -3,7 +3,7 @@ package trainingmanagement.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
-import trainingmanagement.model.entity.Enum.ERoles;
+import trainingmanagement.model.entity.Enum.ERoleName;
 
 @Entity
 @NoArgsConstructor
@@ -13,5 +13,5 @@ import trainingmanagement.model.entity.Enum.ERoles;
 @Builder
 public class Role extends BaseModel {
     @Enumerated(EnumType.STRING)
-    private ERoles roleName;
+    private ERoleName roleName;
 }

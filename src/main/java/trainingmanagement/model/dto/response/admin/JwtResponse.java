@@ -1,7 +1,6 @@
-package trainingmanagement.model.dto.admin.response;
+package trainingmanagement.model.dto.response.admin;
 
 import lombok.*;
-
 import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor

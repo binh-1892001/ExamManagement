@@ -1,9 +1,8 @@
 package trainingmanagement.service.Question;
 
-import trainingmanagement.model.dto.admin.request.QuestionRequest;
-import trainingmanagement.model.dto.admin.response.QuestionResponse;
+import trainingmanagement.model.dto.request.admin.QuestionRequest;
+import trainingmanagement.model.dto.response.admin.QuestionResponse;
 import trainingmanagement.model.entity.Question;
-
 import java.util.List;
 import java.util.Optional;
 

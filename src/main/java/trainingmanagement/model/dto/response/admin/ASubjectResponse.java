@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.admin.response;
+package trainingmanagement.model.dto.response.admin;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class RoleResponse {
-    private String roleName;
+public class ASubjectResponse {
+    private String subjectName;
+    private Boolean status;
 }
