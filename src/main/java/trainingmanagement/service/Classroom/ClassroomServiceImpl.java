@@ -27,7 +27,7 @@ public class ClassroomServiceImpl implements ClassroomService{
     }
     @Override
     public List<TClassResponse> teacherGetListClassrooms() {
-        return getAllToList().stream().map(this::entityTMap).toList();
+        return classroomRepository.getAllByStatus(EActiveStatus.ACTIVE).stream().map(this::entityTMap).toList();
     }
 
     @Override
@@ -136,6 +136,7 @@ public class ClassroomServiceImpl implements ClassroomService{
     }
     @Override
     public TClassResponse entityTMap(Classroom classroom) {
+
         return TClassResponse.builder()
                 .className(classroom.getClassName())
                 .classStatus(classroom.getClassStatus())
