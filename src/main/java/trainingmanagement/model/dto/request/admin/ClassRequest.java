@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.request;
+package trainingmanagement.model.dto.request.admin;
 
 import lombok.*;
 
@@ -8,5 +8,5 @@ import lombok.*;
 @Builder
 public class ClassRequest {
     private String className;
-    private String status;
+    private String classStatus;
 }

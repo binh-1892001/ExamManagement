@@ -1,6 +1,6 @@
 package trainingmanagement.controller.permitAll;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.request.LoginRequest;
-import trainingmanagement.model.dto.request.RegisterRequest;
+import trainingmanagement.model.dto.request.admin.LoginRequest;
+import trainingmanagement.model.dto.request.admin.RegisterRequest;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.service.User.UserService;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/v1/auth/")
 public class AuthController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @PostMapping("/sign-in")
     public ResponseEntity<?> handleLogin(@RequestBody LoginRequest loginRequest) {
@@ -36,7 +36,7 @@ public class AuthController {
                 EHttpStatus.SUCCESS,
                 HttpStatus.CREATED.value(),
                 HttpStatus.CREATED.name(),
-                userService.addUser(registerRequest)
+                userService.handleRegister(registerRequest)
             ), HttpStatus.CREATED);
     }
 }

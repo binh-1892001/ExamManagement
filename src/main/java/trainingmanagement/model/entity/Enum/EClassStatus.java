@@ -1,5 +1,6 @@
 package trainingmanagement.model.entity.Enum;
 
-public enum ETypeQuestion {
-    MULTIPLE, SINGLE
+public enum EClassStatus {
+    NEW, OJT, FINISH
+
 }

@@ -1,10 +1,19 @@
+/**
+ * * Created by Tung.
+ * * Fixed by NguyenHongQuan:
+ * * - Rename attributes in entity.
+ * @author: Phạm Văn Tùng.
+ * @since: 15/3/2024.
+ * */
+
 package trainingmanagement.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
-import trainingmanagement.model.entity.Enum.ETypeTest;
+import trainingmanagement.model.entity.Enum.EActiveStatus;
+import trainingmanagement.model.entity.Enum.ETestType;
 import java.util.List;
 
 @Entity
@@ -14,12 +23,18 @@ import java.util.List;
 @Setter
 @Builder
 public class Test extends BaseModel {
-    private String nameTest;
-    private Boolean status;
-    private int time;
+    @Column(name = "test_name")
+    private String testName;
+    @Column(name = "test_time")
+    private Integer testTime;
     @Enumerated(EnumType.STRING)
-    private ETypeTest typeTest;
+    @Column(name = "test_type")
+    private ETestType testType;
+    @Column(name = "resources")
     private String resources;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EActiveStatus status;
     @OneToMany(mappedBy = "test")
     @JsonIgnore
     List<Question> questions;
@@ -27,6 +42,6 @@ public class Test extends BaseModel {
     @JsonIgnore
     List<Result> historyTests;
     @ManyToOne
-    @JoinColumn(name = "exam_id",referencedColumnName = "id")
+    @JoinColumn(name = "exam_id", referencedColumnName = "id")
     private Exam exam;
 }

@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.base.AuditableEntity;
-import trainingmanagement.model.dto.request.ClassRequest;
-import trainingmanagement.model.dto.response.ClassResponse;
+import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.request.admin.ClassRequest;
+import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.entity.Classroom;
-import trainingmanagement.model.entity.Enum.EStatusClass;
+import trainingmanagement.model.entity.Enum.EActiveStatus;
+import trainingmanagement.model.entity.Enum.EClassStatus;
 import trainingmanagement.repository.ClassroomRepository;
 import java.util.List;
 import java.util.Optional;
@@ -22,13 +23,23 @@ public class ClassroomServiceImpl implements ClassroomService{
     public List<Classroom> getAllToList() {
         return classroomRepository.findAll();
     }
-    public List<ClassResponse> getAllClassResponsesToList(){
+    public List<AClassResponse> getAllClassResponsesToList(){
         return getAllToList().stream().map(this::entityMap).toList();
     }
     @Override
-    public Optional<Classroom> getById(Long classroomId) {
-        return classroomRepository.findById(classroomId);
+    public Optional<Classroom> getClassById(Long classId) {
+        return classroomRepository.findById(classId);
     }
+
+    @Override
+    public AClassResponse getAClassResponseById(Long classId) throws CustomException{
+        Optional<Classroom> optionalClass = getClassById(classId);
+        // ? Exception cần tìm thấy thì mới có thể chuyển thành Dto.
+        if(optionalClass.isEmpty()) throw new CustomException("Class is not exists.");
+        Classroom classroom = optionalClass.get();
+        return entityMap(classroom);
+    }
+
     @Override
     public Classroom save(Classroom classroom) {
         return classroomRepository.save(classroom);
@@ -37,60 +48,72 @@ public class ClassroomServiceImpl implements ClassroomService{
     public Classroom save(ClassRequest classRequest) {
         return classroomRepository.save(entityMap(classRequest));
     }
-    /**
-     * @param classroomId
-     * @param classRequest
-     * @return
-     * author:
-     * */
 
     @Override
+    public Classroom putUpdate(Long classId, ClassRequest classRequest) {
+        return null;
+    }
+    @Override
     public Classroom patchUpdate(Long classroomId, ClassRequest classRequest) {
-        Optional<Classroom> updateClassroom = getById(classroomId);
+        Optional<Classroom> updateClassroom = getClassById(classroomId);
         if(updateClassroom.isPresent()) {
             Classroom classroom = updateClassroom.get();
             if (classRequest.getClassName() != null)
                 classroom.setClassName(classRequest.getClassName());
-            if (classRequest.getStatus() != null) {
-                if (classRequest.getStatus().equalsIgnoreCase(EStatusClass.NEW.name()))
-                    classroom.setStatus(EStatusClass.NEW);
-                else if (classRequest.getStatus().equalsIgnoreCase(EStatusClass.OJT.name()))
-                    classroom.setStatus(EStatusClass.OJT);
-                else classroom.setStatus(EStatusClass.FINISH);
+            if (classRequest.getClassStatus() != null) {
+                if (classRequest.getClassStatus().equalsIgnoreCase(EClassStatus.NEW.name()))
+                    classroom.setClassStatus(EClassStatus.NEW);
+                else if (classRequest.getClassStatus().equalsIgnoreCase(EClassStatus.OJT.name()))
+                    classroom.setClassStatus(EClassStatus.OJT);
+                else classroom.setClassStatus(EClassStatus.FINISH);
             }
             return save(classroom);
         }
         return null;
     }
+    @Override
+    public void softDeleteByClassId(Long classId) throws CustomException{
+        // ? Exception cần tìm thấy thì mới có thể xoá mềm.
+        Optional<Classroom> deleteClass = getClassById(classId);
+        if(deleteClass.isEmpty())
+            throw new CustomException("Class is not exists to delete.");
+        Classroom classroom = deleteClass.get();
+        classroom.setStatus(EActiveStatus.INACTIVE);
+        classroomRepository.save(classroom);
+    }
 
     @Override
-    public void deleteById(Long classId) {
+    public void hardDeleteByClassId(Long classId) throws CustomException {
+        // ? Exception cần tìm thấy thì mới có thể xoá cứng.
+        if(!classroomRepository.existsById(classId))
+            throw new CustomException("Class is not exists to delete.");
         classroomRepository.deleteById(classId);
     }
 
     @Override
-    public List<ClassResponse> findByClassName(String className) {
+    public List<AClassResponse> findByClassName(String className) {
         return classroomRepository.findByClassNameContainingIgnoreCase(className)
                 .stream().map(this::entityMap).toList();
     }
     @Override
     public Classroom entityMap(ClassRequest classRequest) {
-        EStatusClass classStatus = switch (classRequest.getStatus()) {
-            case "NEW" -> EStatusClass.NEW;
-            case "OJT" -> EStatusClass.OJT;
-            case "FINISH" -> EStatusClass.FINISH;
+        EClassStatus classStatus = switch (classRequest.getClassStatus()) {
+            case "NEW" -> EClassStatus.NEW;
+            case "OJT" -> EClassStatus.OJT;
+            case "FINISH" -> EClassStatus.FINISH;
             default -> null;
         };
         return Classroom.builder()
             .className(classRequest.getClassName())
-            .status(classStatus)
+            .classStatus(classStatus)
             .build();
     }
     @Override
-    public ClassResponse entityMap(Classroom classroom) {
-        return ClassResponse.builder()
-                .className(classroom.getClassName())
-                .status(classroom.getStatus())
-                .build();
+    public AClassResponse entityMap(Classroom classroom) {
+        return AClassResponse.builder()
+            .className(classroom.getClassName())
+            .classStatus(classroom.getClassStatus())
+            .status(classroom.getStatus())
+            .build();
     }
 }

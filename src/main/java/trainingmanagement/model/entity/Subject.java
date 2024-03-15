@@ -1,6 +1,7 @@
 package trainingmanagement.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import lombok.*;
@@ -14,9 +15,9 @@ import java.util.List;
 @Setter
 @Builder
 public class Subject extends BaseModel {
+    @Column(name = "subject_name")
     private String subjectName;
-    private String timeToStudy;
-    private int time; // ? time ở đây là gì ?
+    @Column(name = "status")
     private Boolean status;
     // * Class - Subject: 1 - N.
     @OneToMany(mappedBy = "subject")

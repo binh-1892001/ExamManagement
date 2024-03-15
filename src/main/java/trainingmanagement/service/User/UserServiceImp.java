@@ -9,21 +9,20 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.request.LoginRequest;
-import trainingmanagement.model.dto.request.RegisterRequest;
-import trainingmanagement.model.dto.response.JwtResponse;
-import trainingmanagement.model.dto.response.UserResponse;
+import trainingmanagement.model.dto.request.admin.LoginRequest;
+import trainingmanagement.model.dto.request.admin.RegisterRequest;
+import trainingmanagement.model.dto.response.admin.JwtResponse;
+import trainingmanagement.model.dto.response.admin.UserResponse;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Enum.EGender;
+import trainingmanagement.model.entity.Enum.ERoleName;
 import trainingmanagement.model.entity.Role;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.repository.UserRepository;
 import trainingmanagement.security.Jwt.JwtProvider;
 import trainingmanagement.security.UserDetail.UserPrincipal;
 import trainingmanagement.service.Role.RoleService;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,7 +54,8 @@ public class UserServiceImp implements UserService {
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        if(userPrincipal.getUser().getStatus() == null)
+        if(userPrincipal.getUser().getStatus() == null
+        || userPrincipal.getUser().getStatus() == EActiveStatus.INACTIVE)
             throw new RuntimeException("This account is inactive.");
         return JwtResponse.builder()
             .accessToken(jwtProvider.generateToken(userPrincipal))
@@ -67,9 +67,18 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User addUser(RegisterRequest registerRequest) {
+    public User handleRegister(RegisterRequest registerRequest) {
         if(userRepository.existsByUsername(registerRequest.getUsername()))
-            throw new RuntimeException("username is exists");
+            throw new RuntimeException("Username is exists");
+        EGender userGender = null;
+        if(registerRequest.getGender() != null)
+            userGender = switch (registerRequest.getGender().toUpperCase()){
+                case "MALE" -> EGender.MALE;
+                case "FEMALE" -> EGender.FEMALE;
+                default -> null;
+            };
+        Set<Role> userRoles = new HashSet<>();
+        userRoles.add(roleService.findByRoleName(ERoleName.ROLE_STUDENT));
         User users = User.builder()
             .fullName(registerRequest.getFullName())
             .username(registerRequest.getUsername())
@@ -79,8 +88,8 @@ public class UserServiceImp implements UserService {
             .phone(registerRequest.getPhone())
             .dateOfBirth(registerRequest.getDateOfBirth())
             .status(EActiveStatus.INACTIVE)
-            .gender(registerRequest.getGender().equalsIgnoreCase(EGender.MALE.name())
-                    ? EGender.MALE : EGender.FEMALE)
+            .gender(userGender)
+            .roles(userRoles)
             .build();
         return userRepository.save(users);
     }
@@ -107,18 +116,18 @@ public class UserServiceImp implements UserService {
         User userOld = getById(id).get();
         Set<Role> roles = userOld.getRoles();
         User users = User.builder()
-                .fullName(registerRequest.getFullName())
-                .username(registerRequest.getUsername())
-                .password(userOld.getPassword())
-                .email(registerRequest.getEmail())
-                .avatar(registerRequest.getAvatar())
-                .phone(registerRequest.getPhone())
-                .dateOfBirth(registerRequest.getDateOfBirth())
-                .status(EActiveStatus.ACTIVE)
-                .gender(registerRequest.getGender().equalsIgnoreCase(EGender.MALE.name())
-                        ? EGender.MALE : EGender.FEMALE)
-                .roles(roles)
-                .build();
+            .fullName(registerRequest.getFullName())
+            .username(registerRequest.getUsername())
+            .password(userOld.getPassword())
+            .email(registerRequest.getEmail())
+            .avatar(registerRequest.getAvatar())
+            .phone(registerRequest.getPhone())
+            .dateOfBirth(registerRequest.getDateOfBirth())
+            .status(EActiveStatus.ACTIVE)
+            .gender(registerRequest.getGender().equalsIgnoreCase(EGender.MALE.name())
+                    ? EGender.MALE : EGender.FEMALE)
+            .roles(roles)
+            .build();
         users.setId(id);
         users.setCreateBy(userOld.getCreateBy());
         return userRepository.save(users);
