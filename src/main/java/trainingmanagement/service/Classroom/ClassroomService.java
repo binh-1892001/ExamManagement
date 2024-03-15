@@ -20,14 +20,14 @@ public interface ClassroomService {
     List<Classroom> getAllToList();
     List<AClassResponse> getAllClassResponsesToList();
     Optional<Classroom> getClassById(Long classId);
-    Optional<AClassResponse> getAClassResponseById(Long classId) throws CustomException;
+    AClassResponse getAClassResponseById(Long classId) throws CustomException;
+    List<AClassResponse> findByClassName(String className);
     Classroom save(Classroom classroom);
     Classroom save(ClassRequest classRequest);
     Classroom putUpdate(Long classId, ClassRequest classRequest);
     Classroom patchUpdate(Long classId, ClassRequest classRequest);
     void softDeleteByClassId(Long classId) throws CustomException;
     void hardDeleteByClassId(Long classId) throws CustomException;
-    List<AClassResponse> findByClassName(String className);
     AClassResponse entityMap(Classroom classroom);
     Classroom entityMap(ClassRequest classRequest);
 }

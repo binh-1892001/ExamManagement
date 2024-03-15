@@ -2,7 +2,7 @@ package trainingmanagement.model.dto.response.admin;
 
 import lombok.*;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
-import trainingmanagement.model.entity.Enum.EStatusClass;
+import trainingmanagement.model.entity.Enum.EClassStatus;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -10,6 +10,6 @@ import trainingmanagement.model.entity.Enum.EStatusClass;
 @Builder
 public class AClassResponse {
     private String className;
-    private EStatusClass classStatus;
+    private EClassStatus classStatus;
     private EActiveStatus status;
 }

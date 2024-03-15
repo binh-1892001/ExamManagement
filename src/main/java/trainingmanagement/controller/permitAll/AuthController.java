@@ -36,7 +36,7 @@ public class AuthController {
                 EHttpStatus.SUCCESS,
                 HttpStatus.CREATED.value(),
                 HttpStatus.CREATED.name(),
-                userService.addUser(registerRequest)
+                userService.handleRegister(registerRequest)
             ), HttpStatus.CREATED);
     }
 }

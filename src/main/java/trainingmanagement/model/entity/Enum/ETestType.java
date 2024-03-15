@@ -1,6 +1,5 @@
 package trainingmanagement.model.entity.Enum;
 
-public enum EStatusClass {
-    NEW, OJT, FINISH
-
+public enum ETestType {
+    WRITENTEST, QUIZTEST
 }

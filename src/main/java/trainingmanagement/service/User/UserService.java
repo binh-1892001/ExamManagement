@@ -14,7 +14,7 @@ public interface UserService {
     Optional<User> getById(Long userId);
     void deleteById(Long userId);
     JwtResponse handleLogin(LoginRequest userLogin);
-    User addUser(RegisterRequest registerRequest);
+    User handleRegister(RegisterRequest registerRequest);
     User save(User users);
     User updateAcc(RegisterRequest registerRequest, Long id);
     Optional<User> getByUsername(String username);

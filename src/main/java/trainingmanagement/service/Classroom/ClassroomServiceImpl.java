@@ -9,7 +9,7 @@ import trainingmanagement.model.dto.request.admin.ClassRequest;
 import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
-import trainingmanagement.model.entity.Enum.EStatusClass;
+import trainingmanagement.model.entity.Enum.EClassStatus;
 import trainingmanagement.repository.ClassroomRepository;
 import java.util.List;
 import java.util.Optional;
@@ -32,13 +32,12 @@ public class ClassroomServiceImpl implements ClassroomService{
     }
 
     @Override
-    public Optional<AClassResponse> getAClassResponseById(Long classId) throws CustomException{
+    public AClassResponse getAClassResponseById(Long classId) throws CustomException{
         Optional<Classroom> optionalClass = getClassById(classId);
         // ? Exception cần tìm thấy thì mới có thể chuyển thành Dto.
-        if(optionalClass.isEmpty())
-            throw new CustomException("Class is not exists.");
+        if(optionalClass.isEmpty()) throw new CustomException("Class is not exists.");
         Classroom classroom = optionalClass.get();
-        return Optional.ofNullable(entityMap(classroom));
+        return entityMap(classroom);
     }
 
     @Override
@@ -62,11 +61,11 @@ public class ClassroomServiceImpl implements ClassroomService{
             if (classRequest.getClassName() != null)
                 classroom.setClassName(classRequest.getClassName());
             if (classRequest.getClassStatus() != null) {
-                if (classRequest.getClassStatus().equalsIgnoreCase(EStatusClass.NEW.name()))
-                    classroom.setClassStatus(EStatusClass.NEW);
-                else if (classRequest.getClassStatus().equalsIgnoreCase(EStatusClass.OJT.name()))
-                    classroom.setClassStatus(EStatusClass.OJT);
-                else classroom.setClassStatus(EStatusClass.FINISH);
+                if (classRequest.getClassStatus().equalsIgnoreCase(EClassStatus.NEW.name()))
+                    classroom.setClassStatus(EClassStatus.NEW);
+                else if (classRequest.getClassStatus().equalsIgnoreCase(EClassStatus.OJT.name()))
+                    classroom.setClassStatus(EClassStatus.OJT);
+                else classroom.setClassStatus(EClassStatus.FINISH);
             }
             return save(classroom);
         }
@@ -98,10 +97,10 @@ public class ClassroomServiceImpl implements ClassroomService{
     }
     @Override
     public Classroom entityMap(ClassRequest classRequest) {
-        EStatusClass classStatus = switch (classRequest.getClassStatus()) {
-            case "NEW" -> EStatusClass.NEW;
-            case "OJT" -> EStatusClass.OJT;
-            case "FINISH" -> EStatusClass.FINISH;
+        EClassStatus classStatus = switch (classRequest.getClassStatus()) {
+            case "NEW" -> EClassStatus.NEW;
+            case "OJT" -> EClassStatus.OJT;
+            case "FINISH" -> EClassStatus.FINISH;
             default -> null;
         };
         return Classroom.builder()
