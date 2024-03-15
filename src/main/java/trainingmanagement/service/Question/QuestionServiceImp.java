@@ -4,9 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import trainingmanagement.model.dto.admin.request.OptionRequest;
+import trainingmanagement.model.dto.admin.request.QuestionOptionRequest;
 import trainingmanagement.model.dto.admin.request.QuestionRequest;
 import trainingmanagement.model.dto.admin.response.OptionResponse;
 import trainingmanagement.model.dto.admin.response.QuestionResponse;
+import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Enum.ELevelQuestion;
 import trainingmanagement.model.entity.Enum.ETypeQuestion;
 import trainingmanagement.model.entity.Option;
@@ -14,6 +17,7 @@ import trainingmanagement.model.entity.Question;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.repository.QuestionRepository;
 import trainingmanagement.service.Option.OptionService;
+import trainingmanagement.service.Test.TestService;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -25,6 +29,7 @@ import java.util.Optional;
 public class QuestionServiceImp implements QuestionService {
     private final QuestionRepository questionRepository;
     private final OptionService optionService;
+    private final TestService testService;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
@@ -50,6 +55,19 @@ public class QuestionServiceImp implements QuestionService {
     @Override
     public Question save(QuestionRequest questionRequest) {
         return questionRepository.save(entityMap(questionRequest));
+    }
+
+    @Override
+    public Question saveQuestionAndOption(QuestionOptionRequest questionOptionRequest) {
+        Question question = save(questionOptionRequest.getQuestionRequest());
+        List<OptionRequest> optionRequests = questionOptionRequest.getOptionRequests();
+        for (OptionRequest optionRequest:optionRequests){
+            optionRequest.setQuestionId(question.getId());
+            optionService.save(optionRequest);
+        }
+        List<Option> options = optionService.getAllByQuestion(question);
+        question.setOptions(options);
+        return question;
     }
 
     @Override
@@ -89,6 +107,8 @@ public class QuestionServiceImp implements QuestionService {
             }
             if (questionRequest.getImage() != null)
                 question.setImage(questionRequest.getImage());
+            if (questionRequest.getTestId() != null)
+                question.setTest(testService.findById(questionRequest.getTestId()));
             return questionRepository.save(question);
         }
         return null;
@@ -112,7 +132,8 @@ public class QuestionServiceImp implements QuestionService {
                 .levelQuestion(levelQuestion)
                 .typeQuestion(typeQuestion)
                 .image(questionRequest.getImage())
-                .options(questionRequest.getOptionRequests().stream().map(optionService::entityMap).toList())
+                .eActiveStatus(EActiveStatus.ACTIVE)
+                .test(testService.findById(questionRequest.getTestId()))
                 .build();
     }
 
@@ -126,6 +147,7 @@ public class QuestionServiceImp implements QuestionService {
                 .image(question.getImage())
                 .eActiveStatus(question.getEActiveStatus().name())
                 .createdDate(question.getCreatedDate().toString())
+                .testName(question.getTest().getNameTest())
                 .optionResponses(question.getOptions().stream().map(optionService::entityMap).toList())
                 .build();
     }

@@ -18,5 +18,6 @@ public class QuestionResponse {
     private String image;
     private String eActiveStatus;
     private String createdDate;
+    private String testName;
     private List<OptionResponse> optionResponses;
 }

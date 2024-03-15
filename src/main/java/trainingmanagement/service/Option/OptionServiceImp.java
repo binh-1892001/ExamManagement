@@ -54,9 +54,19 @@ public class OptionServiceImp implements OptionService{
     }
 
     @Override
+    public void deleteByQuestion(Question question) {
+        optionRepository.deleteByQuestion(question);
+    }
+
+    @Override
     public List<OptionResponse> findAllByQuestion(Question question) {
         List<Option> options = optionRepository.findAllByQuestion(question);
         return options.stream().map(this::entityMap).toList();
+    }
+
+    @Override
+    public List<Option> getAllByQuestion(Question question) {
+        return optionRepository.findAllByQuestion(question);
     }
 
     @Override

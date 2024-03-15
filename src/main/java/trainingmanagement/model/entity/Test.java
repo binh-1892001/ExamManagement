@@ -16,8 +16,7 @@ import java.util.List;
 @Builder
 public class Test extends BaseModel {
     private String nameTest;
-    private Integer time;
-    private Integer countQuestion;
+    private Integer testTime;
     @Enumerated(EnumType.STRING)
     private ETypeTest typeTest;
     @Enumerated(EnumType.STRING)

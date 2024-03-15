@@ -1,5 +1,6 @@
 package trainingmanagement.service.Question;
 
+import trainingmanagement.model.dto.admin.request.QuestionOptionRequest;
 import trainingmanagement.model.dto.admin.request.QuestionRequest;
 import trainingmanagement.model.dto.admin.response.QuestionResponse;
 import trainingmanagement.model.entity.Question;
@@ -15,6 +16,7 @@ public interface QuestionService {
     Optional<Question> getById(Long questionId);
     Question save(Question question);
     Question save(QuestionRequest questionRequest);
+    Question saveQuestionAndOption(QuestionOptionRequest questionOptionRequest);
     Question patchUpdateQuestion(Long questionId, QuestionRequest questionRequest);
     void deleteById(Long questionId);
     List<QuestionResponse> findByQuestionContent(String questionContent);

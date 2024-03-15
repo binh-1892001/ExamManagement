@@ -12,7 +12,7 @@ import trainingmanagement.model.entity.Enum.ETypeTest;
 public class TestRequest {
     private String nameTest;
     private String eActiveStatus;
-    private int time;
+    private Integer testTime;
     private ETypeTest typeTest;
     private String resources;
     private Long examId;
