@@ -5,8 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.request.admin.ClassRequest;
+import trainingmanagement.model.dto.request.admin.AClassRequest;
+import trainingmanagement.model.dto.request.admin.ATestRequest;
 import trainingmanagement.model.dto.response.admin.AClassResponse;
+import trainingmanagement.model.dto.response.teacher.TClassResponse;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Enum.EClassStatus;
@@ -23,8 +25,17 @@ public class ClassroomServiceImpl implements ClassroomService{
     public List<Classroom> getAllToList() {
         return classroomRepository.findAll();
     }
+    @Override
+    public List<TClassResponse> teacherGetListClassrooms() {
+        return getAllToList().stream().map(this::entityTMap).toList();
+    }
+
+    @Override
+    public Optional<TClassResponse> teacherGetClassById(Long classroomId) {
+        return getClassById(classroomId).map(this::entityTMap);
+    }
     public List<AClassResponse> getAllClassResponsesToList(){
-        return getAllToList().stream().map(this::entityMap).toList();
+        return getAllToList().stream().map(this::entityAMap).toList();
     }
     @Override
     public Optional<Classroom> getClassById(Long classId) {
@@ -37,7 +48,7 @@ public class ClassroomServiceImpl implements ClassroomService{
         // ? Exception cần tìm thấy thì mới có thể chuyển thành Dto.
         if(optionalClass.isEmpty()) throw new CustomException("Class is not exists.");
         Classroom classroom = optionalClass.get();
-        return entityMap(classroom);
+        return entityAMap(classroom);
     }
 
     @Override
@@ -45,16 +56,16 @@ public class ClassroomServiceImpl implements ClassroomService{
         return classroomRepository.save(classroom);
     }
     @Override
-    public Classroom save(ClassRequest classRequest) {
-        return classroomRepository.save(entityMap(classRequest));
+    public Classroom save(AClassRequest classRequest) {
+        return classroomRepository.save(entityAMap(classRequest));
     }
 
     @Override
-    public Classroom putUpdate(Long classId, ClassRequest classRequest) {
+    public Classroom putUpdate(Long classId, AClassRequest classRequest) {
         return null;
     }
     @Override
-    public Classroom patchUpdate(Long classroomId, ClassRequest classRequest) {
+    public Classroom patchUpdate(Long classroomId, AClassRequest classRequest) {
         Optional<Classroom> updateClassroom = getClassById(classroomId);
         if(updateClassroom.isPresent()) {
             Classroom classroom = updateClassroom.get();
@@ -93,10 +104,17 @@ public class ClassroomServiceImpl implements ClassroomService{
     @Override
     public List<AClassResponse> findByClassName(String className) {
         return classroomRepository.findByClassNameContainingIgnoreCase(className)
-                .stream().map(this::entityMap).toList();
+                .stream().map(this::entityAMap).toList();
     }
+
     @Override
-    public Classroom entityMap(ClassRequest classRequest) {
+    public List<TClassResponse> teacherFindClassByName(String className) {
+        return classroomRepository.findByClassNameContainingIgnoreCase(className)
+                .stream().map(this::entityTMap).toList();
+    }
+
+    @Override
+    public Classroom entityAMap(AClassRequest classRequest) {
         EClassStatus classStatus = switch (classRequest.getClassStatus()) {
             case "NEW" -> EClassStatus.NEW;
             case "OJT" -> EClassStatus.OJT;
@@ -109,11 +127,18 @@ public class ClassroomServiceImpl implements ClassroomService{
             .build();
     }
     @Override
-    public AClassResponse entityMap(Classroom classroom) {
+    public AClassResponse entityAMap(Classroom classroom) {
         return AClassResponse.builder()
             .className(classroom.getClassName())
             .classStatus(classroom.getClassStatus())
             .status(classroom.getStatus())
             .build();
+    }
+    @Override
+    public TClassResponse entityTMap(Classroom classroom) {
+        return TClassResponse.builder()
+                .className(classroom.getClassName())
+                .classStatus(classroom.getClassStatus())
+                .build();
     }
 }

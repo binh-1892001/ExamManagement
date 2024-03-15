@@ -11,7 +11,6 @@ import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.repository.OptionRepository;
 import trainingmanagement.service.Question.QuestionService;
-
 import java.util.List;
 import java.util.Optional;
 

@@ -9,15 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.request.admin.ClassRequest;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.request.admin.AClassRequest;
 import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.service.Classroom.ClassroomService;
 import trainingmanagement.service.CommonService;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/admin/classes")
@@ -67,8 +66,8 @@ public class AClassController {
     }
     // * Create new classroom.
     @PostMapping
-    public ResponseEntity<?> createClass(@RequestBody ClassRequest classRequest) {
-        Classroom classroom = classroomService.save(classRequest);
+    public ResponseEntity<?> createClass(@RequestBody AClassRequest AClassRequest) {
+        Classroom classroom = classroomService.save(AClassRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                     EHttpStatus.SUCCESS,
@@ -81,9 +80,9 @@ public class AClassController {
     @PatchMapping("/{classId}")
     public ResponseEntity<?> patchUpdateClass(
             @PathVariable("classId") Long updateClassroomId,
-            @RequestBody ClassRequest classRequest
+            @RequestBody AClassRequest AClassRequest
     ) {
-        Classroom classroom = classroomService.patchUpdate(updateClassroomId, classRequest);
+        Classroom classroom = classroomService.patchUpdate(updateClassroomId, AClassRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                     EHttpStatus.SUCCESS,

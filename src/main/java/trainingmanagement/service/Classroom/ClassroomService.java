@@ -9,9 +9,10 @@
 
 package trainingmanagement.service.Classroom;
 
-import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.request.admin.ClassRequest;
+import trainingmanagement.model.dto.request.admin.AClassRequest;
 import trainingmanagement.model.dto.response.admin.AClassResponse;
+import trainingmanagement.model.dto.response.teacher.TClassResponse;
+import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.entity.Classroom;
 import java.util.List;
 import java.util.Optional;
@@ -19,15 +20,19 @@ import java.util.Optional;
 public interface ClassroomService {
     List<Classroom> getAllToList();
     List<AClassResponse> getAllClassResponsesToList();
+    List<TClassResponse>teacherGetListClassrooms();
     Optional<Classroom> getClassById(Long classId);
     AClassResponse getAClassResponseById(Long classId) throws CustomException;
+    Optional<TClassResponse> teacherGetClassById(Long classroomId);
     List<AClassResponse> findByClassName(String className);
+    List<TClassResponse> teacherFindClassByName(String className);
     Classroom save(Classroom classroom);
-    Classroom save(ClassRequest classRequest);
-    Classroom putUpdate(Long classId, ClassRequest classRequest);
-    Classroom patchUpdate(Long classId, ClassRequest classRequest);
+    Classroom save(AClassRequest AClassRequest);
+    Classroom putUpdate(Long classId, AClassRequest AClassRequest);
+    Classroom patchUpdate(Long classId, AClassRequest AClassRequest);
     void softDeleteByClassId(Long classId) throws CustomException;
     void hardDeleteByClassId(Long classId) throws CustomException;
-    AClassResponse entityMap(Classroom classroom);
-    Classroom entityMap(ClassRequest classRequest);
+    AClassResponse entityAMap(Classroom classroom);
+    Classroom entityAMap(AClassRequest AClassRequest);
+    TClassResponse entityTMap(Classroom classroom);
 }

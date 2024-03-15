@@ -6,7 +6,7 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 @Builder
-public class ClassRequest {
+public class AClassRequest {
     private String className;
     private String classStatus;
 }
