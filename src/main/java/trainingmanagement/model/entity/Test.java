@@ -1,3 +1,11 @@
+/**
+ * * Created by Tung.
+ * * Fixed by NguyenHongQuan:
+ * * - Rename attributes in entity.
+ * @author: Phạm Văn Tùng.
+ * @since: 15/3/2024.
+ * */
+
 package trainingmanagement.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -34,6 +42,6 @@ public class Test extends BaseModel {
     @JsonIgnore
     List<Result> historyTests;
     @ManyToOne
-    @JoinColumn(name = "exam_id",referencedColumnName = "id")
+    @JoinColumn(name = "exam_id", referencedColumnName = "id")
     private Exam exam;
 }

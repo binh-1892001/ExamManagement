@@ -19,7 +19,6 @@ import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Enum.ETestType;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.repository.TestRepository;
-import trainingmanagement.service.Exam.ExamService;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +26,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
-    private final ExamService examService;
 
     @Override
     public List<Test> getAllTestsToList() {
@@ -73,25 +71,30 @@ public class TestServiceImpl implements TestService {
         if(updateTest.isPresent()){
             Test test = updateTest.get();
             if(testRequest.getTestName() != null)
-                test.setTestName(test.getTestName());
+                test.setTestName(testRequest.getTestName());
             if(testRequest.getTestTime() != null)
-                test.setTestTime(test.getTestTime());
+                test.setTestTime(testRequest.getTestTime());
             ETestType testType = null;
-            if(testRequest.getTestType() != null)
+            if(testRequest.getTestType() != null){
                 testType = switch (testRequest.getTestType().toUpperCase()){
                     case "WRITENTEST" -> ETestType.WRITENTEST;
                     case "QUIZTEST" -> ETestType.QUIZTEST;
                     default -> null;
                 };
-            test.setTestType(testType);
+                test.setTestType(testType);
+            }
+            if(testRequest.getResources() != null)
+                test.setResources(testRequest.getResources());
             EActiveStatus status = null;
-            if(testRequest.getStatus() != null)
+            if(testRequest.getStatus() != null){
                 status = switch (testRequest.getStatus().toUpperCase()){
                     case "ACTIVE" -> EActiveStatus.ACTIVE;
                     case "INACTIVE" -> EActiveStatus.INACTIVE;
                     default -> null;
                 };
-            test.setStatus(status);
+                test.setStatus(status);
+            }
+            return entityAMap(testRepository.save(test));
         }
         throw new CustomException("Test is not exists.");
     }
@@ -156,6 +159,7 @@ public class TestServiceImpl implements TestService {
             .modifyDate(test.getModifyDate())
             .createdBy(test.getCreateBy())
             .modifyBy(test.getModifyBy())
+            .status(test.getStatus())
             .build();
     }
 }

@@ -12,8 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.request.admin.SubjectRequest;
-import trainingmanagement.model.dto.response.admin.SubjectResponse;
+import trainingmanagement.model.dto.request.admin.ASubjectRequest;
+import trainingmanagement.model.dto.response.admin.ASubjectResponse;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.Subject;
 import trainingmanagement.service.CommonService;
@@ -40,8 +40,8 @@ public class ASubjectController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<SubjectResponse> subjectResponses = subjectService.getAllSubjectResponsesToList();
-            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
+            List<ASubjectResponse> ASubjectRespons = subjectService.getAllSubjectResponsesToList();
+            Page<?> subjects = commonService.convertListToPages(pageable, ASubjectRespons);
             if (!subjects.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -72,8 +72,8 @@ public class ASubjectController {
     }
     // * Create new subject.
     @PostMapping
-    public ResponseEntity<?> createSubject(@RequestBody SubjectRequest subjectRequest) {
-        Subject subject = subjectService.save(subjectRequest);
+    public ResponseEntity<?> createSubject(@RequestBody ASubjectRequest ASubjectRequest) {
+        Subject subject = subjectService.save(ASubjectRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -86,9 +86,9 @@ public class ASubjectController {
     @PatchMapping("/{subjectId}")
     public ResponseEntity<?> pathUpdateSubject(
             @PathVariable("subjectId") Long updateSubjectId,
-            @RequestBody SubjectRequest subjectRequest
+            @RequestBody ASubjectRequest ASubjectRequest
     ) {
-        Subject subject = subjectService.patchUpdate(updateSubjectId, subjectRequest);
+        Subject subject = subjectService.patchUpdate(updateSubjectId, ASubjectRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -122,8 +122,8 @@ public class ASubjectController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<SubjectResponse> subjectResponses = subjectService.findBySubjectName(keyword);
-            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
+            List<ASubjectResponse> ASubjectRespons = subjectService.findBySubjectName(keyword);
+            Page<?> subjects = commonService.convertListToPages(pageable, ASubjectRespons);
             if (!subjects.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

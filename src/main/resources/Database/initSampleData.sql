@@ -42,9 +42,25 @@ INSERT INTO classroom(class_name, class_status, status)
     ('LIX', 'OJT', 'ACTIVE'),
     ('COD', 'FINISH', 'ACTIVE');
 
-insert into exam(exam_name, status, subject_id)
-    value
-    ('JV01', true, 1),
+INSERT INTO subject(subject_name, status)
+    VALUES ('JAVA', true),
+    ('PYTHON', true),
+    ('JAVASCRIPT', false),
+    ('HTML CSS', true),
+    ('NODEJS', false),
+    ('REACTJS', false),
+    ('REACT NATIVE', true),
+    ('NEXTJS', true),
+    ('TYPESCRIPT', false),
+    ('NESTJS', true),
+    ('SPRING BOOT', false),
+    ('SPRING MVC', false),
+    ('MYSQL', true),
+    ('SQL SERVER', false),
+    ('lINUX', true);
+
+INSERT INTO exam(exam_name, status, subject_id)
+    VALUES ('JV01', true, 1),
     ('PY02', true, 2),
     ('JS03', false, 3),
     ('LX04', true, 15),
@@ -60,44 +76,27 @@ insert into exam(exam_name, status, subject_id)
     ('HS14', false, 4),
     ('NE15', false, 10);
 
-insert into subject(name_subject, status, time_to_study)
-    value
-    ('JAVA', true, 60),
-    ('PYTHON', true, 90),
-    ('JAVASCRIPT', false, 120),
-    ('HTML CSS', true, 60),
-    ('NODEJS', false, 90),
-    ('REACTJS', false, 45),
-    ('REACT NATIVE', true, 120),
-    ('NEXTJS', true, 45),
-    ('TYPESCRIPT', false, 60),
-    ('NESTJS', true, 90),
-    ('SPRING BOOT', false, 60),
-    ('SPRING MVC', false, 45),
-    ('MYSQL', true, 120),
-    ('SQL SERVER', false, 90),
-    ('lINUX', true, 60);
 
-insert into test(name_test, status, time, type_test, exam_id)
-    value
-    ('T01', true, 45, 'QUIZTEST', 1),
-    ('T03', true, 45, 'WRITENTEST', 2),
-    ('T06', false, 60, 'QUIZTEST', 3),
-    ('T02', false, 60, 'QUIZTEST', 4),
-    ('T04', true, 45, 'QUIZTEST', 5),
-    ('T05', false, 90, 'WRITENTEST', 6),
-    ('T07', true, 60, 'QUIZTEST', 7),
-    ( 'T09', true, 45, 'QUIZTEST', 8),
-    ('T08', false, 60, 'WRITENTEST', 9),
-    ('T10', true, 90, 'QUIZTEST', 11),
-    ('T12', true, 45, 'QUIZTEST', 12),
-    ('T14', false, 50, 'WRITENTEST', 13),
-    ('T13', false, 60, 'QUIZTEST', 14),
-    ('T11', true, 90, 'QUIZTEST', 15),
-    ('T15', false, 45, 'WRITENTEST', 10),
-    ('T16', true, 45, 'QUIZTEST', 2),
-    ('T19', false, 60, 'QUIZTEST', 3),
-    ('T17', true, 45, 'WRITENTEST', 5);
+
+INSERT INTO test(test_name, test_time, test_type ,resources, status, exam_id)
+    VALUES ('Java Core giữa kỳ', 45, 'QUIZTEST', NULL, 'ACTIVE', 1),
+    ('T03', 45, 'WRITENTEST', NULL, 'ACTIVE', 2),
+    ('T06', 60, 'QUIZTEST', NULL, 'ACTIVE', 3),
+    ('T02', 60, 'QUIZTEST', NULL, 'ACTIVE', 4),
+    ('T04', 45, 'QUIZTEST', NULL, 'ACTIVE', 5),
+    ('T05', 90, 'WRITENTEST', NULL, 'INACTIVE', 6),
+    ('T07', 60, 'QUIZTEST', NULL, 'ACTIVE', 7),
+    ( 'T09', 45, 'QUIZTEST', NULL, 'ACTIVE', 8),
+    ('T08', 60, 'WRITENTEST', NULL, 'ACTIVE', 9),
+    ('T10', 90, 'QUIZTEST', NULL, 'ACTIVE', 11),
+    ('T12', 45, 'QUIZTEST', NULL, 'ACTIVE', 12),
+    ('T14', 50, 'WRITENTEST', NULL, 'INACTIVE', 13),
+    ('T13', 60, 'QUIZTEST', NULL, 'INACTIVE', 14),
+    ('T11', 90, 'QUIZTEST', NULL, 'ACTIVE', 15),
+    ('T15', 45, 'WRITENTEST', NULL, 'INACTIVE', 10),
+    ('T16', 45, 'QUIZTEST', NULL, 'ACTIVE', 2),
+    ('T19', 60, 'QUIZTEST', NULL, 'INACTIVE', 3),
+    ('T17', 45, 'WRITENTEST', NULL, 'ACTIVE',  5);
 
 insert into user_class(user_id, class_id)
     value
@@ -132,38 +131,38 @@ insert into class_subject(class_id, subject_id)
     (2, 6),
     (1, 2);
 
-insert into question(content_question, status, type_question, test_id)
-    value
-    ('Noi dung cau hoi', true, 'MULTIPLE', 1),
-    ('Noi dung cau hoi', false, 'SINGLE', 3),
-    ('Noi dung cau hoi', true, 'MULTIPLE', 5),
-    ('Noi dung cau hoi', true, 'SINGLE', 7),
-    ('Noi dung cau hoi', false, 'SINGLE', 9),
-    ('Noi dung cau hoi', true, 'MULTIPLE', 2),
-    ('Noi dung cau hoi', true, 'MULTIPLE', 4),
-    ('Noi dung cau hoi', false, 'SINGLE', 6),
-    ('Noi dung cau hoi', true, 'MULTIPLE', 8),
-    ('Noi dung cau hoi', false, 'SINGLE', 10),
-    ('Noi dung cau hoi', true, 'MULTIPLE', 11),
-    ('Noi dung cau hoi', true, 'SINGLE', 12),
-    ('Noi dung cau hoi', false, 'MULTIPLE', 13),
-    ('Noi dung cau hoi', true, 'MULTIPLE', 14),
-    ('Noi dung cau hoi', true, 'SINGLE', 15);
-
-insert into options(content_options, status, question_id)
-    value
-    ('Lua chon', true, 1),
-    ('Lua chon', false, 3),
-    ('Lua chon', true, 5),
-    ('Lua chon', true, 7),
-    ('Lua chon', false, 9),
-    ('Lua chon', true, 2),
-    ('Lua chon', true, 4),
-    ('Lua chon', false, 6),
-    ('Lua chon', true, 8),
-    ('Lua chon', true, 10),
-    ('Lua chon', true, 11),
-    ('Lua chon', true, 12),
-    ('Lua chon', false, 13),
-    ('Lua chon', false, 14),
-    ('Lua chon', false, 15);
+# insert into question(content_question, status, type_question, test_id)
+#     value
+#     ('Noi dung cau hoi', true, 'MULTIPLE', 1),
+#     ('Noi dung cau hoi', false, 'SINGLE', 3),
+#     ('Noi dung cau hoi', true, 'MULTIPLE', 5),
+#     ('Noi dung cau hoi', true, 'SINGLE', 7),
+#     ('Noi dung cau hoi', false, 'SINGLE', 9),
+#     ('Noi dung cau hoi', true, 'MULTIPLE', 2),
+#     ('Noi dung cau hoi', true, 'MULTIPLE', 4),
+#     ('Noi dung cau hoi', false, 'SINGLE', 6),
+#     ('Noi dung cau hoi', true, 'MULTIPLE', 8),
+#     ('Noi dung cau hoi', false, 'SINGLE', 10),
+#     ('Noi dung cau hoi', true, 'MULTIPLE', 11),
+#     ('Noi dung cau hoi', true, 'SINGLE', 12),
+#     ('Noi dung cau hoi', false, 'MULTIPLE', 13),
+#     ('Noi dung cau hoi', true, 'MULTIPLE', 14),
+#     ('Noi dung cau hoi', true, 'SINGLE', 15);
+#
+# insert into options(content_options, status, question_id)
+#     value
+#     ('Lua chon', true, 1),
+#     ('Lua chon', false, 3),
+#     ('Lua chon', true, 5),
+#     ('Lua chon', true, 7),
+#     ('Lua chon', false, 9),
+#     ('Lua chon', true, 2),
+#     ('Lua chon', true, 4),
+#     ('Lua chon', false, 6),
+#     ('Lua chon', true, 8),
+#     ('Lua chon', true, 10),
+#     ('Lua chon', true, 11),
+#     ('Lua chon', true, 12),
+#     ('Lua chon', false, 13),
+#     ('Lua chon', false, 14),
+#     ('Lua chon', false, 15);

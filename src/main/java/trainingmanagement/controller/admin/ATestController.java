@@ -13,7 +13,6 @@ import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
-import trainingmanagement.model.entity.Test;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.Test.TestService;
 import java.util.List;

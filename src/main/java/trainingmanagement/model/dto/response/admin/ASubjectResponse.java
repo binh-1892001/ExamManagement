@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class SubjectResponse {
+public class ASubjectResponse {
     private String subjectName;
-    private String timeToStudy;
-    private Integer time;
     private Boolean status;
 }
