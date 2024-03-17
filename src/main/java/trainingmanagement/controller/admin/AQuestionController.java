@@ -83,6 +83,7 @@ public class AQuestionController {
                 question
             ), HttpStatus.CREATED);
     }
+    //* Update question
     @PatchMapping("/{questionId}")
     public ResponseEntity<?> patchUpdateQuestion(
             @PathVariable("questionId") Long questionId,

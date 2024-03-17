@@ -12,9 +12,11 @@ public interface OptionService {
     List<OptionResponse> getAllOptionResponsesToList();
     Optional<Option> getById(Long optionId);
     List<OptionResponse> findAllByQuestion(Question question);
+    List<Option> getAllByQuestion(Question question);
     Option save(Option option);
     Option save(OptionRequest optionRequest);
     void deleteById(Long optionId);
+    void deleteByQuestion(Question question);
     Option patchUpdateOption(Long optionId, OptionRequest optionRequest);
     Option entityMap(OptionRequest optionRequest);
     OptionResponse entityMap(Option option);

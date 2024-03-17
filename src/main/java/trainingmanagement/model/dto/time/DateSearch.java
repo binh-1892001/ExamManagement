@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.admin.time;
+package trainingmanagement.model.dto.time;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

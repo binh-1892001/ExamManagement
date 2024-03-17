@@ -15,5 +15,5 @@ public class QuestionRequest {
     String levelQuestion;
     String typeQuestion;
     String image;
-    List<OptionRequest> optionRequests;
+    Long testId;
 }
