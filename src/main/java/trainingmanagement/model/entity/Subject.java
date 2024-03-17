@@ -23,7 +23,6 @@ public class Subject extends BaseModel {
     @OneToMany(mappedBy = "subject")
     @JsonIgnore
     List<Exam> exams;
-
     @OneToMany(mappedBy = "subject")
     @JsonIgnore
     private List<ClassSubject> classSubjects;
