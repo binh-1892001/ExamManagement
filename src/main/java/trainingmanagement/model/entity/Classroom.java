@@ -5,10 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
-import trainingmanagement.model.entity.Enum.EStatusClass;
-
+import trainingmanagement.model.entity.Enum.EClassStatus;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -22,11 +20,11 @@ public class Classroom extends BaseModel {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "class_status")
-    private EStatusClass status;
+    private EClassStatus classStatus;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private EActiveStatus eActiveStatus;
+    private EActiveStatus status;
 
     @ManyToOne
     @JoinColumn(name = "teacherId",referencedColumnName = "id")

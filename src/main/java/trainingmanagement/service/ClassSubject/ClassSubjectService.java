@@ -1,9 +1,9 @@
 package trainingmanagement.service.ClassSubject;
 
-import trainingmanagement.model.dto.admin.request.ClassSubjectRequest;
+import trainingmanagement.model.dto.request.admin.AClassSubjectRequest;
 import trainingmanagement.model.entity.ClassSubject;
 
 public interface ClassSubjectService {
-    ClassSubject save(ClassSubjectRequest classSubjectRequest);
+    ClassSubject save(AClassSubjectRequest AClassSubjectRequest);
     void deleteById(Long id);
 }

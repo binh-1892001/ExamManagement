@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.admin.response.UserResponse;
+import trainingmanagement.model.dto.response.admin.AUserResponse;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.User;
@@ -39,8 +39,8 @@ public class AUserController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<UserResponse> userResponses = userService.getAllUserResponsesToList();
-            Page<?> users = commonService.convertListToPages(pageable, userResponses);
+            List<AUserResponse> AUserRespons = userService.getAllUserResponsesToList();
+            Page<?> users = commonService.convertListToPages(pageable, AUserRespons);
             if (!users.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -129,8 +129,8 @@ public class AUserController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<UserResponse> userResponses = userService.findByUsernameOrFullNameContainingIgnoreCase(keyword);
-            Page<?> users = commonService.convertListToPages(pageable, userResponses);
+            List<AUserResponse> AUserRespons = userService.findByUsernameOrFullNameContainingIgnoreCase(keyword);
+            Page<?> users = commonService.convertListToPages(pageable, AUserRespons);
             if (!users.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -157,8 +157,8 @@ public class AUserController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<UserResponse> userResponses = userService.getAllTeacher();
-            Page<?> users = commonService.convertListToPages(pageable, userResponses);
+            List<AUserResponse> AUserRespons = userService.getAllTeacher();
+            Page<?> users = commonService.convertListToPages(pageable, AUserRespons);
             if (!users.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -187,8 +187,8 @@ public class AUserController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<UserResponse> userResponses = userService.getAllStudentByClassId(classId);
-            Page<?> users = commonService.convertListToPages(pageable, userResponses);
+            List<AUserResponse> AUserRespons = userService.getAllStudentByClassId(classId);
+            Page<?> users = commonService.convertListToPages(pageable, AUserRespons);
             if (!users.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

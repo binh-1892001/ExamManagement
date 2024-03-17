@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.admin.response.UserResponse;
+import trainingmanagement.model.dto.response.admin.AUserResponse;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.UserClass;
@@ -33,7 +33,7 @@ public class TStudentController {
     @GetMapping("/class/{classId}")
     public ResponseEntity<?> getStudentByClassId(@PathVariable("classId") Long id) throws CustomException{
         List<UserClass> userClasses = userClassService.findByClassId(id);
-        List<UserResponse> users = new ArrayList<>();
+        List<AUserResponse> users = new ArrayList<>();
 
         for (UserClass userClass : userClasses) {
             EActiveStatus isActive = userService.getById(userClass.getUser().getId()).orElse(null).getStatus();
@@ -52,7 +52,7 @@ public class TStudentController {
     // * Get user by id.
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable("userId") Long userId) throws CustomException {
-        Optional<UserResponse> user = userService.getUserResponseById(userId);
+        Optional<AUserResponse> user = userService.getUserResponseById(userId);
         if (user.isEmpty())
             throw new CustomException("User is not exists.");
         return new ResponseEntity<>(
@@ -76,8 +76,8 @@ public class TStudentController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<UserResponse> userResponses = userService.findByUsernameOrFullNameContainingIgnoreCase(keyword);
-            Page<?> users = commonService.convertListToPages(pageable, userResponses);
+            List<AUserResponse> AUserRespons = userService.findByUsernameOrFullNameContainingIgnoreCase(keyword);
+            Page<?> users = commonService.convertListToPages(pageable, AUserRespons);
             if (!users.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

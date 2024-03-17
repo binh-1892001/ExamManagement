@@ -62,7 +62,7 @@ insert into exam(exam_name, status, subject_id)
     ('TT13', 'ACTIVE', 9),
     ('HS14', 'ACTIVE', 4),
     ('NE15', 'ACTIVE', 10);
-insert into test(name_test, status, test_time, type_test, exam_id)
+insert into test(test_name, status, test_time, test_type, exam_id)
     values ('T01', 'ACTIVE', 45, 'QUIZTEST', 1),
     ('T018', 'ACTIVE', 120, 'WRITENTEST', 1),
     ('T03', 'ACTIVE', 45, 'WRITENTEST', 2),

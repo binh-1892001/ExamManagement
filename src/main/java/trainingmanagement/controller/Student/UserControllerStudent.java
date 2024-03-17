@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.admin.response.UserResponse;
+import trainingmanagement.model.dto.response.admin.AUserResponse;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.security.UserDetail.UserLogin;
@@ -40,8 +40,8 @@ public class UserControllerStudent {
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
             User user = userLogin.userLogin();
-            List<UserResponse> userResponseList = userService.getAllStudentByClassId(classId);
-            Page<?> users = commonService.convertListToPages(pageable, userResponseList);
+            List<AUserResponse> AUserResponseList = userService.getAllStudentByClassId(classId);
+            Page<?> users = commonService.convertListToPages(pageable, AUserResponseList);
             if (!users.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

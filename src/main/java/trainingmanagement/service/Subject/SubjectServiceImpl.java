@@ -5,8 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import trainingmanagement.model.base.AuditableEntity;
-import trainingmanagement.model.dto.admin.request.SubjectRequest;
-import trainingmanagement.model.dto.admin.response.SubjectResponse;
+import trainingmanagement.model.dto.request.admin.ASubjectRequest;
+import trainingmanagement.model.dto.response.admin.ASubjectResponse;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Subject;
 import trainingmanagement.repository.SubjectRepository;
@@ -23,7 +23,7 @@ public class SubjectServiceImpl implements SubjectService{
         return subjectRepository.findAll();
     }
     @Override
-    public List<SubjectResponse> getAllSubjectResponsesToList() {
+    public List<ASubjectResponse> getAllSubjectResponsesToList() {
         return getAllToList().stream().map(this::entityMap).toList();
     }
     @Override
@@ -37,29 +37,29 @@ public class SubjectServiceImpl implements SubjectService{
     }
 
     @Override
-    public Subject save(SubjectRequest subjectRequest) {
-        return subjectRepository.save(entityMap(subjectRequest));
+    public Subject save(ASubjectRequest ASubjectRequest) {
+        return subjectRepository.save(entityMap(ASubjectRequest));
     }
 
     @Override
-    public Subject patchUpdate(Long subjectId, SubjectRequest subjectRequest) {
+    public Subject patchUpdate(Long subjectId, ASubjectRequest ASubjectRequest) {
         Optional<Subject> updateSubject = getById(subjectId);
         if(updateSubject.isPresent()) {
             Subject subject = updateSubject.get();
             AuditableEntity auditableEntity = updateSubject.get();
             if (auditableEntity.getCreatedDate() != null)
                 auditableEntity.setCreatedDate(auditableEntity.getCreatedDate());
-            if (subjectRequest.getSubjectName() != null)
-                subject.setSubjectName(subjectRequest.getSubjectName());
-            if (subjectRequest.getEActiveStatus() != null)
-                subject.setEActiveStatus(EActiveStatus.valueOf(subjectRequest.getEActiveStatus()));
+            if (ASubjectRequest.getSubjectName() != null)
+                subject.setSubjectName(ASubjectRequest.getSubjectName());
+            if (ASubjectRequest.getEActiveStatus() != null)
+                subject.setStatus(EActiveStatus.valueOf(ASubjectRequest.getEActiveStatus()));
             return save(subject);
         }
         return null;
     }
 
     @Override
-    public List<SubjectResponse> findBySubjectName(String subjectName) {
+    public List<ASubjectResponse> findBySubjectName(String subjectName) {
         return subjectRepository.findBySubjectNameContainingIgnoreCase(subjectName)
                 .stream().map(this::entityMap).toList();
     }
@@ -69,22 +69,22 @@ public class SubjectServiceImpl implements SubjectService{
     }
 
     @Override
-    public Subject entityMap(SubjectRequest subjectRequest) {
+    public Subject entityMap(ASubjectRequest ASubjectRequest) {
         return Subject.builder()
-            .subjectName(subjectRequest.getSubjectName())
-            .eActiveStatus(EActiveStatus.valueOf(subjectRequest.getEActiveStatus()))
+            .subjectName(ASubjectRequest.getSubjectName())
+            .status(EActiveStatus.valueOf(ASubjectRequest.getEActiveStatus()))
             .build();
     }
 
     @Override
-    public List<SubjectResponse> getAllByClassId(Long classId) {
+    public List<ASubjectResponse> getAllByClassId(Long classId) {
         List<Subject> subjects = subjectRepository.getAllByClassId(classId);
         return subjects.stream().map(this::entityMap).toList();
     }
 
     @Override
-    public SubjectResponse entityMap(Subject subject) {
-        return SubjectResponse.builder()
+    public ASubjectResponse entityMap(Subject subject) {
+        return ASubjectResponse.builder()
             .subjectName(subject.getSubjectName())
             .build();
     }

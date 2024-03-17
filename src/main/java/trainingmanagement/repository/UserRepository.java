@@ -5,13 +5,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import trainingmanagement.model.entity.Classroom;
-import trainingmanagement.model.entity.Enum.ERoles;
-import trainingmanagement.model.entity.Role;
+import trainingmanagement.model.entity.Enum.ERoleName;
 import trainingmanagement.model.entity.User;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Long> {
@@ -33,7 +30,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Query(value = "select u.* from role r join user_role ur on r.id=ur.role_id " +
             "join user u on ur.user_id = u.id " +
             "join user_class uc on u.id = uc.user_id " +
-            "where r.role_name = :eRoles and uc.class_id = :classId", nativeQuery = true)
-    List<User> getAllByClassIdAndRole(ERoles eRoles,Long classId);
+            "where r.role_name = :roleName and uc.class_id = :classId", nativeQuery = true)
+    List<User> getAllByClassIdAndRole(ERoleName roleName, Long classId);
 
 }

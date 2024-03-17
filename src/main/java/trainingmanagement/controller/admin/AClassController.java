@@ -9,11 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.admin.request.ClassRequest;
+import trainingmanagement.model.dto.request.admin.AClassRequest;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.admin.request.ClassSubjectRequest;
-import trainingmanagement.model.dto.admin.request.UserClassRequest;
-import trainingmanagement.model.dto.admin.response.ClassResponse;
+import trainingmanagement.model.dto.request.admin.AClassSubjectRequest;
+import trainingmanagement.model.dto.request.admin.AUserClassRequest;
+import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.UserClass;
@@ -45,7 +45,7 @@ public class AClassController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ClassResponse> classroomResponses = classroomService.getAllClassResponsesToList();
+            List<AClassResponse> classroomResponses = classroomService.getAllClassResponsesToList();
             Page<?> classrooms = commonService.convertListToPages(pageable, classroomResponses);
             if (!classrooms.isEmpty()) {
                 return new ResponseEntity<>(
@@ -77,8 +77,8 @@ public class AClassController {
     }
     // * Create new classroom.
     @PostMapping
-    public ResponseEntity<?> createClass(@RequestBody ClassRequest classRequest) {
-        Classroom classroom = classroomService.save(classRequest);
+    public ResponseEntity<?> createClass(@RequestBody AClassRequest AClassRequest) {
+        Classroom classroom = classroomService.save(AClassRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                     EHttpStatus.SUCCESS,
@@ -91,9 +91,9 @@ public class AClassController {
     @PatchMapping("/{classId}")
     public ResponseEntity<?> pathUpdateClass(
             @PathVariable("classId") Long updateClassroomId,
-            @RequestBody ClassRequest classRequest
+            @RequestBody AClassRequest AClassRequest
     ) {
-        Classroom classroom = classroomService.patchUpdate(updateClassroomId, classRequest);
+        Classroom classroom = classroomService.patchUpdate(updateClassroomId, AClassRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                     EHttpStatus.SUCCESS,
@@ -127,7 +127,7 @@ public class AClassController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ClassResponse> classroomResponses = classroomService.findByClassName(keyword);
+            List<AClassResponse> classroomResponses = classroomService.findByClassName(keyword);
             Page<?> classrooms = commonService.convertListToPages(pageable, classroomResponses);
             if (!classrooms.isEmpty()) {
                 return new ResponseEntity<>(
@@ -145,8 +145,8 @@ public class AClassController {
     }
     // * add subject to class
     @PostMapping("/addSubject")
-    public ResponseEntity<?> addSubjectToClass(@RequestBody ClassSubjectRequest classSubjectRequest){
-        classSubjectService.save(classSubjectRequest);
+    public ResponseEntity<?> addSubjectToClass(@RequestBody AClassSubjectRequest AClassSubjectRequest){
+        classSubjectService.save(AClassSubjectRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -158,8 +158,8 @@ public class AClassController {
 
     // * add student to class
     @PostMapping("/saveStudent")
-    public ResponseEntity<?> saveStudent(@RequestBody UserClassRequest userClassRequest){
-        UserClass userClass = userClassService.saveStudent(userClassRequest);
+    public ResponseEntity<?> saveStudent(@RequestBody AUserClassRequest AUserClassRequest){
+        UserClass userClass = userClassService.saveStudent(AUserClassRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,

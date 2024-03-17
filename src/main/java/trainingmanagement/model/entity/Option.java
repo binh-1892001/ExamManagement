@@ -19,6 +19,9 @@ public class Option extends BaseModel {
     @Enumerated(EnumType.STRING)
     @Column(name = "is_correct")
     private EOptionStatus isCorrect;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EOptionStatus status;
     @ManyToOne
     @JoinColumn(name = "question_id",referencedColumnName = "id")
     private Question question;

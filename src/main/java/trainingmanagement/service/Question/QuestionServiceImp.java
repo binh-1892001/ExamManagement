@@ -4,14 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import trainingmanagement.model.dto.admin.request.OptionRequest;
-import trainingmanagement.model.dto.admin.request.QuestionOptionRequest;
-import trainingmanagement.model.dto.admin.request.QuestionRequest;
-import trainingmanagement.model.dto.admin.response.OptionResponse;
-import trainingmanagement.model.dto.admin.response.QuestionResponse;
+import trainingmanagement.model.dto.request.admin.AOptionRequest;
+import trainingmanagement.model.dto.request.admin.AQuestionOptionRequest;
+import trainingmanagement.model.dto.request.admin.AQuestionRequest;
+import trainingmanagement.model.dto.response.admin.AQuestionResponse;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
-import trainingmanagement.model.entity.Enum.ELevelQuestion;
-import trainingmanagement.model.entity.Enum.ETypeQuestion;
+import trainingmanagement.model.entity.Enum.EQuestionLevel;
+import trainingmanagement.model.entity.Enum.EQuestionType;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.model.entity.Test;
@@ -20,7 +19,6 @@ import trainingmanagement.service.Option.OptionService;
 import trainingmanagement.service.Test.TestService;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +36,7 @@ public class QuestionServiceImp implements QuestionService {
     }
 
     @Override
-    public List<QuestionResponse> getAllQuestionResponsesToList() {
+    public List<AQuestionResponse> getAllQuestionResponsesToList() {
         return getAllToList().stream().map(this::entityMap).toList();
     }
 
@@ -53,17 +51,17 @@ public class QuestionServiceImp implements QuestionService {
     }
 
     @Override
-    public Question save(QuestionRequest questionRequest) {
-        return questionRepository.save(entityMap(questionRequest));
+    public Question save(AQuestionRequest AQuestionRequest) {
+        return questionRepository.save(entityMap(AQuestionRequest));
     }
 
     @Override
-    public Question saveQuestionAndOption(QuestionOptionRequest questionOptionRequest) {
-        Question question = save(questionOptionRequest.getQuestionRequest());
-        List<OptionRequest> optionRequests = questionOptionRequest.getOptionRequests();
-        for (OptionRequest optionRequest:optionRequests){
-            optionRequest.setQuestionId(question.getId());
-            optionService.save(optionRequest);
+    public Question saveQuestionAndOption(AQuestionOptionRequest AQuestionOptionRequest) {
+        Question question = save(AQuestionOptionRequest.getAQuestionRequest());
+        List<AOptionRequest> AOptionRequests = AQuestionOptionRequest.getAOptionRequests();
+        for (AOptionRequest AOptionRequest : AOptionRequests){
+            AOptionRequest.setQuestionId(question.getId());
+            optionService.save(AOptionRequest);
         }
         List<Option> options = optionService.getAllByQuestion(question);
         question.setOptions(options);
@@ -71,7 +69,7 @@ public class QuestionServiceImp implements QuestionService {
     }
 
     @Override
-    public List<QuestionResponse> findByQuestionContent(String questionContent) {
+    public List<AQuestionResponse> findByQuestionContent(String questionContent) {
         return questionRepository.findAllByContentQuestionIsContainingIgnoreCase(questionContent)
                 .stream().map(this::entityMap).toList();
     }
@@ -82,90 +80,90 @@ public class QuestionServiceImp implements QuestionService {
     }
 
     @Override
-    public Question patchUpdateQuestion(Long questionId, QuestionRequest questionRequest) {
+    public Question patchUpdateQuestion(Long questionId, AQuestionRequest AQuestionRequest) {
         Optional<Question> updateQuestion = questionRepository.findById(questionId);
         if (updateQuestion.isPresent()) {
             Question question = updateQuestion.get();
-            if (questionRequest.getContentQuestion() != null)
-                question.setContentQuestion(questionRequest.getContentQuestion());
-            if (questionRequest.getLevelQuestion() != null) {
-                ELevelQuestion levelQuestion = switch (questionRequest.getLevelQuestion()) {
-                    case "EASY" -> ELevelQuestion.EASY;
-                    case "NORMAL" -> ELevelQuestion.NORMAL;
-                    case "DIFFICULTY" -> ELevelQuestion.DIFFICULTY;
+            if (AQuestionRequest.getContentQuestion() != null)
+                question.setContentQuestion(AQuestionRequest.getContentQuestion());
+            if (AQuestionRequest.getLevelQuestion() != null) {
+                EQuestionLevel levelQuestion = switch (AQuestionRequest.getLevelQuestion()) {
+                    case "EASY" -> EQuestionLevel.EASY;
+                    case "NORMAL" -> EQuestionLevel.NORMAL;
+                    case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
                     default -> null;
                 };
                 question.setLevelQuestion(levelQuestion);
             }
-            if (questionRequest.getTypeQuestion() != null) {
-                ETypeQuestion typeQuestion = switch (questionRequest.getTypeQuestion()) {
-                    case "SINGLE" -> ETypeQuestion.SINGLE;
-                    case "MULTIPLE" -> ETypeQuestion.MULTIPLE;
+            if (AQuestionRequest.getTypeQuestion() != null) {
+                EQuestionType typeQuestion = switch (AQuestionRequest.getTypeQuestion()) {
+                    case "SINGLE" -> EQuestionType.SINGLE;
+                    case "MULTIPLE" -> EQuestionType.MULTIPLE;
                     default -> null;
                 };
                 question.setTypeQuestion(typeQuestion);
             }
-            if (questionRequest.getImage() != null)
-                question.setImage(questionRequest.getImage());
-            if (questionRequest.getTestId() != null)
-                question.setTest(testService.findById(questionRequest.getTestId()));
+            if (AQuestionRequest.getImage() != null)
+                question.setImage(AQuestionRequest.getImage());
+            if (AQuestionRequest.getTestId() != null)
+                question.setTest(testService.findById(AQuestionRequest.getTestId()));
             return questionRepository.save(question);
         }
         return null;
     }
 
     @Override
-    public Question entityMap(QuestionRequest questionRequest) {
-        ELevelQuestion levelQuestion = switch (questionRequest.getLevelQuestion()) {
-            case "EASY" -> ELevelQuestion.EASY;
-            case "NORMAL" -> ELevelQuestion.NORMAL;
-            case "DIFFICULTY" -> ELevelQuestion.DIFFICULTY;
+    public Question entityMap(AQuestionRequest AQuestionRequest) {
+        EQuestionLevel levelQuestion = switch (AQuestionRequest.getLevelQuestion()) {
+            case "EASY" -> EQuestionLevel.EASY;
+            case "NORMAL" -> EQuestionLevel.NORMAL;
+            case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
             default -> null;
         };
-        ETypeQuestion typeQuestion = switch (questionRequest.getTypeQuestion()) {
-            case "SINGLE" -> ETypeQuestion.SINGLE;
-            case "MULTIPLE" -> ETypeQuestion.MULTIPLE;
+        EQuestionType typeQuestion = switch (AQuestionRequest.getTypeQuestion()) {
+            case "SINGLE" -> EQuestionType.SINGLE;
+            case "MULTIPLE" -> EQuestionType.MULTIPLE;
             default -> null;
         };
         return Question.builder()
-                .contentQuestion(questionRequest.getContentQuestion())
+                .contentQuestion(AQuestionRequest.getContentQuestion())
                 .levelQuestion(levelQuestion)
                 .typeQuestion(typeQuestion)
-                .image(questionRequest.getImage())
-                .eActiveStatus(EActiveStatus.ACTIVE)
-                .test(testService.findById(questionRequest.getTestId()))
+                .image(AQuestionRequest.getImage())
+                .status(EActiveStatus.ACTIVE)
+                .test(testService.findById(AQuestionRequest.getTestId()))
                 .build();
     }
 
     @Override
-    public QuestionResponse entityMap(Question question) {
-        return QuestionResponse.builder()
+    public AQuestionResponse entityMap(Question question) {
+        return AQuestionResponse.builder()
                 .questionId(question.getId())
                 .contentQuestion(question.getContentQuestion())
                 .levelQuestion(question.getLevelQuestion().name())
                 .typeQuestion(question.getTypeQuestion().name())
                 .image(question.getImage())
-                .eActiveStatus(question.getEActiveStatus().name())
+                .eActiveStatus(question.getStatus().name())
                 .createdDate(question.getCreatedDate())
-                .testName(question.getTest().getNameTest())
-                .optionResponses(question.getOptions().stream().map(optionService::entityMap).toList())
+                .testName(question.getTest().getTestName())
+                .options(question.getOptions().stream().map(optionService::entityMap).toList())
                 .build();
     }
 
     @Override
-    public List<QuestionResponse> getAllByTest(Test test) {
+    public List<AQuestionResponse> getAllByTest(Test test) {
         List<Question> questions = questionRepository.getAllByTest(test);
         return questions.stream().map(this::entityMap).toList();
     }
 
     @Override
-    public List<QuestionResponse> getAllByCreatedDate(LocalDate date) {
+    public List<AQuestionResponse> getAllByCreatedDate(LocalDate date) {
         List<Question> questions = questionRepository.getAllByCreatedDate(date);
         return questions.stream().map(this::entityMap).toList();
     }
 
     @Override
-    public List<QuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd) {
+    public List<AQuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd) {
         List<Question> questions = questionRepository.getAllFromDayToDay(dateStart,dateEnd);
         return questions.stream().map(this::entityMap).toList();
     }

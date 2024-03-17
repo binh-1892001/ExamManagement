@@ -9,13 +9,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.admin.request.LoginRequest;
-import trainingmanagement.model.dto.admin.request.RegisterRequest;
-import trainingmanagement.model.dto.admin.response.JwtResponse;
-import trainingmanagement.model.dto.admin.response.UserResponse;
+import trainingmanagement.model.dto.request.auth.LoginRequest;
+import trainingmanagement.model.dto.request.auth.RegisterRequest;
+import trainingmanagement.model.dto.response.JwtResponse;
+import trainingmanagement.model.dto.response.admin.AUserResponse;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Enum.EGender;
-import trainingmanagement.model.entity.Enum.ERoles;
+import trainingmanagement.model.entity.Enum.ERoleName;
 import trainingmanagement.model.entity.Role;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.repository.UserRepository;
@@ -41,7 +41,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<UserResponse> getAllUserResponsesToList() {
+    public List<AUserResponse> getAllUserResponsesToList() {
         return getAllToList().stream().map(this::entityMap).toList();
     }
     @Override
@@ -92,7 +92,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public Optional<UserResponse> getUserResponseById(Long userId) {
+    public Optional<AUserResponse> getUserResponseById(Long userId) {
         return Optional.ofNullable(entityMap(userRepository.findByUserId(userId).orElse(null)));
     }
 
@@ -136,7 +136,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<UserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword) {
+    public List<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword) {
         return userRepository.findByUsernameOrFullNameContainingIgnoreCase(keyword)
                 .stream().map(this::entityMap).toList();
     }
@@ -162,21 +162,21 @@ public class UserServiceImp implements UserService {
 //    }
 
     @Override
-    public List<UserResponse> getAllTeacher() {
+    public List<AUserResponse> getAllTeacher() {
         List<User> users = userRepository.getAllTeacher();
         return users.stream().map(this::entityMap).toList();
     }
 
     @Override
-    public List<UserResponse> getAllStudentByClassId(Long classId) {
-        List<User> users =  userRepository.getAllByClassIdAndRole(ERoles.ROLE_STUDENT,classId);
+    public List<AUserResponse> getAllStudentByClassId(Long classId) {
+        List<User> users =  userRepository.getAllByClassIdAndRole(ERoleName.ROLE_STUDENT,classId);
         return users.stream().map(this::entityMap).toList();
     }
 
 
     @Override
-    public UserResponse entityMap(User user) {
-        return UserResponse.builder()
+    public AUserResponse entityMap(User user) {
+        return AUserResponse.builder()
             .fullName(user.getFullName())
             .username(user.getUsername())
             .email(user.getEmail())

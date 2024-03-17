@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.admin.request.TestRequest;
+import trainingmanagement.model.dto.request.admin.ATestRequest;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Exam;
 import trainingmanagement.model.entity.Test;
@@ -32,38 +32,38 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public Test add(TestRequest testRequest) {
-        if (testRepository.existsByNameTest(testRequest.getNameTest())) {
+    public Test add(ATestRequest ATestRequest) {
+        if (testRepository.existsByTestName(ATestRequest.getNameTest())) {
             throw new RuntimeException("De thi da ton tai");
         }
-        Optional<Exam> exam = examService.getById(testRequest.getExamId());
+        Optional<Exam> exam = examService.getById(ATestRequest.getExamId());
         if (exam.isEmpty())
             throw new RuntimeException("Không tồn tại bai thi!");
         Test test = Test.builder()
-                .nameTest(testRequest.getNameTest())
-                .eActiveStatus(EActiveStatus.ACTIVE)
-                .testTime(testRequest.getTestTime())
-                .resources(testRequest.getResources())
-                .typeTest(testRequest.getTypeTest())
+                .testName(ATestRequest.getNameTest())
+                .testTime(ATestRequest.getTestTime())
+                .resources(ATestRequest.getResources())
+                .testType(ATestRequest.getTypeTest())
+                .status(EActiveStatus.ACTIVE)
                 .exam(exam.get())
                 .build();
         return testRepository.save(test);
     }
 
     @Override
-    public Test edit(TestRequest testRequest, Long id) {
-        if (testRepository.existsByNameTest(testRequest.getNameTest())) {
+    public Test edit(ATestRequest ATestRequest, Long id) {
+        if (testRepository.existsByTestName(ATestRequest.getNameTest())) {
             throw new RuntimeException("De thi da ton tai");
         }
-        Optional<Exam> exam = examService.getById(testRequest.getExamId());
+        Optional<Exam> exam = examService.getById(ATestRequest.getExamId());
         if (exam.isEmpty())
             throw new RuntimeException("Không tồn tại bai thi!");
         Test test = Test.builder()
-                .nameTest(testRequest.getNameTest())
-                .eActiveStatus(EActiveStatus.valueOf(testRequest.getEActiveStatus()))
-                .testTime(testRequest.getTestTime())
-                .resources(testRequest.getResources())
-                .typeTest(testRequest.getTypeTest())
+                .testName(ATestRequest.getNameTest())
+                .testTime(ATestRequest.getTestTime())
+                .testType(ATestRequest.getTypeTest())
+                .resources(ATestRequest.getResources())
+                .status(EActiveStatus.valueOf(ATestRequest.getEActiveStatus()))
                 .exam(exam.get())
                 .build();
         test.setId(id);
@@ -76,7 +76,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<Test> getByNameTest(String nameTest) {
-        return testRepository.findByNameTest(nameTest);
+    public List<Test> getByNameTest(String testName) {
+        return testRepository.findByTestName(testName);
     }
 }

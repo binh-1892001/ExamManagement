@@ -2,8 +2,8 @@ package trainingmanagement.service.Role;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.admin.response.RoleResponse;
-import trainingmanagement.model.entity.Enum.ERoles;
+import trainingmanagement.model.dto.response.admin.ARoleResponse;
+import trainingmanagement.model.entity.Enum.ERoleName;
 import trainingmanagement.model.entity.Role;
 import trainingmanagement.repository.RoleRepository;
 import java.util.List;
@@ -18,23 +18,23 @@ public class RoleServiceImpl implements RoleService{
     }
 
     @Override
-    public List<RoleResponse> getAllRoleResponsesToList() {
+    public List<ARoleResponse> getAllRoleResponsesToList() {
         return getAllToList().stream().map(this::entityMap).toList();
     }
 
     @Override
-    public Role findByRoleName(ERoles roleName) {
+    public Role findByRoleName(ERoleName roleName) {
         return roleRepository.findByRoleName(roleName);
     }
 
     @Override
-    public List<RoleResponse> findAllByRoleNameContainingIgnoreCase(String roleName) {
+    public List<ARoleResponse> findAllByRoleNameContainingIgnoreCase(String roleName) {
         return roleRepository.findAllByRoleNameContainingIgnoreCase(roleName).stream().map(this::entityMap).toList();
     }
 
     @Override
-    public RoleResponse entityMap(Role role) {
-        return RoleResponse.builder()
+    public ARoleResponse entityMap(Role role) {
+        return ARoleResponse.builder()
             .roleName(role.getRoleName().name())
             .build();
     }

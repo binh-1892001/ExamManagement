@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.teacher.response.ExamResponseTeacher;
+import trainingmanagement.model.dto.response.teacher.TExamResponse;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.Exam.ExamService;
@@ -36,7 +36,7 @@ public class TExamController {
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ExamResponseTeacher> tExamResponses = examService.getAllExamResponsesToListWithActiveStatus();
+            List<TExamResponse> tExamResponses = examService.getAllExamResponsesToListWithActiveStatus();
             Page<?> exams = commonService.convertListToPages(pageable, tExamResponses);
             if (!exams.isEmpty()) {
                 return new ResponseEntity<>(
@@ -57,7 +57,7 @@ public class TExamController {
     //Tìm kiếm theo id các Exam đã Active
     @GetMapping("/{examId}")
     public ResponseEntity<?> getExamById(@PathVariable("examId") Long examId) throws CustomException {
-        Optional<ExamResponseTeacher> exam = examService.getExamResponsesByIdWithActiveStatus(examId);
+        Optional<TExamResponse> exam = examService.getExamResponsesByIdWithActiveStatus(examId);
         if(exam.isPresent())
             return new ResponseEntity<>(
                     new ResponseWrapper<>(

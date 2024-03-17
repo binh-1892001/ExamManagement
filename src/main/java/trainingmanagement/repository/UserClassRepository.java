@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import trainingmanagement.model.entity.Classroom;
-import trainingmanagement.model.entity.Enum.ERoles;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.model.entity.UserClass;
 

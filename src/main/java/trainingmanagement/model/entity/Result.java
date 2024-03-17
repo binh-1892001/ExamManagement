@@ -16,15 +16,15 @@ public class Result extends BaseModel {
     @ManyToOne
     @JoinColumn(name = "student_id",referencedColumnName = "id")
     private User student;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status")
-    private EActiveStatus eActiveStatus;
     @ManyToOne
     @JoinColumn(name = "teacher_id",referencedColumnName = "id")
     private User teacher;
     @ManyToOne
     @JoinColumn(name = "test_id",referencedColumnName = "id")
     private Test test;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private EActiveStatus status;
     private LocalDate dateDoTest;
     private Double mark;
     private Integer examTimes;

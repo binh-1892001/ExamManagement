@@ -3,9 +3,9 @@ package trainingmanagement.service.Exam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.admin.request.ExamRequest;
-import trainingmanagement.model.dto.admin.response.ExamResponse;
-import trainingmanagement.model.dto.teacher.response.ExamResponseTeacher;
+import trainingmanagement.model.dto.request.admin.AExamRequest;
+import trainingmanagement.model.dto.response.admin.AExamResponse;
+import trainingmanagement.model.dto.response.teacher.TExamResponse;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Exam;
 import trainingmanagement.model.entity.Subject;
@@ -26,7 +26,7 @@ public class ExamServiceImpl implements ExamService {
         return examRepository.findAll();
     }
     @Override
-    public List<ExamResponse> getAllExamResponsesToList() {
+    public List<AExamResponse> getAllExamResponsesToList() {
         return getAllToList().stream().map(this::entityMap).toList();
     }
     @Override
@@ -38,26 +38,26 @@ public class ExamServiceImpl implements ExamService {
         return examRepository.save(exam);
     }
     @Override
-    public Exam save(ExamRequest examRequest) {
-        return examRepository.save(entityMap(examRequest));
+    public Exam save(AExamRequest AExamRequest) {
+        return examRepository.save(entityMap(AExamRequest));
     }
     @Override
-    public Exam patchUpdateExam(Long examId, ExamRequest examRequest) throws CustomException {
+    public Exam patchUpdateExam(Long examId, AExamRequest AExamRequest) throws CustomException {
         Optional<Exam> updateExam = examRepository.findById(examId);
         if(updateExam.isPresent()){
             Exam exam = updateExam.get();
-            Optional<Subject> subject = subjectService.getById(examRequest.getSubjectId());
+            Optional<Subject> subject = subjectService.getById(AExamRequest.getSubjectId());
             if(subject.isEmpty()) throw new CustomException("Subject is not exists.");
-            if(examRequest.getExamName() != null) exam.setExamName(examRequest.getExamName());
-            if(examRequest.getStatus() != null) {
-                EActiveStatus activeStatus = switch (examRequest.getStatus().toUpperCase()) {
+            if(AExamRequest.getExamName() != null) exam.setExamName(AExamRequest.getExamName());
+            if(AExamRequest.getStatus() != null) {
+                EActiveStatus activeStatus = switch (AExamRequest.getStatus().toUpperCase()) {
                     case "INACTIVE" -> EActiveStatus.ACTIVE;
                     case "ACTIVE" -> EActiveStatus.INACTIVE;
                     default -> null;
                 };
                 exam.setStatus(activeStatus);
             }
-            if(examRequest.getSubjectId() != null) exam.setSubject(subject.get());
+            if(AExamRequest.getSubjectId() != null) exam.setSubject(subject.get());
             return examRepository.save(exam);
         }
         throw new CustomException("Exam is not exists to update.");
@@ -67,27 +67,27 @@ public class ExamServiceImpl implements ExamService {
         examRepository.deleteById (examId);
     }
     @Override
-    public List<ExamResponse> searchByExamName(String examName) {
+    public List<AExamResponse> searchByExamName(String examName) {
         return examRepository.findByExamName(examName).stream().map(this::entityMap).toList();
     }
 
     @Override
-    public Exam entityMap(ExamRequest examRequest) {
-        EActiveStatus activeStatus = switch (examRequest.getStatus().toUpperCase()) {
+    public Exam entityMap(AExamRequest AExamRequest) {
+        EActiveStatus activeStatus = switch (AExamRequest.getStatus().toUpperCase()) {
             case "INACTIVE" -> EActiveStatus.ACTIVE;
             case "ACTIVE" -> EActiveStatus.INACTIVE;
             default -> null;
         };
         return Exam.builder()
-            .examName(examRequest.getExamName())
+            .examName(AExamRequest.getExamName())
             .status(activeStatus)
-            .subject(subjectService.getById(examRequest.getSubjectId()).orElse(null))
+            .subject(subjectService.getById(AExamRequest.getSubjectId()).orElse(null))
             .build();
     }
 
     @Override
-    public ExamResponse entityMap(Exam exam) {
-        return ExamResponse.builder()
+    public AExamResponse entityMap(Exam exam) {
+        return AExamResponse.builder()
                 .examId(exam.getId())
                 .examName(exam.getExamName())
                 .status(exam.getStatus().name())
@@ -96,8 +96,8 @@ public class ExamServiceImpl implements ExamService {
                 .build();
     }
     @Override
-    public ExamResponseTeacher entityMapTeacher(Exam exam) {
-        return ExamResponseTeacher.builder()
+    public TExamResponse entityMapTeacher(Exam exam) {
+        return TExamResponse.builder()
                 .examId(exam.getId())
                 .examName(exam.getExamName())
                 .subject(exam.getSubject())
@@ -110,7 +110,7 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public List<ExamResponseTeacher> getAllExamResponsesToListWithActiveStatus() {
+    public List<TExamResponse> getAllExamResponsesToListWithActiveStatus() {
         return getAllExamsToListWithActiveStatus().stream().map(this::entityMapTeacher).toList();
     }
     // Lấy ra Exam theo id với trang thái Active(Teacher)
@@ -120,7 +120,7 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public Optional<ExamResponseTeacher> getExamResponsesByIdWithActiveStatus(Long examId) {
+    public Optional<TExamResponse> getExamResponsesByIdWithActiveStatus(Long examId) {
         Optional<Exam> optionalExam = getExamByIdWithActiveStatus(examId);
         if (optionalExam.isPresent()){
             Exam exam = optionalExam.get();
@@ -132,7 +132,7 @@ public class ExamServiceImpl implements ExamService {
     //Lấy danh sách Exam theo ngày tạo
 
     @Override
-    public List<ExamResponse> getAllExamByCreatedDate(LocalDate date) {
+    public List<AExamResponse> getAllExamByCreatedDate(LocalDate date) {
         return examRepository.findByCreatedDate(date).stream().map(this::entityMap).toList();
     }
 }

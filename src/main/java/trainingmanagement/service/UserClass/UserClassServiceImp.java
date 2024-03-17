@@ -1,11 +1,10 @@
 package trainingmanagement.service.UserClass;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.admin.request.UserClassRequest;
+import trainingmanagement.model.dto.request.admin.AUserClassRequest;
 import trainingmanagement.model.entity.Classroom;
-import trainingmanagement.model.entity.Enum.ERoles;
+import trainingmanagement.model.entity.Enum.ERoleName;
 import trainingmanagement.model.entity.Role;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.model.entity.UserClass;
@@ -23,15 +22,15 @@ public class UserClassServiceImp implements UserClassService{
     private final UserRepository userRepository;
     private final ClassroomRepository classroomRepository;
     @Override
-    public UserClass saveStudent(UserClassRequest userClassRequest) {
-        Optional<User> userOptional = userRepository.findById(userClassRequest.getUserId());
-        Optional<Classroom> classroomOptional = classroomRepository.findById(userClassRequest.getClassId());
+    public UserClass saveStudent(AUserClassRequest AUserClassRequest) {
+        Optional<User> userOptional = userRepository.findById(AUserClassRequest.getUserId());
+        Optional<Classroom> classroomOptional = classroomRepository.findById(AUserClassRequest.getClassId());
         UserClass userClass = new UserClass();
         if (userOptional.isPresent() && classroomOptional.isPresent()){
             User user = userOptional.get();
             Classroom classroom = classroomOptional.get();
             for (Role role:user.getRoles()){
-                if (role.getRoleName().equals(ERoles.ROLE_STUDENT)){
+                if (role.getRoleName().equals(ERoleName.ROLE_STUDENT)){
                     if (userClassRepository.findByUserAndClassroom(user,classroom)==null){
                         userClass.setUser(user);
                         userClass.setClassroom(classroom);

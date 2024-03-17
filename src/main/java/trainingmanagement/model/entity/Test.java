@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
-import trainingmanagement.model.entity.Enum.ETypeTest;
+import trainingmanagement.model.entity.Enum.ETestType;
 import java.util.List;
 
 @Entity
@@ -15,14 +15,14 @@ import java.util.List;
 @Setter
 @Builder
 public class Test extends BaseModel {
-    private String nameTest;
+    private String testName;
     private Integer testTime;
     @Enumerated(EnumType.STRING)
-    private ETypeTest typeTest;
+    private ETestType testType;
+    private String resources;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private EActiveStatus eActiveStatus;
-    private String resources;
+    private EActiveStatus status;
     @OneToMany(mappedBy = "test")
     @JsonIgnore
     List<Question> questions;

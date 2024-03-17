@@ -11,10 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.admin.request.OptionRequest;
-import trainingmanagement.model.dto.admin.request.QuestionOptionRequest;
-import trainingmanagement.model.dto.admin.request.QuestionRequest;
-import trainingmanagement.model.dto.admin.response.QuestionResponse;
+import trainingmanagement.model.dto.request.admin.AOptionRequest;
+import trainingmanagement.model.dto.request.admin.AQuestionOptionRequest;
+import trainingmanagement.model.dto.response.admin.AQuestionResponse;
 import trainingmanagement.model.dto.time.DateSearch;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.Option;
@@ -51,8 +50,8 @@ public class AQuestionOptionController {
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
             Test test = testService.findById(testId);
-            List<QuestionResponse> questionResponses = questionService.getAllByTest(test);
-            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
+            List<AQuestionResponse> AQuestionRespons = questionService.getAllByTest(test);
+            Page<?> questions = commonService.convertListToPages(pageable, AQuestionRespons);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -81,8 +80,8 @@ public class AQuestionOptionController {
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
             LocalDate date = LocalDate.parse(dateSearch.getCreateDate());
-            List<QuestionResponse> questionResponses = questionService.getAllByCreatedDate(date);
-            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
+            List<AQuestionResponse> AQuestionRespons = questionService.getAllByCreatedDate(date);
+            Page<?> questions = commonService.convertListToPages(pageable, AQuestionRespons);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -110,8 +109,8 @@ public class AQuestionOptionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<QuestionResponse> questionResponses = questionService.getAllFromDayToDay(dateSearch.getStartDate(), dateSearch.getEndDate());
-            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
+            List<AQuestionResponse> AQuestionRespons = questionService.getAllFromDayToDay(dateSearch.getStartDate(), dateSearch.getEndDate());
+            Page<?> questions = commonService.convertListToPages(pageable, AQuestionRespons);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -145,15 +144,15 @@ public class AQuestionOptionController {
     //* Them question va cac option
     @PostMapping("/addQuestion")
     public ResponseEntity<?> addQuestionAndOption(
-            @RequestBody QuestionOptionRequest questionOptionRequest) {
-        Question question = questionService.saveQuestionAndOption(questionOptionRequest);
-        QuestionResponse questionResponse = questionService.entityMap(question);
+            @RequestBody AQuestionOptionRequest AQuestionOptionRequest) {
+        Question question = questionService.saveQuestionAndOption(AQuestionOptionRequest);
+        AQuestionResponse AQuestionResponse = questionService.entityMap(question);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
                         HttpStatus.CREATED.value(),
                         HttpStatus.CREATED.name(),
-                        questionResponse
+                        AQuestionResponse
                 ), HttpStatus.CREATED);
     }
 
@@ -161,13 +160,13 @@ public class AQuestionOptionController {
     @PostMapping("/{questionId}")
     public ResponseEntity<?> patchUpdateQuestionAndOption(
             @PathVariable("questionId") Long questionId,
-            @RequestBody QuestionOptionRequest questionOptionRequest) {
-        Question question = questionService.patchUpdateQuestion(questionId, questionOptionRequest.getQuestionRequest());
+            @RequestBody AQuestionOptionRequest AQuestionOptionRequest) {
+        Question question = questionService.patchUpdateQuestion(questionId, AQuestionOptionRequest.getAQuestionRequest());
         optionService.deleteByQuestion(question);
-        List<OptionRequest> optionRequests = questionOptionRequest.getOptionRequests();
-        for (OptionRequest optionRequest : optionRequests) {
-            optionRequest.setQuestionId(question.getId());
-            optionService.save(optionRequest);
+        List<AOptionRequest> AOptionRequests = AQuestionOptionRequest.getAOptionRequests();
+        for (AOptionRequest AOptionRequest : AOptionRequests) {
+            AOptionRequest.setQuestionId(question.getId());
+            optionService.save(AOptionRequest);
         }
         List<Option> options = optionService.getAllByQuestion(question);
         question.setOptions(options);

@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import trainingmanagement.model.dto.admin.request.TestRequest;
+import trainingmanagement.model.dto.request.admin.ATestRequest;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.service.Test.TestService;
 
@@ -38,14 +38,14 @@ public class TestControllerAdmin {
     }
 
     @PostMapping("")
-    public ResponseEntity<Test> create(@RequestBody TestRequest testRequest) {
-        Test testCreate = testService.add ( testRequest );
+    public ResponseEntity<Test> create(@RequestBody ATestRequest ATestRequest) {
+        Test testCreate = testService.add (ATestRequest);
         return new ResponseEntity<> ( testCreate, HttpStatus.CREATED );
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Test> update(@RequestBody TestRequest testRequest, @PathVariable("id") Long id) {
-        Test testUpdate = testService.edit ( testRequest, id );
+    public ResponseEntity<Test> update(@RequestBody ATestRequest ATestRequest, @PathVariable("id") Long id) {
+        Test testUpdate = testService.edit (ATestRequest, id );
         return new ResponseEntity<> ( testUpdate, HttpStatus.OK );
     }
 

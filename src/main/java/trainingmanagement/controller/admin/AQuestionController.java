@@ -12,8 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.admin.request.QuestionRequest;
-import trainingmanagement.model.dto.admin.response.QuestionResponse;
+import trainingmanagement.model.dto.request.admin.AQuestionRequest;
+import trainingmanagement.model.dto.response.admin.AQuestionResponse;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.service.CommonService;
@@ -41,8 +41,8 @@ public class AQuestionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<QuestionResponse> questionResponses = questionService.getAllQuestionResponsesToList();
-            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
+            List<AQuestionResponse> AQuestionRespons = questionService.getAllQuestionResponsesToList();
+            Page<?> questions = commonService.convertListToPages(pageable, AQuestionRespons);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
                     new ResponseWrapper<>(
@@ -73,8 +73,8 @@ public class AQuestionController {
     }
     // * Create new question.
     @PostMapping
-    public ResponseEntity<?> createNewQuestion(@RequestBody QuestionRequest questionRequest) {
-        Question question = questionService.save(questionRequest);
+    public ResponseEntity<?> createNewQuestion(@RequestBody AQuestionRequest AQuestionRequest) {
+        Question question = questionService.save(AQuestionRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
@@ -87,8 +87,8 @@ public class AQuestionController {
     @PatchMapping("/{questionId}")
     public ResponseEntity<?> patchUpdateQuestion(
             @PathVariable("questionId") Long questionId,
-            @RequestBody QuestionRequest questionRequest) {
-        Question question = questionService.patchUpdateQuestion(questionId, questionRequest);
+            @RequestBody AQuestionRequest AQuestionRequest) {
+        Question question = questionService.patchUpdateQuestion(questionId, AQuestionRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
@@ -123,8 +123,8 @@ public class AQuestionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<QuestionResponse> questionResponses = questionService.findByQuestionContent(keyword);
-            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
+            List<AQuestionResponse> AQuestionRespons = questionService.findByQuestionContent(keyword);
+            Page<?> questions = commonService.convertListToPages(pageable, AQuestionRespons);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.admin.request.LoginRequest;
-import trainingmanagement.model.dto.admin.request.RegisterRequest;
+import trainingmanagement.model.dto.request.auth.LoginRequest;
+import trainingmanagement.model.dto.request.auth.RegisterRequest;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.service.User.UserService;
 

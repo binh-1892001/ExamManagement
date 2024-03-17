@@ -4,16 +4,15 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.admin.request.ClassRequest;
-import trainingmanagement.model.dto.admin.response.ClassResponse;
+import trainingmanagement.model.dto.request.admin.AClassRequest;
+import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.entity.Classroom;
-import trainingmanagement.model.entity.Enum.ERoles;
-import trainingmanagement.model.entity.Enum.EStatusClass;
+import trainingmanagement.model.entity.Enum.ERoleName;
+import trainingmanagement.model.entity.Enum.EClassStatus;
 import trainingmanagement.model.entity.Role;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.repository.ClassroomRepository;
 import trainingmanagement.repository.UserRepository;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +26,7 @@ public class ClassroomServiceImpl implements ClassroomService{
     public List<Classroom> getAllToList() {
         return classroomRepository.findAll();
     }
-    public List<ClassResponse> getAllClassResponsesToList(){
+    public List<AClassResponse> getAllClassResponsesToList(){
         return getAllToList().stream().map(this::entityMap).toList();
     }
     @Override
@@ -39,33 +38,33 @@ public class ClassroomServiceImpl implements ClassroomService{
         return classroomRepository.save(classroom);
     }
     @Override
-    public Classroom save(ClassRequest classRequest) {
-        return classroomRepository.save(entityMap(classRequest));
+    public Classroom save(AClassRequest AClassRequest) {
+        return classroomRepository.save(entityMap(AClassRequest));
     }
     /**
      * @param classroomId
-     * @param classRequest
+     * @param AClassRequest
      * @return
      * author:
      * */
 
     @Override
-    public Classroom patchUpdate(Long classroomId, ClassRequest classRequest) {
+    public Classroom patchUpdate(Long classroomId, AClassRequest AClassRequest) {
         Optional<Classroom> updateClassroom = getById(classroomId);
         if(updateClassroom.isPresent()) {
             Classroom classroom = updateClassroom.get();
-            if (classRequest.getClassName() != null)
-                classroom.setClassName(classRequest.getClassName());
-            if (classRequest.getStatus() != null) {
-                if (classRequest.getStatus().equalsIgnoreCase(EStatusClass.NEW.name()))
-                    classroom.setStatus(EStatusClass.NEW);
-                else if (classRequest.getStatus().equalsIgnoreCase(EStatusClass.OJT.name()))
-                    classroom.setStatus(EStatusClass.OJT);
-                else classroom.setStatus(EStatusClass.FINISH);
+            if (AClassRequest.getClassName() != null)
+                classroom.setClassName(AClassRequest.getClassName());
+            if (AClassRequest.getClassStatus() != null) {
+                if (AClassRequest.getClassStatus().equalsIgnoreCase(EClassStatus.NEW.name()))
+                    classroom.setClassStatus(EClassStatus.NEW);
+                else if (AClassRequest.getClassStatus().equalsIgnoreCase(EClassStatus.OJT.name()))
+                    classroom.setClassStatus(EClassStatus.OJT);
+                else classroom.setClassStatus(EClassStatus.FINISH);
             }
-            if (classRequest.getTeacherId()!=null){
-                if (userRoleTeacher(classRequest)!=null){
-                    classroom.setTeacher(userRoleTeacher(classRequest));
+            if (AClassRequest.getTeacherId()!=null){
+                if (userRoleTeacher(AClassRequest)!=null){
+                    classroom.setTeacher(userRoleTeacher(AClassRequest));
                 }
             }
             return save(classroom);
@@ -79,23 +78,23 @@ public class ClassroomServiceImpl implements ClassroomService{
     }
 
     @Override
-    public List<ClassResponse> findByClassName(String className) {
+    public List<AClassResponse> findByClassName(String className) {
         return classroomRepository.findByClassNameContainingIgnoreCase(className)
                 .stream().map(this::entityMap).toList();
     }
     @Override
-    public Classroom entityMap(ClassRequest classRequest) {
-        EStatusClass classStatus = switch (classRequest.getStatus()) {
-            case "NEW" -> EStatusClass.NEW;
-            case "OJT" -> EStatusClass.OJT;
-            case "FINISH" -> EStatusClass.FINISH;
+    public Classroom entityMap(AClassRequest AClassRequest) {
+        EClassStatus classStatus = switch (AClassRequest.getClassStatus()) {
+            case "NEW" -> EClassStatus.NEW;
+            case "OJT" -> EClassStatus.OJT;
+            case "FINISH" -> EClassStatus.FINISH;
             default -> null;
         };
-        if (userRoleTeacher(classRequest)!=null){
+        if (userRoleTeacher(AClassRequest)!=null){
             return Classroom.builder()
-                    .teacher(userRoleTeacher(classRequest))
-                    .className(classRequest.getClassName())
-                    .status(classStatus)
+                    .teacher(userRoleTeacher(AClassRequest))
+                    .className(AClassRequest.getClassName())
+                    .classStatus(classStatus)
                     .build();
         }
         return null;
@@ -106,12 +105,12 @@ public class ClassroomServiceImpl implements ClassroomService{
         return classroomRepository.findByUserId(userId);
     }
     //* User khi check la teacher
-    public User userRoleTeacher(ClassRequest classRequest){
-        Optional<User> userOptional = userRepository.findById(classRequest.getTeacherId());
+    public User userRoleTeacher(AClassRequest AClassRequest){
+        Optional<User> userOptional = userRepository.findById(AClassRequest.getTeacherId());
         if (userOptional.isPresent()){
             User user = userOptional.get();
             for(Role role: user.getRoles()){
-                if (role.getRoleName().equals(ERoles.ROLE_TEACHER)){
+                if (role.getRoleName().equals(ERoleName.ROLE_TEACHER)){
                     return user;
                 }
             }
@@ -120,10 +119,10 @@ public class ClassroomServiceImpl implements ClassroomService{
     }
 
     @Override
-    public ClassResponse entityMap(Classroom classroom) {
-        return ClassResponse.builder()
+    public AClassResponse entityMap(Classroom classroom) {
+        return AClassResponse.builder()
                 .className(classroom.getClassName())
-                .status(classroom.getStatus())
+                .status(classroom.getClassStatus())
                 .build();
     }
 }
