@@ -12,6 +12,7 @@ public interface UserService {
     List<User> getAllToList();
     List<UserResponse> getAllUserResponsesToList();
     Optional<User> getById(Long userId);
+    Optional<UserResponse> getUserResponseById(Long userId);
     void deleteById(Long userId);
     JwtResponse handleLogin(LoginRequest userLogin);
     User addUser(RegisterRequest registerRequest);

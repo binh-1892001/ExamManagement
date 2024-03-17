@@ -13,6 +13,7 @@ import trainingmanagement.repository.ClassroomRepository;
 import trainingmanagement.repository.UserClassRepository;
 import trainingmanagement.repository.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -40,6 +41,11 @@ public class UserClassServiceImp implements UserClassService{
             }
         }
         return null;
+    }
+
+    @Override
+    public List<UserClass> findByClassId(Long classId) {
+        return userClassRepository.findStudentByClassId(classId);
     }
 //
 //    @Override
