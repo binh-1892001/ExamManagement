@@ -15,4 +15,5 @@ public class ExamResponse {
     private String examName;
     private String status;
     private Subject subject;
+    private String createdDate;
 }
