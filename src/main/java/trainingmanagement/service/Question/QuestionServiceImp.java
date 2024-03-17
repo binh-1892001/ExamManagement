@@ -146,7 +146,7 @@ public class QuestionServiceImp implements QuestionService {
                 .typeQuestion(question.getTypeQuestion().name())
                 .image(question.getImage())
                 .eActiveStatus(question.getEActiveStatus().name())
-                .createdDate(question.getCreatedDate().toString())
+                .createdDate(question.getCreatedDate())
                 .testName(question.getTest().getNameTest())
                 .optionResponses(question.getOptions().stream().map(optionService::entityMap).toList())
                 .build();

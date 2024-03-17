@@ -1,8 +1,10 @@
 package trainingmanagement.model.dto.admin.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @NoArgsConstructor
@@ -17,7 +19,8 @@ public class QuestionResponse {
     private String levelQuestion;
     private String image;
     private String eActiveStatus;
-    private String createdDate;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate createdDate;
     private String testName;
     private List<OptionResponse> optionResponses;
 }
