@@ -10,12 +10,12 @@ import trainingmanagement.model.enums.EQuestionType;
 
 import java.util.List;
 
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@Entity
 public class Question extends BaseModel {
     private String contentQuestion;
     private String image;
