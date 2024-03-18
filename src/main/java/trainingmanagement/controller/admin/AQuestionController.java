@@ -41,8 +41,8 @@ public class AQuestionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AQuestionResponse> AQuestionRespons = questionService.getAllQuestionResponsesToList();
-            Page<?> questions = commonService.convertListToPages(pageable, AQuestionRespons);
+            List<AQuestionResponse> questionResponses = questionService.getAllQuestionResponsesToList();
+            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
                     new ResponseWrapper<>(
@@ -73,8 +73,8 @@ public class AQuestionController {
     }
     // * Create new question.
     @PostMapping
-    public ResponseEntity<?> createNewQuestion(@RequestBody AQuestionRequest AQuestionRequest) {
-        Question question = questionService.save(AQuestionRequest);
+    public ResponseEntity<?> createNewQuestion(@RequestBody AQuestionRequest questionRequest) {
+        Question question = questionService.save(questionRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
@@ -86,8 +86,8 @@ public class AQuestionController {
     @PatchMapping("/{questionId}")
     public ResponseEntity<?> patchUpdateQuestion(
             @PathVariable("questionId") Long questionId,
-            @RequestBody AQuestionRequest AQuestionRequest) {
-        Question question = questionService.patchUpdateQuestion(questionId, AQuestionRequest);
+            @RequestBody AQuestionRequest questionRequest) {
+        Question question = questionService.patchUpdateQuestion(questionId, questionRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
@@ -122,8 +122,8 @@ public class AQuestionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AQuestionResponse> AQuestionRespons = questionService.findByQuestionContent(keyword);
-            Page<?> questions = commonService.convertListToPages(pageable, AQuestionRespons);
+            List<AQuestionResponse> questionResponses = questionService.findByQuestionContent(keyword);
+            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

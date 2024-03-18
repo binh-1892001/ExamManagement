@@ -1,13 +1,12 @@
 package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import trainingmanagement.model.base.AuditableEntity;
 import trainingmanagement.model.dto.request.admin.ASubjectRequest;
 import trainingmanagement.model.dto.response.admin.ASubjectResponse;
 import trainingmanagement.model.entity.Subject;
+import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.repository.SubjectRepository;
 import trainingmanagement.service.SubjectService;
 
@@ -18,7 +17,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     public List<Subject> getAllToList() {
         return subjectRepository.findAll();
@@ -73,7 +71,7 @@ public class SubjectServiceImpl implements SubjectService {
     public Subject entityMap(ASubjectRequest ASubjectRequest) {
         return Subject.builder()
             .subjectName(ASubjectRequest.getSubjectName())
-            .status(ASubjectRequest.getStatus())
+            .status(EActiveStatus.valueOf(ASubjectRequest.getStatus()))
             .build();
     }
 

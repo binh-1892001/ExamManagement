@@ -169,8 +169,8 @@ public class UserServiceImp implements UserService {
             .phone(user.getPhone())
             .avatar(user.getAvatar())
             .dateOfBirth(user.getDateOfBirth())
-            .gender(user.getGender().name())
-            .status(user.getStatus().name())
+            .gender(user.getGender())
+            .status(user.getStatus())
             .build();
     }
 }

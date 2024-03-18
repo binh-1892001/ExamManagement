@@ -72,8 +72,8 @@ public class ASubjectController {
     }
     // * Create new subject.
     @PostMapping
-    public ResponseEntity<?> createSubject(@RequestBody ASubjectRequest ASubjectRequest) {
-        Subject subject = subjectService.save(ASubjectRequest);
+    public ResponseEntity<?> createSubject(@RequestBody ASubjectRequest subjectRequest) {
+        Subject subject = subjectService.save(subjectRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -86,9 +86,9 @@ public class ASubjectController {
     @PatchMapping("/{subjectId}")
     public ResponseEntity<?> pathUpdateSubject(
             @PathVariable("subjectId") Long updateSubjectId,
-            @RequestBody ASubjectRequest ASubjectRequest
+            @RequestBody ASubjectRequest subjectRequest
     ) {
-        Subject subject = subjectService.patchUpdate(updateSubjectId, ASubjectRequest);
+        Subject subject = subjectService.patchUpdate(updateSubjectId, subjectRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -122,8 +122,8 @@ public class ASubjectController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ASubjectResponse> ASubjectRespons = subjectService.findBySubjectName(keyword);
-            Page<?> subjects = commonService.convertListToPages(pageable, ASubjectRespons);
+            List<ASubjectResponse> subjectResponses = subjectService.findBySubjectName(keyword);
+            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
             if (!subjects.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

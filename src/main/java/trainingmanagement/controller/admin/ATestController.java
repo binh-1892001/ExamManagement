@@ -64,8 +64,8 @@ public class ATestController {
     }
     // * Create a new test.
     @PostMapping
-    public ResponseEntity<?> createTest(@RequestBody ATestRequest ATestRequest) {
-        ATestResponse testCreate = testService.save(ATestRequest);
+    public ResponseEntity<?> createTest(@RequestBody ATestRequest testRequest) {
+        ATestResponse testCreate = testService.save(testRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,

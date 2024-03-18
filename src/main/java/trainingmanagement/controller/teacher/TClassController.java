@@ -38,8 +38,8 @@ public class TClassController {
             pageable = PageRequest.of(page,limit,Sort.by(sort).descending());
         }
         try {
-            List<TClassResponse> TClassRespons = classroomService.teacherGetListClassrooms();
-            Page<?> classroom = commonService.convertListToPages(pageable, TClassRespons);
+            List<TClassResponse> classResponses = classroomService.teacherGetListClassrooms();
+            Page<?> classroom = commonService.convertListToPages(pageable, classResponses);
             if (!classroom.isEmpty()) {
                 return new ResponseEntity<>(
                     new ResponseWrapper<>(
@@ -79,8 +79,8 @@ public class TClassController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<TClassResponse> TClassRespons = classroomService.teacherFindClassByName(keyword);
-            Page<?> classrooms = commonService.convertListToPages(pageable, TClassRespons);
+            List<TClassResponse> classResponses = classroomService.teacherFindClassByName(keyword);
+            Page<?> classrooms = commonService.convertListToPages(pageable, classResponses);
             if (!classrooms.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

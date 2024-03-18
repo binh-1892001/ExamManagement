@@ -36,8 +36,8 @@ public class ARoleController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ARoleResponse> ARoleRespons = roleService.getAllRoleResponsesToList();
-            Page<?> roles = commonService.convertListToPages(pageable, ARoleRespons);
+            List<ARoleResponse> roleResponses = roleService.getAllRoleResponsesToList();
+            Page<?> roles = commonService.convertListToPages(pageable, roleResponses);
             if (!roles.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -64,8 +64,8 @@ public class ARoleController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ARoleResponse> ARoleRespons = roleService.findAllByRoleNameContainingIgnoreCase(keyword);
-            Page<?> roles = commonService.convertListToPages(pageable, ARoleRespons);
+            List<ARoleResponse> roleResponses = roleService.findAllByRoleNameContainingIgnoreCase(keyword);
+            Page<?> roles = commonService.convertListToPages(pageable, roleResponses);
             if (!roles.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

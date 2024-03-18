@@ -37,7 +37,7 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public ARoleResponse entityMap(Role role) {
         return ARoleResponse.builder()
-            .roleName(role.getRoleName().name())
+            .roleName(role.getRoleName())
             .build();
     }
 }

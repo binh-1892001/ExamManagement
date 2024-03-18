@@ -43,38 +43,38 @@ INSERT INTO classroom(class_name, class_status, status)
     ('COD', 'FINISH', 'ACTIVE');
 
 INSERT INTO subject(subject_name, status)
-    VALUES ('JAVA', true),
-    ('PYTHON', true),
-    ('JAVASCRIPT', false),
-    ('HTML CSS', true),
-    ('NODEJS', false),
-    ('REACTJS', false),
-    ('REACT NATIVE', true),
-    ('NEXTJS', true),
-    ('TYPESCRIPT', false),
-    ('NESTJS', true),
-    ('SPRING BOOT', false),
-    ('SPRING MVC', false),
-    ('MYSQL', true),
-    ('SQL SERVER', false),
-    ('lINUX', true);
+    VALUES ('JAVA', 'ACTIVE'),
+    ('PYTHON', 'ACTIVE'),
+    ('JAVASCRIPT', 'INACTIVE'),
+    ('HTML CSS', 'ACTIVE'),
+    ('NODEJS', 'INACTIVE'),
+    ('REACTJS', 'INACTIVE'),
+    ('REACT NATIVE', 'ACTIVE'),
+    ('NEXTJS', 'ACTIVE'),
+    ('TYPESCRIPT', 'INACTIVE'),
+    ('NESTJS', 'ACTIVE'),
+    ('SPRING BOOT', 'INACTIVE'),
+    ('SPRING MVC', 'INACTIVE'),
+    ('MYSQL', 'ACTIVE'),
+    ('SQL SERVER', 'INACTIVE'),
+    ('lINUX', 'ACTIVE');
 
 INSERT INTO exam(exam_name, status, subject_id)
-    VALUES ('JV01', true, 1),
-    ('PY02', true, 2),
-    ('JS03', false, 3),
-    ('LX04', true, 15),
-    ('MS05', false, 13),
-    ('SB06', false, 11),
-    ('SQ07', true, 14),
-    ('RS08', false, 6),
-    ('RN09', false, 7),
-    ('SC10', true, 12),
-    ('NT11', true, 8),
-    ('NO12', false, 5),
-    ('TT13', true, 9),
-    ('HS14', false, 4),
-    ('NE15', false, 10);
+    VALUES ('JV01', 'ACTIVE', 1),
+    ('PY02', 'ACTIVE', 2),
+    ('JS03', 'INACTIVE', 3),
+    ('LX04', 'ACTIVE', 15),
+    ('MS05', 'INACTIVE', 13),
+    ('SB06', 'INACTIVE', 11),
+    ('SQ07', 'ACTIVE', 14),
+    ('RS08', 'INACTIVE', 6),
+    ('RN09', 'INACTIVE', 7),
+    ('SC10', 'ACTIVE', 12),
+    ('NT11', 'ACTIVE', 8),
+    ('NO12', 'INACTIVE', 5),
+    ('TT13', 'ACTIVE', 9),
+    ('HS14', 'INACTIVE', 4),
+    ('NE15', 'INACTIVE', 10);
 
 
 
@@ -131,38 +131,36 @@ insert into class_subject(class_id, subject_id)
     (2, 6),
     (1, 2);
 
-# insert into question(content_question, status, type_question, test_id)
-#     value
-#     ('Noi dung cau hoi', true, 'MULTIPLE', 1),
-#     ('Noi dung cau hoi', false, 'SINGLE', 3),
-#     ('Noi dung cau hoi', true, 'MULTIPLE', 5),
-#     ('Noi dung cau hoi', true, 'SINGLE', 7),
-#     ('Noi dung cau hoi', false, 'SINGLE', 9),
-#     ('Noi dung cau hoi', true, 'MULTIPLE', 2),
-#     ('Noi dung cau hoi', true, 'MULTIPLE', 4),
-#     ('Noi dung cau hoi', false, 'SINGLE', 6),
-#     ('Noi dung cau hoi', true, 'MULTIPLE', 8),
-#     ('Noi dung cau hoi', false, 'SINGLE', 10),
-#     ('Noi dung cau hoi', true, 'MULTIPLE', 11),
-#     ('Noi dung cau hoi', true, 'SINGLE', 12),
-#     ('Noi dung cau hoi', false, 'MULTIPLE', 13),
-#     ('Noi dung cau hoi', true, 'MULTIPLE', 14),
-#     ('Noi dung cau hoi', true, 'SINGLE', 15);
-#
-# insert into options(content_options, status, question_id)
-#     value
-#     ('Lua chon', true, 1),
-#     ('Lua chon', false, 3),
-#     ('Lua chon', true, 5),
-#     ('Lua chon', true, 7),
-#     ('Lua chon', false, 9),
-#     ('Lua chon', true, 2),
-#     ('Lua chon', true, 4),
-#     ('Lua chon', false, 6),
-#     ('Lua chon', true, 8),
-#     ('Lua chon', true, 10),
-#     ('Lua chon', true, 11),
-#     ('Lua chon', true, 12),
-#     ('Lua chon', false, 13),
-#     ('Lua chon', false, 14),
-#     ('Lua chon', false, 15);
+insert into question(content_question, status, question_type, test_id)
+    value
+    ('Noi dung cau hoi', 'ACTIVE', 'MULTIPLE', 1),
+    ('Noi dung cau hoi', 'INACTIVE', 'SINGLE', 3),
+    ('Noi dung cau hoi', 'ACTIVE', 'MULTIPLE', 5),
+    ('Noi dung cau hoi', 'ACTIVE', 'SINGLE', 7),
+    ('Noi dung cau hoi', 'INACTIVE', 'SINGLE', 9),
+    ('Noi dung cau hoi', 'ACTIVE', 'MULTIPLE', 2),
+    ('Noi dung cau hoi', 'ACTIVE', 'MULTIPLE', 4),
+    ('Noi dung cau hoi', 'INACTIVE', 'SINGLE', 6),
+    ('Noi dung cau hoi', 'ACTIVE', 'MULTIPLE', 8),
+    ('Noi dung cau hoi', 'INACTIVE', 'SINGLE', 10),
+    ('Noi dung cau hoi', 'ACTIVE', 'MULTIPLE', 11),
+    ('Noi dung cau hoi', 'ACTIVE', 'SINGLE', 12),
+    ('Noi dung cau hoi', 'INACTIVE', 'MULTIPLE', 13),
+    ('Noi dung cau hoi', 'ACTIVE', 'MULTIPLE', 14),
+    ('Noi dung cau hoi', 'ACTIVE', 'SINGLE', 15);
+insert into options(content_options, status, question_id)
+    values ('Lua chon', 'ACTIVE', 1),
+    ('Lua chon', 'INACTIVE', 3),
+    ('Lua chon', 'ACTIVE', 5),
+    ('Lua chon', 'ACTIVE', 7),
+    ('Lua chon', 'INACTIVE', 9),
+    ('Lua chon', 'ACTIVE', 2),
+    ('Lua chon', 'ACTIVE', 4),
+    ('Lua chon', 'INACTIVE', 6),
+    ('Lua chon', 'ACTIVE', 8),
+    ('Lua chon', 'ACTIVE', 10),
+    ('Lua chon', 'ACTIVE', 11),
+    ('Lua chon', 'ACTIVE', 12),
+    ('Lua chon', 'INACTIVE', 13),
+    ('Lua chon', 'INACTIVE', 14),
+    ('Lua chon', 'INACTIVE', 15);

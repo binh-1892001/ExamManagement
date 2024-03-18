@@ -110,8 +110,8 @@ public class QuestionServiceImp implements QuestionService {
         return AQuestionResponse.builder()
             .questionId(question.getId())
             .contentQuestion(question.getContentQuestion())
-            .levelQuestion(question.getLevelQuestion().name())
-            .typeQuestion(question.getTypeQuestion().name())
+            .levelQuestion(question.getLevelQuestion())
+            .typeQuestion(question.getTypeQuestion())
             .image(question.getImage())
             .build();
     }

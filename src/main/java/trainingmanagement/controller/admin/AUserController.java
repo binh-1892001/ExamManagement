@@ -15,7 +15,6 @@ import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.service.CommonService;
-import trainingmanagement.service.RoleService;
 import trainingmanagement.service.UserService;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +24,6 @@ import java.util.Optional;
 @RequestMapping ("/v1/admin/users")
 public class AUserController {
     private final UserService userService;
-    private final RoleService roleService;
     private final CommonService commonService;
     // * Get all users to pages.
     @GetMapping

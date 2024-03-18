@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import trainingmanagement.model.enums.EActiveStatus;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -11,5 +12,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ASubjectResponse {
     private String subjectName;
-    private Boolean status;
+    private EActiveStatus status;
 }

@@ -43,8 +43,8 @@ public class AOptionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AOptionResponse> AOptionRespons = optionService.getAllOptionResponsesToList();
-            Page<?> options = commonService.convertListToPages(pageable, AOptionRespons);
+            List<AOptionResponse> optionResponses = optionService.getAllOptionResponsesToList();
+            Page<?> options = commonService.convertListToPages(pageable, optionResponses);
             if (!options.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -91,8 +91,8 @@ public class AOptionController {
     }
     // * Create new option.
     @PostMapping
-    public ResponseEntity<?> createNewOption(@RequestBody AOptionRequest AOptionRequest) {
-        Option option = optionService.save(AOptionRequest);
+    public ResponseEntity<?> createNewOption(@RequestBody AOptionRequest optionRequest) {
+        Option option = optionService.save(optionRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
@@ -105,8 +105,8 @@ public class AOptionController {
     @PatchMapping("/{optionId}")
     public ResponseEntity<?> patchUpdateOption(
             @PathVariable("optionId") Long optionId,
-            @RequestBody AOptionRequest AOptionRequest) {
-        Option updatedOption = optionService.patchUpdateOption(optionId, AOptionRequest);
+            @RequestBody AOptionRequest optionRequest) {
+        Option updatedOption = optionService.patchUpdateOption(optionId, optionRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,

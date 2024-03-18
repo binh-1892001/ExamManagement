@@ -8,5 +8,5 @@ import lombok.*;
 @Builder
 public class ASubjectRequest {
     private String subjectName;
-    private Boolean status;
+    private String status;
 }

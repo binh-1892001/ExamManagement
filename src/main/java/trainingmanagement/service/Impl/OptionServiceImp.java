@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import trainingmanagement.model.dto.request.admin.AOptionRequest;
 import trainingmanagement.model.dto.response.admin.AOptionResponse;
+import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EOptionStatus;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
@@ -69,13 +70,21 @@ public class OptionServiceImp implements OptionService {
                 Question question = questionService.getById(AOptionRequest.getQuestionId()).orElse(null);
                 option.setQuestion(question);
             }
-            if(AOptionRequest.getStatus() != null){
-                EOptionStatus activeStatus = switch (AOptionRequest.getStatus().toUpperCase()) {
+            if(AOptionRequest.getIsCorrect() != null){
+                EOptionStatus isCorrect = switch (AOptionRequest.getIsCorrect().toUpperCase()) {
                     case "INCORRECT" -> EOptionStatus.INCORRECT;
                     case "CORRECT" -> EOptionStatus.CORRECT;
                     default -> null;
                 };
-                option.setStatus(activeStatus);
+                option.setIsCorrect(isCorrect);
+            }
+            if(AOptionRequest.getStatus() != null){
+                EActiveStatus status = switch (AOptionRequest.getStatus().toUpperCase()) {
+                    case "INACTIVE" -> EActiveStatus.INACTIVE;
+                    case "ACTIVE" -> EActiveStatus.ACTIVE;
+                    default -> null;
+                };
+                option.setStatus(status);
             }
             return optionRepository.save(option);
         }
@@ -84,15 +93,21 @@ public class OptionServiceImp implements OptionService {
 
     @Override
     public Option entityMap(AOptionRequest AOptionRequest) {
-        EOptionStatus activeStatus = switch (AOptionRequest.getStatus().toUpperCase()) {
+        EOptionStatus isCorrect = switch (AOptionRequest.getStatus().toUpperCase()) {
             case "INCORRECT" -> EOptionStatus.INCORRECT;
             case "CORRECT" -> EOptionStatus.CORRECT;
+            default -> null;
+        };
+        EActiveStatus status = switch (AOptionRequest.getStatus().toUpperCase()) {
+            case "INACTIVE" -> EActiveStatus.INACTIVE;
+            case "ACTIVE" -> EActiveStatus.ACTIVE;
             default -> null;
         };
         return Option.builder()
             .contentOptions(AOptionRequest.getContentOptions())
             .question(questionService.getById(AOptionRequest.getQuestionId()).orElse(null))
-            .status(activeStatus)
+            .isCorrect(isCorrect)
+            .status(status)
             .build();
     }
 
@@ -101,7 +116,8 @@ public class OptionServiceImp implements OptionService {
         return AOptionResponse.builder()
             .optionId(option.getId())
             .contentOptions(option.getContentOptions())
-            .status(option.getStatus().name())
+            .isCorrect(option.getIsCorrect())
+            .status(option.getStatus())
             .build();
     }
 }

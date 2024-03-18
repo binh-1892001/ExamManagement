@@ -88,7 +88,7 @@ public class ExamServiceImpl implements ExamService {
         return AExamResponse.builder()
                 .examId(exam.getId())
                 .examName(exam.getExamName())
-                .status(exam.getStatus().name())
+                .status(exam.getStatus())
                 .subject(exam.getSubject())
                 .build();
     }
