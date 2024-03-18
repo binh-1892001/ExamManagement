@@ -6,12 +6,12 @@ import trainingmanagement.model.base.BaseModel;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EOptionStatus;
 
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@Entity
 @Table(name = "options")
 public class Option extends BaseModel {
     private String contentOptions;

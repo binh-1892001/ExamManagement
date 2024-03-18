@@ -6,15 +6,15 @@
  * @author NguyenDucHai.
  * @since 13/3/2024.
  * */
-
 package trainingmanagement.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EClassStatus;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -31,11 +31,14 @@ public class Classroom extends BaseModel {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private EActiveStatus status;
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "class_subject",
-            joinColumns = @JoinColumn(name = "class_id"),
-            inverseJoinColumns = @JoinColumn(name = "subject_id")
-    )
-    private Set<Subject> subjects;
+    // ? Relationship.
+    @ManyToOne
+    @JoinColumn(name = "teacherId", referencedColumnName = "id")
+    private User teacher;
+    @OneToMany(mappedBy = "classroom")
+    @JsonIgnore
+    private List<ClassSubject> classSubjects;
+    @OneToMany(mappedBy = "classroom")
+    @JsonIgnore
+    private List<UserClass> userClasses;
 }

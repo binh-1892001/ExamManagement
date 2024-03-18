@@ -7,12 +7,12 @@ import trainingmanagement.model.base.BaseModel;
 import trainingmanagement.model.enums.EActiveStatus;
 import java.util.List;
 
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@Entity
 public class Exam extends BaseModel {
     private String examName;
     @Enumerated(EnumType.STRING)
