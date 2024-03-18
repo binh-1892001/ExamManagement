@@ -22,7 +22,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/student")
-public class UserControllerStudent {
+public class SUserController {
     private final UserService userService;
     private final UserLogin userLogin;
     private final CommonService commonService;

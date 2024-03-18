@@ -1,4 +1,4 @@
-package trainingmanagement.controller;
+package trainingmanagement.controller.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/v1/admin/test")
-public class TestControllerAdmin {
+public class ATestController {
     @Autowired
     private TestService testService;
 

@@ -13,14 +13,13 @@ import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.security.UserDetail.UserLogin;
 import trainingmanagement.service.Classroom.ClassroomService;
-import trainingmanagement.service.User.UserService;
 
 import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/student")
-public class ClassControllerStudent {
+public class SClassController {
     private final ClassroomService classroomService;
     private final UserLogin userLogin;
 
