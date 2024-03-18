@@ -41,8 +41,8 @@ public class AQuestionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AQuestionResponse> AQuestionRespons = questionService.getAllQuestionResponsesToList();
-            Page<?> questions = commonService.convertListToPages(pageable, AQuestionRespons);
+            List<AQuestionResponse> questionResponses = questionService.getAllQuestionResponsesToList();
+            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
                     new ResponseWrapper<>(
@@ -123,8 +123,8 @@ public class AQuestionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AQuestionResponse> AQuestionRespons = questionService.findByQuestionContent(keyword);
-            Page<?> questions = commonService.convertListToPages(pageable, AQuestionRespons);
+            List<AQuestionResponse> questionResponses = questionService.findByQuestionContent(keyword);
+            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

@@ -7,7 +7,6 @@ import java.sql.Date;
 import java.util.List;
 
 public interface TestRepository extends JpaRepository<Test,Long> {
-    List<Test> findByTestName(String testName);
-//    List<Test> findByCreatedDate(Date createDate);
     boolean existsByTestName(String testName);
+    List<Test> findByTestNameContainingIgnoreCase(String testName);
 }

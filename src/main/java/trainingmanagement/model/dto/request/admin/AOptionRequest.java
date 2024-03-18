@@ -8,7 +8,8 @@ import lombok.*;
 @Setter
 @Builder
 public class AOptionRequest {
-    String contentOptions;
-    Long questionId;
-    String isCorrect;
+    private String contentOptions;
+    private String isCorrect;
+    private String status;
+    private Long questionId;
 }

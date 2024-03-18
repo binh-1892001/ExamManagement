@@ -49,9 +49,9 @@ public class AQuestionOptionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            Test test = testService.findById(testId);
-            List<AQuestionResponse> AQuestionRespons = questionService.getAllByTest(test);
-            Page<?> questions = commonService.convertListToPages(pageable, AQuestionRespons);
+            Optional<Test> test = testService.getTestById(testId);
+            List<AQuestionResponse> questionResponses = questionService.getAllByTest(test.get());
+            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -80,8 +80,8 @@ public class AQuestionOptionController {
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
             LocalDate date = LocalDate.parse(dateSearch.getCreateDate());
-            List<AQuestionResponse> AQuestionRespons = questionService.getAllByCreatedDate(date);
-            Page<?> questions = commonService.convertListToPages(pageable, AQuestionRespons);
+            List<AQuestionResponse> questionResponses = questionService.getAllByCreatedDate(date);
+            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -109,8 +109,8 @@ public class AQuestionOptionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AQuestionResponse> AQuestionRespons = questionService.getAllFromDayToDay(dateSearch.getStartDate(), dateSearch.getEndDate());
-            Page<?> questions = commonService.convertListToPages(pageable, AQuestionRespons);
+            List<AQuestionResponse> questionResponses = questionService.getAllFromDayToDay(dateSearch.getStartDate(), dateSearch.getEndDate());
+            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -144,15 +144,15 @@ public class AQuestionOptionController {
     //* Them question va cac option
     @PostMapping("/addQuestion")
     public ResponseEntity<?> addQuestionAndOption(
-            @RequestBody AQuestionOptionRequest AQuestionOptionRequest) {
-        Question question = questionService.saveQuestionAndOption(AQuestionOptionRequest);
-        AQuestionResponse AQuestionResponse = questionService.entityMap(question);
+            @RequestBody AQuestionOptionRequest questionOptionRequest) {
+        Question question = questionService.saveQuestionAndOption(questionOptionRequest);
+        AQuestionResponse questionResponse = questionService.entityMap(question);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
                         HttpStatus.CREATED.value(),
                         HttpStatus.CREATED.name(),
-                        AQuestionResponse
+                        questionResponse
                 ), HttpStatus.CREATED);
     }
 

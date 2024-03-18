@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import trainingmanagement.model.enums.EActiveStatus;
+import trainingmanagement.model.enums.EGender;
+
 import java.time.LocalDate;
 
 @NoArgsConstructor
@@ -20,6 +23,6 @@ public class AUserResponse {
     @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dateOfBirth;
     private String avatar;
-    private String gender;
-    private String status;
+    private EGender gender;
+    private EActiveStatus status;
 }

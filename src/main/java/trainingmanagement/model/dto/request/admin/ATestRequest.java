@@ -1,7 +1,6 @@
 package trainingmanagement.model.dto.request.admin;
 
 import lombok.*;
-import trainingmanagement.model.enums.ETestType;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -9,10 +8,10 @@ import trainingmanagement.model.enums.ETestType;
 @Setter
 @Builder
 public class ATestRequest {
-    private String nameTest;
-    private String eActiveStatus;
+    private String testName;
     private Integer testTime;
-    private ETestType typeTest;
+    private String testType;
     private String resources;
     private Long examId;
+    private String status;
 }

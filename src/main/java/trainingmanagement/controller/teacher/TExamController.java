@@ -36,8 +36,8 @@ public class TExamController {
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<TExamResponse> tExamResponses = examService.getAllExamResponsesToListWithActiveStatus();
-            Page<?> exams = commonService.convertListToPages(pageable, tExamResponses);
+            List<TExamResponse> examResponses = examService.getAllExamResponsesToListWithActiveStatus();
+            Page<?> exams = commonService.convertListToPages(pageable, examResponses);
             if (!exams.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

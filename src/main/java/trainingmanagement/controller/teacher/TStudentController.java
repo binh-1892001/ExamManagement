@@ -17,7 +17,6 @@ import trainingmanagement.model.entity.UserClass;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.UserService;
 import trainingmanagement.service.UserClassService;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +33,6 @@ public class TStudentController {
     public ResponseEntity<?> getStudentByClassId(@PathVariable("classId") Long id) throws CustomException{
         List<UserClass> userClasses = userClassService.findByClassId(id);
         List<AUserResponse> users = new ArrayList<>();
-
         for (UserClass userClass : userClasses) {
             EActiveStatus isActive = userService.getById(userClass.getUser().getId()).orElse(null).getStatus();
             if (isActive == EActiveStatus.ACTIVE) {
@@ -76,8 +74,8 @@ public class TStudentController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AUserResponse> AUserRespons = userService.findByUsernameOrFullNameContainingIgnoreCase(keyword);
-            Page<?> users = commonService.convertListToPages(pageable, AUserRespons);
+            List<AUserResponse> userResponses = userService.findByUsernameOrFullNameContainingIgnoreCase(keyword);
+            Page<?> users = commonService.convertListToPages(pageable, userResponses);
             if (!users.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -92,5 +90,4 @@ public class TStudentController {
             throw new CustomException("Users page is out of range.");
         }
     }
-
 }

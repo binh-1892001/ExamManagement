@@ -123,8 +123,9 @@ public class ClassroomServiceImpl implements ClassroomService {
     @Override
     public AClassResponse entityMap(Classroom classroom) {
         return AClassResponse.builder()
-                .className(classroom.getClassName())
-                .status(classroom.getClassStatus())
-                .build();
+            .className(classroom.getClassName())
+            .classStatus(classroom.getClassStatus())
+            .status(classroom.getStatus())
+            .build();
     }
 }

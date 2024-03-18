@@ -40,8 +40,8 @@ public class ASubjectController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ASubjectResponse> ASubjectRespons = subjectService.getAllSubjectResponsesToList();
-            Page<?> subjects = commonService.convertListToPages(pageable, ASubjectRespons);
+            List<ASubjectResponse> subjectResponses = subjectService.getAllSubjectResponsesToList();
+            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
             if (!subjects.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -122,8 +122,8 @@ public class ASubjectController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ASubjectResponse> ASubjectRespons = subjectService.findBySubjectName(keyword);
-            Page<?> subjects = commonService.convertListToPages(pageable, ASubjectRespons);
+            List<ASubjectResponse> subjectResponses = subjectService.findBySubjectName(keyword);
+            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
             if (!subjects.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -152,8 +152,8 @@ public class ASubjectController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ASubjectResponse> ASubjectRespons = subjectService.getAllByClassId(classId);
-            Page<?> subjects = commonService.convertListToPages(pageable, ASubjectRespons);
+            List<ASubjectResponse> subjectResponses = subjectService.getAllByClassId(classId);
+            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
             if (!subjects.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

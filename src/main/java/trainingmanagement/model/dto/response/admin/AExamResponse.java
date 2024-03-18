@@ -1,10 +1,14 @@
 package trainingmanagement.model.dto.response.admin;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import trainingmanagement.model.entity.Subject;
+import trainingmanagement.model.enums.EActiveStatus;
+
+import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,7 +17,10 @@ import trainingmanagement.model.entity.Subject;
 public class AExamResponse {
     private Long examId;
     private String examName;
-    private String status;
+    private EActiveStatus status;
     private Subject subject;
-    private String createdDate;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate createdDate;
+    @JsonFormat(pattern = "dd-MM-yyyy")
+    private LocalDate modifyDate;
 }

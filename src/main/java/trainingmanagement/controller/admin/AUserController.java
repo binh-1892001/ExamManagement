@@ -15,7 +15,6 @@ import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.service.CommonService;
-import trainingmanagement.service.RoleService;
 import trainingmanagement.service.UserService;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +24,6 @@ import java.util.Optional;
 @RequestMapping ("/v1/admin/users")
 public class AUserController {
     private final UserService userService;
-    private final RoleService roleService;
     private final CommonService commonService;
     // * Get all users to pages.
     @GetMapping
@@ -39,8 +37,8 @@ public class AUserController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AUserResponse> AUserRespons = userService.getAllUserResponsesToList();
-            Page<?> users = commonService.convertListToPages(pageable, AUserRespons);
+            List<AUserResponse> userResponses = userService.getAllUserResponsesToList();
+            Page<?> users = commonService.convertListToPages(pageable, userResponses);
             if (!users.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -129,8 +127,8 @@ public class AUserController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AUserResponse> AUserRespons = userService.findByUsernameOrFullNameContainingIgnoreCase(keyword);
-            Page<?> users = commonService.convertListToPages(pageable, AUserRespons);
+            List<AUserResponse> userResponses = userService.findByUsernameOrFullNameContainingIgnoreCase(keyword);
+            Page<?> users = commonService.convertListToPages(pageable, userResponses);
             if (!users.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -157,8 +155,8 @@ public class AUserController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AUserResponse> AUserRespons = userService.getAllTeacher();
-            Page<?> users = commonService.convertListToPages(pageable, AUserRespons);
+            List<AUserResponse> userResponses = userService.getAllTeacher();
+            Page<?> users = commonService.convertListToPages(pageable, userResponses);
             if (!users.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -187,8 +185,8 @@ public class AUserController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AUserResponse> AUserRespons = userService.getAllStudentByClassId(classId);
-            Page<?> users = commonService.convertListToPages(pageable, AUserRespons);
+            List<AUserResponse> userResponses = userService.getAllStudentByClassId(classId);
+            Page<?> users = commonService.convertListToPages(pageable, userResponses);
             if (!users.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -203,5 +201,4 @@ public class AUserController {
             throw new CustomException("Users page is out of range.");
         }
     }
-
 }

@@ -18,7 +18,6 @@ import trainingmanagement.repository.QuestionRepository;
 import trainingmanagement.service.OptionService;
 import trainingmanagement.service.QuestionService;
 import trainingmanagement.service.TestService;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -52,14 +51,14 @@ public class QuestionServiceImp implements QuestionService {
     }
 
     @Override
-    public Question save(AQuestionRequest AQuestionRequest) {
-        return questionRepository.save(entityMap(AQuestionRequest));
+    public Question save(AQuestionRequest questionRequest) {
+        return questionRepository.save(entityMap(questionRequest));
     }
 
     @Override
-    public Question saveQuestionAndOption(AQuestionOptionRequest AQuestionOptionRequest) {
-        Question question = save(AQuestionOptionRequest.getAQuestionRequest());
-        List<AOptionRequest> AOptionRequests = AQuestionOptionRequest.getAOptionRequests();
+    public Question saveQuestionAndOption(AQuestionOptionRequest questionOptionRequest) {
+        Question question = save(questionOptionRequest.getAQuestionRequest());
+        List<AOptionRequest> AOptionRequests = questionOptionRequest.getAOptionRequests();
         for (AOptionRequest AOptionRequest : AOptionRequests){
             AOptionRequest.setQuestionId(question.getId());
             optionService.save(AOptionRequest);
@@ -81,14 +80,14 @@ public class QuestionServiceImp implements QuestionService {
     }
 
     @Override
-    public Question patchUpdateQuestion(Long questionId, AQuestionRequest AQuestionRequest) {
+    public Question patchUpdateQuestion(Long questionId, AQuestionRequest questionRequest) {
         Optional<Question> updateQuestion = questionRepository.findById(questionId);
         if (updateQuestion.isPresent()) {
             Question question = updateQuestion.get();
-            if (AQuestionRequest.getContentQuestion() != null)
-                question.setContentQuestion(AQuestionRequest.getContentQuestion());
-            if (AQuestionRequest.getLevelQuestion() != null) {
-                EQuestionLevel levelQuestion = switch (AQuestionRequest.getLevelQuestion()) {
+            if (questionRequest.getContentQuestion() != null)
+                question.setContentQuestion(questionRequest.getContentQuestion());
+            if (questionRequest.getLevelQuestion() != null) {
+                EQuestionLevel levelQuestion = switch (questionRequest.getLevelQuestion()) {
                     case "EASY" -> EQuestionLevel.EASY;
                     case "NORMAL" -> EQuestionLevel.NORMAL;
                     case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
@@ -96,43 +95,43 @@ public class QuestionServiceImp implements QuestionService {
                 };
                 question.setLevelQuestion(levelQuestion);
             }
-            if (AQuestionRequest.getTypeQuestion() != null) {
-                EQuestionType typeQuestion = switch (AQuestionRequest.getTypeQuestion()) {
+            if (questionRequest.getTypeQuestion() != null) {
+                EQuestionType typeQuestion = switch (questionRequest.getTypeQuestion()) {
                     case "SINGLE" -> EQuestionType.SINGLE;
                     case "MULTIPLE" -> EQuestionType.MULTIPLE;
                     default -> null;
                 };
                 question.setTypeQuestion(typeQuestion);
             }
-            if (AQuestionRequest.getImage() != null)
-                question.setImage(AQuestionRequest.getImage());
-            if (AQuestionRequest.getTestId() != null)
-                question.setTest(testService.findById(AQuestionRequest.getTestId()));
+            if (questionRequest.getImage() != null)
+                question.setImage(questionRequest.getImage());
+            if (questionRequest.getTestId() != null)
+                question.setTest(testService.getTestById(questionRequest.getTestId()).get());
             return questionRepository.save(question);
         }
         return null;
     }
 
     @Override
-    public Question entityMap(AQuestionRequest AQuestionRequest) {
-        EQuestionLevel levelQuestion = switch (AQuestionRequest.getLevelQuestion()) {
+    public Question entityMap(AQuestionRequest questionRequest) {
+        EQuestionLevel levelQuestion = switch (questionRequest.getLevelQuestion()) {
             case "EASY" -> EQuestionLevel.EASY;
             case "NORMAL" -> EQuestionLevel.NORMAL;
             case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
             default -> null;
         };
-        EQuestionType typeQuestion = switch (AQuestionRequest.getTypeQuestion()) {
+        EQuestionType typeQuestion = switch (questionRequest.getTypeQuestion()) {
             case "SINGLE" -> EQuestionType.SINGLE;
             case "MULTIPLE" -> EQuestionType.MULTIPLE;
             default -> null;
         };
         return Question.builder()
-                .contentQuestion(AQuestionRequest.getContentQuestion())
+                .contentQuestion(questionRequest.getContentQuestion())
                 .levelQuestion(levelQuestion)
                 .typeQuestion(typeQuestion)
-                .image(AQuestionRequest.getImage())
+                .image(questionRequest.getImage())
                 .status(EActiveStatus.ACTIVE)
-                .test(testService.findById(AQuestionRequest.getTestId()))
+                .test(testService.getTestById(questionRequest.getTestId()).get())
                 .build();
     }
 
@@ -141,10 +140,10 @@ public class QuestionServiceImp implements QuestionService {
         return AQuestionResponse.builder()
                 .questionId(question.getId())
                 .contentQuestion(question.getContentQuestion())
-                .levelQuestion(question.getLevelQuestion().name())
-                .typeQuestion(question.getTypeQuestion().name())
+                .levelQuestion(question.getLevelQuestion())
+                .typeQuestion(question.getTypeQuestion())
                 .image(question.getImage())
-                .eActiveStatus(question.getStatus().name())
+                .status(question.getStatus())
                 .createdDate(question.getCreatedDate())
                 .testName(question.getTest().getTestName())
                 .options(question.getOptions().stream().map(optionService::entityMap).toList())

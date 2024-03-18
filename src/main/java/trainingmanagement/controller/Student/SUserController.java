@@ -40,8 +40,8 @@ public class SUserController {
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
             User user = userLogin.userLogin();
-            List<AUserResponse> AUserResponseList = userService.getAllStudentByClassId(classId);
-            Page<?> users = commonService.convertListToPages(pageable, AUserResponseList);
+            List<AUserResponse> userResponses = userService.getAllStudentByClassId(classId);
+            Page<?> users = commonService.convertListToPages(pageable, userResponses);
             if (!users.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

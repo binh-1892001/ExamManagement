@@ -2,6 +2,9 @@ package trainingmanagement.model.dto.response.admin;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import trainingmanagement.model.enums.EActiveStatus;
+import trainingmanagement.model.enums.EQuestionLevel;
+import trainingmanagement.model.enums.EQuestionType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -14,10 +17,10 @@ import java.util.List;
 public class AQuestionResponse {
     private Long questionId;
     private String contentQuestion;
-    private String typeQuestion;
-    private String levelQuestion;
+    private EQuestionType typeQuestion;
+    private EQuestionLevel levelQuestion;
     private String image;
-    private String eActiveStatus;
+    private EActiveStatus status;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate createdDate;
     private String testName;

@@ -40,8 +40,8 @@ public class AExamController {
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AExamResponse> AExamRespons = examService.getAllExamResponsesToList();
-            Page<?> exams = commonService.convertListToPages(pageable, AExamRespons);
+            List<AExamResponse> examResponses = examService.getAllExamResponsesToList();
+            Page<?> exams = commonService.convertListToPages(pageable, examResponses);
             if (!exams.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -126,8 +126,8 @@ public class AExamController {
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AExamResponse> AExamRespons = examService.searchByExamName(keyword);
-            Page<?> exams = commonService.convertListToPages(pageable, AExamRespons);
+            List<AExamResponse> examResponses = examService.searchByExamName(keyword);
+            Page<?> exams = commonService.convertListToPages(pageable, examResponses);
             if (!exams.isEmpty()) {
                 return new ResponseEntity<>(
                     new ResponseWrapper<>(

@@ -8,9 +8,9 @@ import lombok.*;
 @Setter
 @Builder
 public class AQuestionRequest {
-    String contentQuestion;
-    String levelQuestion;
-    String typeQuestion;
-    String image;
-    Long testId;
+    private String contentQuestion;
+    private String levelQuestion;
+    private String typeQuestion;
+    private String image;
+    private Long testId;
 }

@@ -1,6 +1,7 @@
 package trainingmanagement.model.dto.response.teacher;
 
 import lombok.*;
+import trainingmanagement.model.enums.EActiveStatus;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -10,5 +11,5 @@ import lombok.*;
 public class TOptionResponse {
     private Long optionId;
     private String contentOptions;
-    private String status;
+    private EActiveStatus status;
 }

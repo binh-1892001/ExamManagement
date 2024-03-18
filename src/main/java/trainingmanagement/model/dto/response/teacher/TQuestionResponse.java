@@ -1,6 +1,8 @@
 package trainingmanagement.model.dto.response.teacher;
 
 import lombok.*;
+import trainingmanagement.model.enums.EQuestionLevel;
+import trainingmanagement.model.enums.EQuestionType;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -10,7 +12,7 @@ import lombok.*;
 public class TQuestionResponse {
     private Long questionId;
     private String contentQuestion;
-    private String typeQuestion;
-    private String levelQuestion;
+    private EQuestionType typeQuestion;
+    private EQuestionLevel levelQuestion;
     private String image;
 }

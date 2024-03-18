@@ -91,9 +91,9 @@ public class ExamServiceImpl implements ExamService {
         return AExamResponse.builder()
                 .examId(exam.getId())
                 .examName(exam.getExamName())
-                .status(exam.getStatus().name())
+                .status(exam.getStatus())
                 .subject(exam.getSubject())
-                .createdDate(exam.getCreatedDate().toString())
+                .createdDate(exam.getCreatedDate())
                 .build();
     }
     @Override

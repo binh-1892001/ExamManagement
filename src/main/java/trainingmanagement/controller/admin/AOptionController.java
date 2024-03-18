@@ -43,8 +43,8 @@ public class AOptionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AOptionResponse> AOptionRespons = optionService.getAllOptionResponsesToList();
-            Page<?> options = commonService.convertListToPages(pageable, AOptionRespons);
+            List<AOptionResponse> optionResponses = optionService.getAllOptionResponsesToList();
+            Page<?> options = commonService.convertListToPages(pageable, optionResponses);
             if (!options.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
