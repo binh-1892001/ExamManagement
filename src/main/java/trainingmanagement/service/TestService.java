@@ -1,0 +1,16 @@
+package trainingmanagement.service;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import trainingmanagement.model.dto.request.admin.ATestRequest;
+import trainingmanagement.model.entity.Test;
+import java.util.List;
+
+public interface TestService {
+    Page<Test> getAll(Pageable pageable);
+    Test findById(Long id);
+    Test add(ATestRequest ATestRequest);
+    Test edit(ATestRequest ATestRequest, Long id);
+    void delete(Long id);
+    List<Test> getByNameTest(String nameTest);
+}

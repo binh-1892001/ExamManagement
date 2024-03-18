@@ -7,7 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import trainingmanagement.model.entity.User;
-import trainingmanagement.service.User.UserService;
+import trainingmanagement.service.UserService;
 
 import java.util.Optional;
 

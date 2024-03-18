@@ -3,7 +3,7 @@ package trainingmanagement.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
-import trainingmanagement.model.entity.Enum.EActiveStatus;
+import trainingmanagement.model.enums.EActiveStatus;
 
 import java.time.LocalDate;
 @Entity

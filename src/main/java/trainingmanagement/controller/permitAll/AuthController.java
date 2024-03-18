@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.request.auth.LoginRequest;
-import trainingmanagement.model.dto.request.auth.RegisterRequest;
-import trainingmanagement.model.entity.Enum.EHttpStatus;
-import trainingmanagement.service.User.UserService;
+import trainingmanagement.model.dto.wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.auth.LoginRequest;
+import trainingmanagement.model.dto.auth.RegisterRequest;
+import trainingmanagement.model.enums.EHttpStatus;
+import trainingmanagement.service.UserService;
 
 @RestController
 @RequestMapping("/v1/auth/")

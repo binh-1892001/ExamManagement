@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
 import trainingmanagement.model.entity.Test;
-import trainingmanagement.service.Test.TestService;
+import trainingmanagement.service.TestService;
 
 import java.util.List;
 

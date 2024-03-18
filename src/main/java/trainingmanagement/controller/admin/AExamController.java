@@ -9,14 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.AExamRequest;
 import trainingmanagement.model.dto.response.admin.AExamResponse;
 import trainingmanagement.model.dto.time.DateSearch;
-import trainingmanagement.model.entity.Enum.EHttpStatus;
+import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.Exam;
 import trainingmanagement.service.CommonService;
-import trainingmanagement.service.Exam.ExamService;
+import trainingmanagement.service.ExamService;
 
 import java.time.LocalDate;
 import java.util.List;

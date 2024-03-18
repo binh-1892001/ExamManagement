@@ -1,7 +1,7 @@
 package trainingmanagement.model.dto.request.admin;
 
 import lombok.*;
-import trainingmanagement.model.entity.Enum.ETestType;
+import trainingmanagement.model.enums.ETestType;
 
 @NoArgsConstructor
 @AllArgsConstructor

@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.entity.Classroom;
-import trainingmanagement.model.entity.Enum.EHttpStatus;
+import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.security.UserDetail.UserLogin;
-import trainingmanagement.service.Classroom.ClassroomService;
+import trainingmanagement.service.ClassroomService;
 
 import java.util.Optional;
 

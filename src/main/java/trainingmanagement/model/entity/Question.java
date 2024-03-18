@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
-import trainingmanagement.model.entity.Enum.EActiveStatus;
-import trainingmanagement.model.entity.Enum.EQuestionLevel;
-import trainingmanagement.model.entity.Enum.EQuestionType;
+import trainingmanagement.model.enums.EActiveStatus;
+import trainingmanagement.model.enums.EQuestionLevel;
+import trainingmanagement.model.enums.EQuestionType;
 
 import java.util.List;
 
