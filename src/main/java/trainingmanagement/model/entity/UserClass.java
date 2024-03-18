@@ -16,7 +16,6 @@ public class UserClass extends BaseModel {
     @ManyToOne
     @JoinColumn(name = "userId",referencedColumnName = "id")
     private User user;
-
     @ManyToOne
     @JoinColumn(name = "classId",referencedColumnName = "id")
     private Classroom classroom;

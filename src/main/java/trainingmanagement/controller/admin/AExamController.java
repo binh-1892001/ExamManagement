@@ -12,10 +12,12 @@ import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.AExamRequest;
 import trainingmanagement.model.dto.response.admin.AExamResponse;
+import trainingmanagement.model.dto.time.DateSearch;
 import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.Exam;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.ExamService;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -137,6 +139,36 @@ public class AExamController {
             throw new CustomException("Exams page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Exams page is out of range.");
+        }
+    }
+
+    // Tìm kiếm theo ngày tạo Exam
+    @PostMapping("/createdDateExam")
+    public ResponseEntity<?> findByCreatedDate(
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @RequestBody DateSearch dateSearch) throws CustomException {
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            LocalDate date = LocalDate.parse(dateSearch.getCreateDate());
+            List<AExamResponse> examResponses = examService.getAllExamByCreatedDate(date);
+            Page<?> questions = commonService.convertListToPages(pageable, examResponses);
+            if (!questions.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                questions.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Exam page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Exam page is out of range.");
         }
     }
 }

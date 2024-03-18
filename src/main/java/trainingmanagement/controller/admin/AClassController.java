@@ -9,13 +9,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.AClassRequest;
+import trainingmanagement.model.dto.wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.request.admin.AClassSubjectRequest;
+import trainingmanagement.model.dto.request.admin.AUserClassRequest;
 import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.enums.EHttpStatus;
+import trainingmanagement.model.entity.UserClass;
+import trainingmanagement.service.ClassSubjectService;
 import trainingmanagement.service.ClassroomService;
 import trainingmanagement.service.CommonService;
+import trainingmanagement.service.UserClassService;
+
 import java.util.List;
 
 @RestController
@@ -24,6 +30,8 @@ import java.util.List;
 public class AClassController {
     private final CommonService commonService;
     private final ClassroomService classroomService;
+    private final ClassSubjectService classSubjectService;
+    private final UserClassService userClassService;
     // * Get all classes to pages.
     @GetMapping
     public ResponseEntity<?> getAllClassesToPages(
@@ -144,4 +152,30 @@ public class AClassController {
             throw new CustomException("Classes page is out of range.");
         }
     }
-}
+    // * add subject to class
+    @PostMapping("/addSubject")
+    public ResponseEntity<?> addSubjectToClass(@RequestBody AClassSubjectRequest AClassSubjectRequest){
+        classSubjectService.save(AClassSubjectRequest);
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.CREATED.value(),
+                        HttpStatus.CREATED.name(),
+                        "Add complete"
+                ), HttpStatus.CREATED);
+    }
+
+    // * add student to class
+    @PostMapping("/saveStudent")
+    public ResponseEntity<?> saveStudent(@RequestBody AUserClassRequest AUserClassRequest){
+        UserClass userClass = userClassService.saveStudent(AUserClassRequest);
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.CREATED.value(),
+                        HttpStatus.CREATED.name(),
+                        userClass
+                ), HttpStatus.CREATED);
+    }
+
+ }

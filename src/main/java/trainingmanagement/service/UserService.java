@@ -12,13 +12,17 @@ public interface UserService {
     List<User> getAllToList();
     List<AUserResponse> getAllUserResponsesToList();
     Optional<User> getById(Long userId);
+    Optional<AUserResponse> getUserResponseById(Long userId);
     void deleteById(Long userId);
     JwtResponse handleLogin(LoginRequest userLogin);
-    User handleRegister(RegisterRequest RegisterRequest);
     User save(User users);
-    User updateAcc(RegisterRequest RegisterRequest, Long id);
+    User updateAcc(RegisterRequest registerRequest, Long id);
+    User handleRegister(RegisterRequest RegisterRequest);
     Optional<User> getByUsername(String username);
     List<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword);
     AUserResponse entityMap(User user);
     User entityMap(RegisterRequest userRequest);
+//    List<UserResponse> getAllStudentInClassroom(Long userId);
+    List<AUserResponse> getAllTeacher();
+    List<AUserResponse> getAllStudentByClassId(Long classId);
 }

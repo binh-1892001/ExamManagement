@@ -17,4 +17,5 @@ public interface SubjectService {
     void deleteById(Long subjectId);
     ASubjectResponse entityMap(Subject subject);
     Subject entityMap(ASubjectRequest ASubjectRequest);
+    List<ASubjectResponse> getAllByClassId(Long classId);
 }

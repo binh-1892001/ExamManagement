@@ -1,8 +1,6 @@
 package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import trainingmanagement.model.dto.request.admin.AOptionRequest;
 import trainingmanagement.model.dto.response.admin.AOptionResponse;
@@ -11,8 +9,8 @@ import trainingmanagement.model.enums.EOptionStatus;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.repository.OptionRepository;
+import trainingmanagement.repository.QuestionRepository;
 import trainingmanagement.service.OptionService;
-import trainingmanagement.service.QuestionService;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,8 +18,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OptionServiceImp implements OptionService {
     private final OptionRepository optionRepository;
-    private final QuestionService questionService;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final QuestionRepository questionRepository;
 
     @Override
     public List<Option> getAllToList() {
@@ -30,7 +27,7 @@ public class OptionServiceImp implements OptionService {
 
     @Override
     public List<AOptionResponse> getAllOptionResponsesToList() {
-        return getAllToList().stream().map(this::entityMap).toList();
+        return getAllToList().stream().map(this::entityAMap).toList();
     }
 
     @Override
@@ -44,8 +41,8 @@ public class OptionServiceImp implements OptionService {
     }
 
     @Override
-    public Option save(AOptionRequest AOptionRequest) {
-        return optionRepository.save(entityMap((AOptionRequest)));
+    public Option save(AOptionRequest optionRequest) {
+        return optionRepository.save(entityAMap((optionRequest)));
     }
 
     @Override
@@ -54,9 +51,19 @@ public class OptionServiceImp implements OptionService {
     }
 
     @Override
+    public void deleteByQuestion(Question question) {
+        optionRepository.deleteByQuestion(question);
+    }
+
+    @Override
     public List<AOptionResponse> findAllByQuestion(Question question) {
         List<Option> options = optionRepository.findAllByQuestion(question);
-        return options.stream().map(this::entityMap).toList();
+        return options.stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<Option> getAllByQuestion(Question question) {
+        return optionRepository.findAllByQuestion(question);
     }
 
     @Override
@@ -67,7 +74,7 @@ public class OptionServiceImp implements OptionService {
             if(optionRequest.getOptionContent() != null)
                 option.setOptionContent(optionRequest.getOptionContent());
             if(optionRequest.getQuestionId() != null){
-                Question question = questionService.getById(optionRequest.getQuestionId()).orElse(null);
+                Question question = questionRepository.findById(optionRequest.getQuestionId()).orElse(null);
                 option.setQuestion(question);
             }
             if(optionRequest.getIsCorrect() != null){
@@ -90,29 +97,27 @@ public class OptionServiceImp implements OptionService {
         }
         return null;
     }
-
     @Override
-    public Option entityMap(AOptionRequest AOptionRequest) {
-        EOptionStatus isCorrect = switch (AOptionRequest.getStatus().toUpperCase()) {
+    public Option entityAMap(AOptionRequest optionRequest) {
+        EOptionStatus isCorrect = switch (optionRequest.getIsCorrect().toUpperCase()) {
             case "INCORRECT" -> EOptionStatus.INCORRECT;
             case "CORRECT" -> EOptionStatus.CORRECT;
             default -> null;
         };
-        EActiveStatus status = switch (AOptionRequest.getStatus().toUpperCase()) {
+        EActiveStatus status = switch (optionRequest.getStatus().toUpperCase()) {
             case "INACTIVE" -> EActiveStatus.INACTIVE;
             case "ACTIVE" -> EActiveStatus.ACTIVE;
             default -> null;
         };
         return Option.builder()
-            .optionContent(AOptionRequest.getOptionContent())
-            .question(questionService.getById(AOptionRequest.getQuestionId()).orElse(null))
+            .optionContent(optionRequest.getOptionContent())
+            .question(questionRepository.findById(optionRequest.getQuestionId()).orElse(null))
             .isCorrect(isCorrect)
             .status(status)
             .build();
     }
-
     @Override
-    public AOptionResponse entityMap(Option option) {
+    public AOptionResponse entityAMap(Option option) {
         return AOptionResponse.builder()
             .optionId(option.getId())
             .optionContent(option.getOptionContent())

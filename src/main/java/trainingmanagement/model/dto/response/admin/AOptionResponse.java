@@ -20,12 +20,11 @@
 
 package trainingmanagement.model.dto.response.admin;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EOptionStatus;
-
 import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @NoArgsConstructor
 @AllArgsConstructor

@@ -16,12 +16,12 @@ import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EClassStatus;
 import java.util.List;
 
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@Entity
 public class Classroom extends BaseModel {
     @Column(name = "class_name")
     private String className;

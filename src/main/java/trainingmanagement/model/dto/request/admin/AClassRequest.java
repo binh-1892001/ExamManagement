@@ -23,5 +23,6 @@ import lombok.*;
 public class AClassRequest {
     private String className;
     private String classStatus;
+    private Long teacherId;
     private String status;
 }

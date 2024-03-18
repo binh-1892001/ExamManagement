@@ -1,8 +1,11 @@
 package trainingmanagement.service;
 
+import trainingmanagement.model.dto.request.admin.AQuestionOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionRequest;
 import trainingmanagement.model.dto.response.admin.AQuestionResponse;
 import trainingmanagement.model.entity.Question;
+import trainingmanagement.model.entity.Test;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,10 +14,14 @@ public interface QuestionService {
     List<AQuestionResponse> getAllQuestionResponsesToList();
     Optional<Question> getById(Long questionId);
     Question save(Question question);
-    Question save(AQuestionRequest AQuestionRequest);
-    Question patchUpdateQuestion(Long questionId, AQuestionRequest AQuestionRequest);
+    Question save(AQuestionRequest questionRequest);
+    Question saveQuestionAndOption(AQuestionOptionRequest questionOptionRequest);
+    Question patchUpdateQuestion(Long questionId, AQuestionRequest questionRequest);
     void deleteById(Long questionId);
     List<AQuestionResponse> findByQuestionContent(String questionContent);
-    Question entityMap(AQuestionRequest AQuestionRequest);
-    AQuestionResponse entityMap(Question question);
+    Question entityAMap(AQuestionRequest questionRequest);
+    AQuestionResponse entityAMap(Question question);
+    List<AQuestionResponse> getAllByTest(Test test);
+    List<AQuestionResponse> getAllByCreatedDate(LocalDate date);
+    List<AQuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd);
 }
