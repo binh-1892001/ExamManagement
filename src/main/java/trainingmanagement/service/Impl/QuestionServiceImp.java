@@ -46,7 +46,7 @@ public class QuestionServiceImp implements QuestionService {
 
     @Override
     public List<AQuestionResponse> findByQuestionContent(String questionContent) {
-        return questionRepository.findAllByContentQuestionIsContainingIgnoreCase(questionContent)
+        return questionRepository.findAllByQuestionContentIsContainingIgnoreCase(questionContent)
                 .stream().map(this::entityMap).toList();
     }
     @Override
@@ -58,24 +58,24 @@ public class QuestionServiceImp implements QuestionService {
         Optional<Question> updateQuestion = questionRepository.findById(questionId);
         if(updateQuestion.isPresent()){
             Question question = updateQuestion.get();
-            if(AQuestionRequest.getContentQuestion() != null)
-                question.setContentQuestion(AQuestionRequest.getContentQuestion());
-            if(AQuestionRequest.getLevelQuestion() != null){
-                EQuestionLevel levelQuestion = switch (AQuestionRequest.getLevelQuestion()) {
+            if(AQuestionRequest.getQuestionContent() != null)
+                question.setQuestionContent(AQuestionRequest.getQuestionContent());
+            if(AQuestionRequest.getQuestionLevel() != null){
+                EQuestionLevel levelQuestion = switch (AQuestionRequest.getQuestionLevel()) {
                     case "EASY" -> EQuestionLevel.EASY;
                     case "NORMAL" -> EQuestionLevel.NORMAL;
                     case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
                     default -> null;
                 };
-                question.setLevelQuestion(levelQuestion);
+                question.setQuestionLevel(levelQuestion);
             }
-            if(AQuestionRequest.getTypeQuestion() != null){
-                EQuestionType typeQuestion = switch (AQuestionRequest.getTypeQuestion()) {
+            if(AQuestionRequest.getQuestionType() != null){
+                EQuestionType typeQuestion = switch (AQuestionRequest.getQuestionType()) {
                     case "SINGLE" -> EQuestionType.SINGLE;
                     case "MULTIPLE" -> EQuestionType.MULTIPLE;
                     default -> null;
                 };
-                question.setTypeQuestion(typeQuestion);
+                question.setQuestionType(typeQuestion);
             }
             if(AQuestionRequest.getImage() != null)
                 question.setImage(AQuestionRequest.getImage());
@@ -86,21 +86,21 @@ public class QuestionServiceImp implements QuestionService {
 
     @Override
     public Question entityMap(AQuestionRequest AQuestionRequest) {
-        EQuestionLevel levelQuestion = switch (AQuestionRequest.getLevelQuestion()) {
+        EQuestionLevel levelQuestion = switch (AQuestionRequest.getQuestionLevel()) {
             case "EASY" -> EQuestionLevel.EASY;
             case "NORMAL" -> EQuestionLevel.NORMAL;
             case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
             default -> null;
         };
-        EQuestionType typeQuestion = switch (AQuestionRequest.getTypeQuestion()){
+        EQuestionType typeQuestion = switch (AQuestionRequest.getQuestionType()){
             case "SINGLE" -> EQuestionType.SINGLE;
             case "MULTIPLE" -> EQuestionType.MULTIPLE;
             default -> null;
         };
         return Question.builder()
-            .contentQuestion(AQuestionRequest.getContentQuestion())
-            .levelQuestion(levelQuestion)
-            .typeQuestion(typeQuestion)
+            .questionContent(AQuestionRequest.getQuestionContent())
+            .questionLevel(levelQuestion)
+            .questionType(typeQuestion)
             .image(AQuestionRequest.getImage())
             .build();
     }
@@ -109,9 +109,9 @@ public class QuestionServiceImp implements QuestionService {
     public AQuestionResponse entityMap(Question question) {
         return AQuestionResponse.builder()
             .questionId(question.getId())
-            .contentQuestion(question.getContentQuestion())
-            .levelQuestion(question.getLevelQuestion())
-            .typeQuestion(question.getTypeQuestion())
+            .questionContent(question.getQuestionContent())
+            .questionLevel(question.getQuestionLevel())
+            .questionType(question.getQuestionType())
             .image(question.getImage())
             .build();
     }

@@ -60,26 +60,26 @@ public class OptionServiceImp implements OptionService {
     }
 
     @Override
-    public Option patchUpdateOption(Long optionId, AOptionRequest AOptionRequest) {
+    public Option patchUpdateOption(Long optionId, AOptionRequest optionRequest) {
         Optional<Option> updateOption = optionRepository.findById(optionId);
         if(updateOption.isPresent()){
             Option option = updateOption.get();
-            if(AOptionRequest.getContentOptions() != null)
-                option.setContentOptions(AOptionRequest.getContentOptions());
-            if(AOptionRequest.getQuestionId() != null){
-                Question question = questionService.getById(AOptionRequest.getQuestionId()).orElse(null);
+            if(optionRequest.getOptionContent() != null)
+                option.setOptionContent(optionRequest.getOptionContent());
+            if(optionRequest.getQuestionId() != null){
+                Question question = questionService.getById(optionRequest.getQuestionId()).orElse(null);
                 option.setQuestion(question);
             }
-            if(AOptionRequest.getIsCorrect() != null){
-                EOptionStatus isCorrect = switch (AOptionRequest.getIsCorrect().toUpperCase()) {
+            if(optionRequest.getIsCorrect() != null){
+                EOptionStatus isCorrect = switch (optionRequest.getIsCorrect().toUpperCase()) {
                     case "INCORRECT" -> EOptionStatus.INCORRECT;
                     case "CORRECT" -> EOptionStatus.CORRECT;
                     default -> null;
                 };
                 option.setIsCorrect(isCorrect);
             }
-            if(AOptionRequest.getStatus() != null){
-                EActiveStatus status = switch (AOptionRequest.getStatus().toUpperCase()) {
+            if(optionRequest.getStatus() != null){
+                EActiveStatus status = switch (optionRequest.getStatus().toUpperCase()) {
                     case "INACTIVE" -> EActiveStatus.INACTIVE;
                     case "ACTIVE" -> EActiveStatus.ACTIVE;
                     default -> null;
@@ -104,7 +104,7 @@ public class OptionServiceImp implements OptionService {
             default -> null;
         };
         return Option.builder()
-            .contentOptions(AOptionRequest.getContentOptions())
+            .optionContent(AOptionRequest.getOptionContent())
             .question(questionService.getById(AOptionRequest.getQuestionId()).orElse(null))
             .isCorrect(isCorrect)
             .status(status)
@@ -115,7 +115,7 @@ public class OptionServiceImp implements OptionService {
     public AOptionResponse entityMap(Option option) {
         return AOptionResponse.builder()
             .optionId(option.getId())
-            .contentOptions(option.getContentOptions())
+            .optionContent(option.getOptionContent())
             .isCorrect(option.getIsCorrect())
             .status(option.getStatus())
             .build();

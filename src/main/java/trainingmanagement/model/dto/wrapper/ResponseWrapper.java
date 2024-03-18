@@ -1,9 +1,6 @@
 package trainingmanagement.model.dto.wrapper;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import trainingmanagement.model.enums.EHttpStatus;
 
 @NoArgsConstructor
