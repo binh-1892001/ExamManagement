@@ -20,8 +20,10 @@ public class Question extends BaseModel {
     private String contentQuestion;
     private String image;
     @Enumerated(EnumType.STRING)
+    @Column(name = "question_type")
     private EQuestionType typeQuestion;
     @Enumerated(EnumType.STRING)
+    @Column(name = "question_level")
     private EQuestionLevel levelQuestion;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

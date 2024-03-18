@@ -1,8 +1,6 @@
 package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import trainingmanagement.model.base.AuditableEntity;
 import trainingmanagement.model.dto.request.admin.ASubjectRequest;
@@ -19,7 +17,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     public List<Subject> getAllToList() {
         return subjectRepository.findAll();
@@ -53,8 +50,8 @@ public class SubjectServiceImpl implements SubjectService {
                 auditableEntity.setCreatedDate(auditableEntity.getCreatedDate());
             if (ASubjectRequest.getSubjectName() != null)
                 subject.setSubjectName(ASubjectRequest.getSubjectName());
-            if (ASubjectRequest.getEActiveStatus() != null)
-                subject.setStatus(EActiveStatus.valueOf(ASubjectRequest.getEActiveStatus()));
+            if (ASubjectRequest.getStatus() != null)
+                subject.setStatus(EActiveStatus.valueOf(ASubjectRequest.getStatus()));
             return save(subject);
         }
         return null;
@@ -74,7 +71,7 @@ public class SubjectServiceImpl implements SubjectService {
     public Subject entityMap(ASubjectRequest ASubjectRequest) {
         return Subject.builder()
             .subjectName(ASubjectRequest.getSubjectName())
-            .status(EActiveStatus.valueOf(ASubjectRequest.getEActiveStatus()))
+            .status(EActiveStatus.valueOf(ASubjectRequest.getStatus()))
             .build();
     }
 

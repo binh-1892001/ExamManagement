@@ -16,6 +16,7 @@ import java.util.List;
 public class Exam extends BaseModel {
     private String examName;
     @Enumerated(EnumType.STRING)
+    @Column(name = "status")
     private EActiveStatus status;
     @ManyToOne
     @JoinColumn(name = "subject_id",referencedColumnName = "id")

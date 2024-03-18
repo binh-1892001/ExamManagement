@@ -15,6 +15,7 @@ import java.util.List;
 @Setter
 @Builder
 public class Subject extends BaseModel {
+    @Column(name = "subject_name")
     private String subjectName;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

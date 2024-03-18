@@ -101,7 +101,7 @@ insert into class_subject(class_id, subject_id)
     (3, 3),
     (2, 6),
     (1, 2);
-insert into question(content_question, status, type_question, level_question,test_id)
+insert into question(content_question, status, question_type, question_level,test_id)
     values ('Câu hỏi 1 về Java?', true, 'SINGLE','EASY', 1),
     ('Câu hỏi 2 về Java?', true, 'SINGLE','NORMAL', 1),
     ('Câu hỏi 3 về Java?', true, 'SINGLE','NORMAL', 1),

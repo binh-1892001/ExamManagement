@@ -15,10 +15,14 @@ import java.util.List;
 @Setter
 @Builder
 public class Test extends BaseModel {
+    @Column(name = "test_name")
     private String testName;
+    @Column(name = "test_time")
     private Integer testTime;
     @Enumerated(EnumType.STRING)
+    @Column(name = "test_type")
     private ETestType testType;
+    @Column(name = "resources")
     private String resources;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

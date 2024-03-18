@@ -13,5 +13,6 @@ import trainingmanagement.model.enums.ERoleName;
 @Builder
 public class Role extends BaseModel {
     @Enumerated(EnumType.STRING)
+    @Column(name = "role_name")
     private ERoleName roleName;
 }

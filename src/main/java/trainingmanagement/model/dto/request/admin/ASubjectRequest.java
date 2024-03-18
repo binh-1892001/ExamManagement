@@ -8,7 +8,5 @@ import lombok.*;
 @Builder
 public class ASubjectRequest {
     private String subjectName;
-    private String timeToStudy;
-    private Integer time;
-    private String eActiveStatus;
+    private String status;
 }
