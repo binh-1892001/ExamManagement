@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.request.admin;
+package trainingmanagement.model.dto.request.auth;
 
 import lombok.*;
 

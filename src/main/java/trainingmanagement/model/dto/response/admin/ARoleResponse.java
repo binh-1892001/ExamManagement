@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class RoleResponse {
+public class ARoleResponse {
     private String roleName;
 }

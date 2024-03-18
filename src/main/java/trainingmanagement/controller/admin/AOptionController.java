@@ -12,8 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.request.admin.OptionRequest;
-import trainingmanagement.model.dto.response.admin.OptionResponse;
+import trainingmanagement.model.dto.request.admin.AOptionRequest;
+import trainingmanagement.model.dto.response.admin.AOptionResponse;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
@@ -43,8 +43,8 @@ public class AOptionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<OptionResponse> optionResponses = optionService.getAllOptionResponsesToList();
-            Page<?> options = commonService.convertListToPages(pageable, optionResponses);
+            List<AOptionResponse> AOptionRespons = optionService.getAllOptionResponsesToList();
+            Page<?> options = commonService.convertListToPages(pageable, AOptionRespons);
             if (!options.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -78,7 +78,7 @@ public class AOptionController {
     public ResponseEntity<?> getAllOptionsByQuestion(@PathVariable("questionId") Long questionId) throws CustomException {
         Optional<Question> question = questionService.getById(questionId);
         if(question.isPresent()){
-            List<OptionResponse> options = optionService.findAllByQuestion(question.get());
+            List<AOptionResponse> options = optionService.findAllByQuestion(question.get());
             return new ResponseEntity<>(
                 new ResponseWrapper<>(
                     EHttpStatus.SUCCESS,
@@ -91,8 +91,8 @@ public class AOptionController {
     }
     // * Create new option.
     @PostMapping
-    public ResponseEntity<?> createNewOption(@RequestBody OptionRequest optionRequest) {
-        Option option = optionService.save(optionRequest);
+    public ResponseEntity<?> createNewOption(@RequestBody AOptionRequest AOptionRequest) {
+        Option option = optionService.save(AOptionRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
@@ -105,8 +105,8 @@ public class AOptionController {
     @PatchMapping("/{optionId}")
     public ResponseEntity<?> patchUpdateOption(
             @PathVariable("optionId") Long optionId,
-            @RequestBody OptionRequest optionRequest) {
-        Option updatedOption = optionService.patchUpdateOption(optionId, optionRequest);
+            @RequestBody AOptionRequest AOptionRequest) {
+        Option updatedOption = optionService.patchUpdateOption(optionId, AOptionRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,

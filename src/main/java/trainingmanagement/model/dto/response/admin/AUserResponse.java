@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Data
 @Builder
-public class UserResponse {
+public class AUserResponse {
     private String fullName;
     private String username;
     private String password;

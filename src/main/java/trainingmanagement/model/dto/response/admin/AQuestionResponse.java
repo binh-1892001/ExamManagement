@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class QuestionResponse {
+public class AQuestionResponse {
     private Long questionId;
     private String contentQuestion;
     private String typeQuestion;

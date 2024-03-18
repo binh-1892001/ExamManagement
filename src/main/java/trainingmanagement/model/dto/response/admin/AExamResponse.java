@@ -10,7 +10,7 @@ import trainingmanagement.model.entity.Subject;
 @AllArgsConstructor
 @Data
 @Builder
-public class ExamResponse {
+public class AExamResponse {
     private Long examId;
     private String examName;
     private String status;

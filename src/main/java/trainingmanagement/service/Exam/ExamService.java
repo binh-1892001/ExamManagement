@@ -1,8 +1,8 @@
 package trainingmanagement.service.Exam;
 
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.request.admin.ExamRequest;
-import trainingmanagement.model.dto.response.admin.ExamResponse;
+import trainingmanagement.model.dto.request.admin.AExamRequest;
+import trainingmanagement.model.dto.response.admin.AExamResponse;
 import trainingmanagement.model.entity.Exam;
 
 import java.util.List;
@@ -10,13 +10,13 @@ import java.util.Optional;
 
 public interface ExamService {
     List<Exam> getAllToList();
-    List<ExamResponse> getAllExamResponsesToList();
+    List<AExamResponse> getAllExamResponsesToList();
     Optional<Exam> getById(Long examId);
     Exam save(Exam exam);
-    Exam save(ExamRequest examRequest);
-    Exam patchUpdateExam(Long examId, ExamRequest examRequest) throws CustomException;
+    Exam save(AExamRequest AExamRequest);
+    Exam patchUpdateExam(Long examId, AExamRequest AExamRequest) throws CustomException;
     void deleteById(Long examId);
-    List<ExamResponse> searchByExamName(String examName);
-    Exam entityMap(ExamRequest examRequest);
-    ExamResponse entityMap(Exam exam);
+    List<AExamResponse> searchByExamName(String examName);
+    Exam entityMap(AExamRequest AExamRequest);
+    AExamResponse entityMap(Exam exam);
 }

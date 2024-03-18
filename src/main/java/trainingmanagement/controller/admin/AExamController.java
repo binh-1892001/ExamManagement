@@ -10,8 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.request.admin.ExamRequest;
-import trainingmanagement.model.dto.response.admin.ExamResponse;
+import trainingmanagement.model.dto.request.admin.AExamRequest;
+import trainingmanagement.model.dto.response.admin.AExamResponse;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.model.entity.Exam;
 import trainingmanagement.service.CommonService;
@@ -37,8 +37,8 @@ public class AExamController {
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ExamResponse> examResponses = examService.getAllExamResponsesToList();
-            Page<?> exams = commonService.convertListToPages(pageable, examResponses);
+            List<AExamResponse> AExamRespons = examService.getAllExamResponsesToList();
+            Page<?> exams = commonService.convertListToPages(pageable, AExamRespons);
             if (!exams.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -69,8 +69,8 @@ public class AExamController {
     }
     // * Create new Exam.
     @PostMapping
-    public ResponseEntity<?> createNewExam(@RequestBody ExamRequest examRequest) {
-        Exam exam = examService.save(examRequest);
+    public ResponseEntity<?> createNewExam(@RequestBody AExamRequest AExamRequest) {
+        Exam exam = examService.save(AExamRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
@@ -83,8 +83,8 @@ public class AExamController {
     @PatchMapping("/{examId}")
     public ResponseEntity<?> patchUpdateExam(
             @PathVariable("examId") Long examId,
-            @RequestBody ExamRequest examRequest) throws CustomException {
-        Exam exam = examService.patchUpdateExam (examId, examRequest);
+            @RequestBody AExamRequest AExamRequest) throws CustomException {
+        Exam exam = examService.patchUpdateExam (examId, AExamRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
@@ -123,8 +123,8 @@ public class AExamController {
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ExamResponse> examResponses = examService.searchByExamName(keyword);
-            Page<?> exams = commonService.convertListToPages(pageable, examResponses);
+            List<AExamResponse> AExamRespons = examService.searchByExamName(keyword);
+            Page<?> exams = commonService.convertListToPages(pageable, AExamRespons);
             if (!exams.isEmpty()) {
                 return new ResponseEntity<>(
                     new ResponseWrapper<>(

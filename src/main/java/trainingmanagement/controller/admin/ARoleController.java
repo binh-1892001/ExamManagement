@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.response.admin.RoleResponse;
+import trainingmanagement.model.dto.response.admin.ARoleResponse;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.Role.RoleService;
@@ -36,8 +36,8 @@ public class ARoleController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<RoleResponse> roleResponses = roleService.getAllRoleResponsesToList();
-            Page<?> roles = commonService.convertListToPages(pageable, roleResponses);
+            List<ARoleResponse> ARoleRespons = roleService.getAllRoleResponsesToList();
+            Page<?> roles = commonService.convertListToPages(pageable, ARoleRespons);
             if (!roles.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -64,8 +64,8 @@ public class ARoleController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<RoleResponse> roleResponses = roleService.findAllByRoleNameContainingIgnoreCase(keyword);
-            Page<?> roles = commonService.convertListToPages(pageable, roleResponses);
+            List<ARoleResponse> ARoleRespons = roleService.findAllByRoleNameContainingIgnoreCase(keyword);
+            Page<?> roles = commonService.convertListToPages(pageable, ARoleRespons);
             if (!roles.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

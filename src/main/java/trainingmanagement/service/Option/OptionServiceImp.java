@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.request.admin.OptionRequest;
-import trainingmanagement.model.dto.response.admin.OptionResponse;
+import trainingmanagement.model.dto.request.admin.AOptionRequest;
+import trainingmanagement.model.dto.response.admin.AOptionResponse;
 import trainingmanagement.model.entity.Enum.EOptionStatus;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
@@ -27,7 +27,7 @@ public class OptionServiceImp implements OptionService{
     }
 
     @Override
-    public List<OptionResponse> getAllOptionResponsesToList() {
+    public List<AOptionResponse> getAllOptionResponsesToList() {
         return getAllToList().stream().map(this::entityMap).toList();
     }
 
@@ -42,8 +42,8 @@ public class OptionServiceImp implements OptionService{
     }
 
     @Override
-    public Option save(OptionRequest optionRequest) {
-        return optionRepository.save(entityMap((optionRequest)));
+    public Option save(AOptionRequest AOptionRequest) {
+        return optionRepository.save(entityMap((AOptionRequest)));
     }
 
     @Override
@@ -52,24 +52,24 @@ public class OptionServiceImp implements OptionService{
     }
 
     @Override
-    public List<OptionResponse> findAllByQuestion(Question question) {
+    public List<AOptionResponse> findAllByQuestion(Question question) {
         List<Option> options = optionRepository.findAllByQuestion(question);
         return options.stream().map(this::entityMap).toList();
     }
 
     @Override
-    public Option patchUpdateOption(Long optionId, OptionRequest optionRequest) {
+    public Option patchUpdateOption(Long optionId, AOptionRequest AOptionRequest) {
         Optional<Option> updateOption = optionRepository.findById(optionId);
         if(updateOption.isPresent()){
             Option option = updateOption.get();
-            if(optionRequest.getContentOptions() != null)
-                option.setContentOptions(optionRequest.getContentOptions());
-            if(optionRequest.getQuestionId() != null){
-                Question question = questionService.getById(optionRequest.getQuestionId()).orElse(null);
+            if(AOptionRequest.getContentOptions() != null)
+                option.setContentOptions(AOptionRequest.getContentOptions());
+            if(AOptionRequest.getQuestionId() != null){
+                Question question = questionService.getById(AOptionRequest.getQuestionId()).orElse(null);
                 option.setQuestion(question);
             }
-            if(optionRequest.getStatus() != null){
-                EOptionStatus activeStatus = switch (optionRequest.getStatus().toUpperCase()) {
+            if(AOptionRequest.getStatus() != null){
+                EOptionStatus activeStatus = switch (AOptionRequest.getStatus().toUpperCase()) {
                     case "INCORRECT" -> EOptionStatus.INCORRECT;
                     case "CORRECT" -> EOptionStatus.CORRECT;
                     default -> null;
@@ -82,22 +82,22 @@ public class OptionServiceImp implements OptionService{
     }
 
     @Override
-    public Option entityMap(OptionRequest optionRequest) {
-        EOptionStatus activeStatus = switch (optionRequest.getStatus().toUpperCase()) {
+    public Option entityMap(AOptionRequest AOptionRequest) {
+        EOptionStatus activeStatus = switch (AOptionRequest.getStatus().toUpperCase()) {
             case "INCORRECT" -> EOptionStatus.INCORRECT;
             case "CORRECT" -> EOptionStatus.CORRECT;
             default -> null;
         };
         return Option.builder()
-            .contentOptions(optionRequest.getContentOptions())
-            .question(questionService.getById(optionRequest.getQuestionId()).orElse(null))
+            .contentOptions(AOptionRequest.getContentOptions())
+            .question(questionService.getById(AOptionRequest.getQuestionId()).orElse(null))
             .status(activeStatus)
             .build();
     }
 
     @Override
-    public OptionResponse entityMap(Option option) {
-        return OptionResponse.builder()
+    public AOptionResponse entityMap(Option option) {
+        return AOptionResponse.builder()
             .optionId(option.getId())
             .contentOptions(option.getContentOptions())
             .status(option.getStatus().name())

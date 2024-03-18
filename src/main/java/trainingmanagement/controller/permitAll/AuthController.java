@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.request.admin.LoginRequest;
-import trainingmanagement.model.dto.request.admin.RegisterRequest;
+import trainingmanagement.model.dto.request.auth.LoginRequest;
+import trainingmanagement.model.dto.request.auth.RegisterRequest;
 import trainingmanagement.model.entity.Enum.EHttpStatus;
 import trainingmanagement.service.User.UserService;
 
@@ -30,13 +30,13 @@ public class AuthController {
             ), HttpStatus.OK);
     }
     @PostMapping("/sign-up")
-    public ResponseEntity<?> handleRegister(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<?> handleRegister(@RequestBody RegisterRequest RegisterRequest) {
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
                 HttpStatus.CREATED.value(),
                 HttpStatus.CREATED.name(),
-                userService.handleRegister(registerRequest)
+                userService.handleRegister(RegisterRequest)
             ), HttpStatus.CREATED);
     }
 }

@@ -9,10 +9,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import trainingmanagement.model.dto.request.admin.LoginRequest;
-import trainingmanagement.model.dto.request.admin.RegisterRequest;
-import trainingmanagement.model.dto.response.admin.JwtResponse;
-import trainingmanagement.model.dto.response.admin.UserResponse;
+import trainingmanagement.model.dto.request.auth.LoginRequest;
+import trainingmanagement.model.dto.request.auth.RegisterRequest;
+import trainingmanagement.model.dto.response.JwtResponse;
+import trainingmanagement.model.dto.response.admin.AUserResponse;
 import trainingmanagement.model.entity.Enum.EActiveStatus;
 import trainingmanagement.model.entity.Enum.EGender;
 import trainingmanagement.model.entity.Enum.ERoleName;
@@ -39,7 +39,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<UserResponse> getAllUserResponsesToList() {
+    public List<AUserResponse> getAllUserResponsesToList() {
         return getAllToList().stream().map(this::entityMap).toList();
     }
     @Override
@@ -67,12 +67,12 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User handleRegister(RegisterRequest registerRequest) {
-        if(userRepository.existsByUsername(registerRequest.getUsername()))
+    public User handleRegister(RegisterRequest RegisterRequest) {
+        if(userRepository.existsByUsername(RegisterRequest.getUsername()))
             throw new RuntimeException("Username is exists");
         EGender userGender = null;
-        if(registerRequest.getGender() != null)
-            userGender = switch (registerRequest.getGender().toUpperCase()){
+        if(RegisterRequest.getGender() != null)
+            userGender = switch (RegisterRequest.getGender().toUpperCase()){
                 case "MALE" -> EGender.MALE;
                 case "FEMALE" -> EGender.FEMALE;
                 default -> null;
@@ -80,13 +80,13 @@ public class UserServiceImp implements UserService {
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(roleService.findByRoleName(ERoleName.ROLE_STUDENT));
         User users = User.builder()
-            .fullName(registerRequest.getFullName())
-            .username(registerRequest.getUsername())
-            .password(passwordEncoder.encode(registerRequest.getPassword()))
-            .email(registerRequest.getEmail())
-            .avatar(registerRequest.getAvatar())
-            .phone(registerRequest.getPhone())
-            .dateOfBirth(registerRequest.getDateOfBirth())
+            .fullName(RegisterRequest.getFullName())
+            .username(RegisterRequest.getUsername())
+            .password(passwordEncoder.encode(RegisterRequest.getPassword()))
+            .email(RegisterRequest.getEmail())
+            .avatar(RegisterRequest.getAvatar())
+            .phone(RegisterRequest.getPhone())
+            .dateOfBirth(RegisterRequest.getDateOfBirth())
             .status(EActiveStatus.INACTIVE)
             .gender(userGender)
             .roles(userRoles)
@@ -110,21 +110,21 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User updateAcc(RegisterRequest registerRequest, Long id) {
-        if(userRepository.existsByUsername(registerRequest.getUsername()))
+    public User updateAcc(RegisterRequest RegisterRequest, Long id) {
+        if(userRepository.existsByUsername(RegisterRequest.getUsername()))
             throw new RuntimeException("username is exists");
         User userOld = getById(id).get();
         Set<Role> roles = userOld.getRoles();
         User users = User.builder()
-            .fullName(registerRequest.getFullName())
-            .username(registerRequest.getUsername())
+            .fullName(RegisterRequest.getFullName())
+            .username(RegisterRequest.getUsername())
             .password(userOld.getPassword())
-            .email(registerRequest.getEmail())
-            .avatar(registerRequest.getAvatar())
-            .phone(registerRequest.getPhone())
-            .dateOfBirth(registerRequest.getDateOfBirth())
+            .email(RegisterRequest.getEmail())
+            .avatar(RegisterRequest.getAvatar())
+            .phone(RegisterRequest.getPhone())
+            .dateOfBirth(RegisterRequest.getDateOfBirth())
             .status(EActiveStatus.ACTIVE)
-            .gender(registerRequest.getGender().equalsIgnoreCase(EGender.MALE.name())
+            .gender(RegisterRequest.getGender().equalsIgnoreCase(EGender.MALE.name())
                     ? EGender.MALE : EGender.FEMALE)
             .roles(roles)
             .build();
@@ -139,7 +139,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<UserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword) {
+    public List<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword) {
         return userRepository.findByUsernameOrFullNameContainingIgnoreCase(keyword)
                 .stream().map(this::entityMap).toList();
     }
@@ -159,8 +159,8 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public UserResponse entityMap(User user) {
-        return UserResponse.builder()
+    public AUserResponse entityMap(User user) {
+        return AUserResponse.builder()
             .fullName(user.getFullName())
             .username(user.getUsername())
             .email(user.getEmail())

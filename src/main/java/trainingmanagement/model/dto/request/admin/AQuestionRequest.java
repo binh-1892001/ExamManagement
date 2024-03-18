@@ -7,8 +7,9 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class OptionRequest {
-    String contentOptions;
-    Long questionId;
-    String status;
+public class AQuestionRequest {
+    String contentQuestion;
+    String levelQuestion;
+    String typeQuestion;
+    String image;
 }

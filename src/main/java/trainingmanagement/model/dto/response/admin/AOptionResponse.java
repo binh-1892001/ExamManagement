@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class OptionResponse {
+public class AOptionResponse {
     private Long optionId;
     private String contentOptions;
     private String status;

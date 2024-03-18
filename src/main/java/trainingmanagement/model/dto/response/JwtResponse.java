@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.response.admin;
+package trainingmanagement.model.dto.response;
 
 import lombok.*;
 import java.util.Set;

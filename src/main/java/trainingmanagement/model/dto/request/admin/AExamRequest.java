@@ -6,7 +6,7 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 @Builder
-public class ExamRequest {
+public class AExamRequest {
     private String examName;
     private String status;
     private Long subjectId;

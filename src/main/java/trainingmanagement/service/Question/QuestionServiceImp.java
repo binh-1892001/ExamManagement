@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import trainingmanagement.model.dto.request.admin.QuestionRequest;
-import trainingmanagement.model.dto.response.admin.QuestionResponse;
+import trainingmanagement.model.dto.request.admin.AQuestionRequest;
+import trainingmanagement.model.dto.response.admin.AQuestionResponse;
 import trainingmanagement.model.entity.Enum.EQuestionLevel;
 import trainingmanagement.model.entity.Enum.EQuestionType;
 import trainingmanagement.model.entity.Question;
@@ -25,7 +25,7 @@ public class QuestionServiceImp implements QuestionService{
     }
 
     @Override
-    public List<QuestionResponse> getAllQuestionResponsesToList() {
+    public List<AQuestionResponse> getAllQuestionResponsesToList() {
         return getAllToList().stream().map(this::entityMap).toList();
     }
 
@@ -38,12 +38,12 @@ public class QuestionServiceImp implements QuestionService{
         return questionRepository.save(question);
     }
     @Override
-    public Question save(QuestionRequest questionRequest) {
-        return questionRepository.save(entityMap(questionRequest));
+    public Question save(AQuestionRequest AQuestionRequest) {
+        return questionRepository.save(entityMap(AQuestionRequest));
     }
 
     @Override
-    public List<QuestionResponse> findByQuestionContent(String questionContent) {
+    public List<AQuestionResponse> findByQuestionContent(String questionContent) {
         return questionRepository.findAllByContentQuestionIsContainingIgnoreCase(questionContent)
                 .stream().map(this::entityMap).toList();
     }
@@ -52,14 +52,14 @@ public class QuestionServiceImp implements QuestionService{
         questionRepository.deleteById(questionId);
     }
     @Override
-    public Question patchUpdateQuestion(Long questionId, QuestionRequest questionRequest) {
+    public Question patchUpdateQuestion(Long questionId, AQuestionRequest AQuestionRequest) {
         Optional<Question> updateQuestion = questionRepository.findById(questionId);
         if(updateQuestion.isPresent()){
             Question question = updateQuestion.get();
-            if(questionRequest.getContentQuestion() != null)
-                question.setContentQuestion(questionRequest.getContentQuestion());
-            if(questionRequest.getLevelQuestion() != null){
-                EQuestionLevel levelQuestion = switch (questionRequest.getLevelQuestion()) {
+            if(AQuestionRequest.getContentQuestion() != null)
+                question.setContentQuestion(AQuestionRequest.getContentQuestion());
+            if(AQuestionRequest.getLevelQuestion() != null){
+                EQuestionLevel levelQuestion = switch (AQuestionRequest.getLevelQuestion()) {
                     case "EASY" -> EQuestionLevel.EASY;
                     case "NORMAL" -> EQuestionLevel.NORMAL;
                     case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
@@ -67,45 +67,45 @@ public class QuestionServiceImp implements QuestionService{
                 };
                 question.setLevelQuestion(levelQuestion);
             }
-            if(questionRequest.getTypeQuestion() != null){
-                EQuestionType typeQuestion = switch (questionRequest.getTypeQuestion()) {
+            if(AQuestionRequest.getTypeQuestion() != null){
+                EQuestionType typeQuestion = switch (AQuestionRequest.getTypeQuestion()) {
                     case "SINGLE" -> EQuestionType.SINGLE;
                     case "MULTIPLE" -> EQuestionType.MULTIPLE;
                     default -> null;
                 };
                 question.setTypeQuestion(typeQuestion);
             }
-            if(questionRequest.getImage() != null)
-                question.setImage(questionRequest.getImage());
+            if(AQuestionRequest.getImage() != null)
+                question.setImage(AQuestionRequest.getImage());
             return questionRepository.save(question);
         }
         return null;
     }
 
     @Override
-    public Question entityMap(QuestionRequest questionRequest) {
-        EQuestionLevel levelQuestion = switch (questionRequest.getLevelQuestion()) {
+    public Question entityMap(AQuestionRequest AQuestionRequest) {
+        EQuestionLevel levelQuestion = switch (AQuestionRequest.getLevelQuestion()) {
             case "EASY" -> EQuestionLevel.EASY;
             case "NORMAL" -> EQuestionLevel.NORMAL;
             case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
             default -> null;
         };
-        EQuestionType typeQuestion = switch (questionRequest.getTypeQuestion()){
+        EQuestionType typeQuestion = switch (AQuestionRequest.getTypeQuestion()){
             case "SINGLE" -> EQuestionType.SINGLE;
             case "MULTIPLE" -> EQuestionType.MULTIPLE;
             default -> null;
         };
         return Question.builder()
-            .contentQuestion(questionRequest.getContentQuestion())
+            .contentQuestion(AQuestionRequest.getContentQuestion())
             .levelQuestion(levelQuestion)
             .typeQuestion(typeQuestion)
-            .image(questionRequest.getImage())
+            .image(AQuestionRequest.getImage())
             .build();
     }
 
     @Override
-    public QuestionResponse entityMap(Question question) {
-        return QuestionResponse.builder()
+    public AQuestionResponse entityMap(Question question) {
+        return AQuestionResponse.builder()
             .questionId(question.getId())
             .contentQuestion(question.getContentQuestion())
             .levelQuestion(question.getLevelQuestion().name())
