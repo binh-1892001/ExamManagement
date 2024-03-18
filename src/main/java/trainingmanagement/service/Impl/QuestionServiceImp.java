@@ -1,23 +1,22 @@
 package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import trainingmanagement.model.dto.request.admin.AOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionRequest;
 import trainingmanagement.model.dto.response.admin.AQuestionResponse;
-import trainingmanagement.model.enums.EActiveStatus;
-import trainingmanagement.model.enums.EQuestionLevel;
-import trainingmanagement.model.enums.EQuestionType;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.model.entity.Test;
+import trainingmanagement.model.enums.EActiveStatus;
+import trainingmanagement.model.enums.EQuestionLevel;
+import trainingmanagement.model.enums.EQuestionType;
 import trainingmanagement.repository.QuestionRepository;
 import trainingmanagement.service.OptionService;
 import trainingmanagement.service.QuestionService;
 import trainingmanagement.service.TestService;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +27,7 @@ public class QuestionServiceImp implements QuestionService {
     private final QuestionRepository questionRepository;
     private final OptionService optionService;
     private final TestService testService;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
     @Override
     public List<Question> getAllToList() {
@@ -37,7 +36,7 @@ public class QuestionServiceImp implements QuestionService {
 
     @Override
     public List<AQuestionResponse> getAllQuestionResponsesToList() {
-        return getAllToList().stream().map(this::entityMap).toList();
+        return getAllToList().stream().map(this::entityAMap).toList();
     }
 
     @Override
@@ -52,14 +51,14 @@ public class QuestionServiceImp implements QuestionService {
 
     @Override
     public Question save(AQuestionRequest questionRequest) {
-        return questionRepository.save(entityMap(questionRequest));
+        return questionRepository.save(entityAMap(questionRequest));
     }
 
     @Override
     public Question saveQuestionAndOption(AQuestionOptionRequest questionOptionRequest) {
         Question question = save(questionOptionRequest.getAQuestionRequest());
         List<AOptionRequest> AOptionRequests = questionOptionRequest.getAOptionRequests();
-        for (AOptionRequest AOptionRequest : AOptionRequests){
+        for (AOptionRequest AOptionRequest : AOptionRequests) {
             AOptionRequest.setQuestionId(question.getId());
             optionService.save(AOptionRequest);
         }
@@ -70,8 +69,8 @@ public class QuestionServiceImp implements QuestionService {
 
     @Override
     public List<AQuestionResponse> findByQuestionContent(String questionContent) {
-        return questionRepository.findAllByContentQuestionIsContainingIgnoreCase(questionContent)
-                .stream().map(this::entityMap).toList();
+        return questionRepository.findAllByQuestionContentIsContainingIgnoreCase(questionContent)
+                .stream().map(this::entityAMap).toList();
     }
 
     @Override
@@ -84,24 +83,24 @@ public class QuestionServiceImp implements QuestionService {
         Optional<Question> updateQuestion = questionRepository.findById(questionId);
         if (updateQuestion.isPresent()) {
             Question question = updateQuestion.get();
-            if (questionRequest.getContentQuestion() != null)
-                question.setContentQuestion(questionRequest.getContentQuestion());
-            if (questionRequest.getLevelQuestion() != null) {
-                EQuestionLevel levelQuestion = switch (questionRequest.getLevelQuestion()) {
+            if (questionRequest.getQuestionContent() != null)
+                question.setQuestionContent(questionRequest.getQuestionContent());
+            if (questionRequest.getQuestionLevel() != null) {
+                EQuestionLevel questionLevel = switch (questionRequest.getQuestionLevel()) {
                     case "EASY" -> EQuestionLevel.EASY;
                     case "NORMAL" -> EQuestionLevel.NORMAL;
                     case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
                     default -> null;
                 };
-                question.setLevelQuestion(levelQuestion);
+                question.setQuestionLevel(questionLevel);
             }
-            if (questionRequest.getTypeQuestion() != null) {
-                EQuestionType typeQuestion = switch (questionRequest.getTypeQuestion()) {
+            if (questionRequest.getQuestionType() != null) {
+                EQuestionType questionType = switch (questionRequest.getQuestionType()) {
                     case "SINGLE" -> EQuestionType.SINGLE;
                     case "MULTIPLE" -> EQuestionType.MULTIPLE;
                     default -> null;
                 };
-                question.setTypeQuestion(typeQuestion);
+                question.setQuestionType(questionType);
             }
             if (questionRequest.getImage() != null)
                 question.setImage(questionRequest.getImage());
@@ -111,61 +110,57 @@ public class QuestionServiceImp implements QuestionService {
         }
         return null;
     }
-
-    @Override
-    public Question entityMap(AQuestionRequest questionRequest) {
-        EQuestionLevel levelQuestion = switch (questionRequest.getLevelQuestion()) {
-            case "EASY" -> EQuestionLevel.EASY;
-            case "NORMAL" -> EQuestionLevel.NORMAL;
-            case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
-            default -> null;
-        };
-        EQuestionType typeQuestion = switch (questionRequest.getTypeQuestion()) {
-            case "SINGLE" -> EQuestionType.SINGLE;
-            case "MULTIPLE" -> EQuestionType.MULTIPLE;
-            default -> null;
-        };
-        return Question.builder()
-                .contentQuestion(questionRequest.getContentQuestion())
-                .levelQuestion(levelQuestion)
-                .typeQuestion(typeQuestion)
-                .image(questionRequest.getImage())
-                .status(EActiveStatus.ACTIVE)
-                .test(testService.getTestById(questionRequest.getTestId()).get())
-                .build();
-    }
-
-    @Override
-    public AQuestionResponse entityMap(Question question) {
-        return AQuestionResponse.builder()
-                .questionId(question.getId())
-                .contentQuestion(question.getContentQuestion())
-                .levelQuestion(question.getLevelQuestion())
-                .typeQuestion(question.getTypeQuestion())
-                .image(question.getImage())
-                .status(question.getStatus())
-                .createdDate(question.getCreatedDate())
-                .testName(question.getTest().getTestName())
-                .options(question.getOptions().stream().map(optionService::entityMap).toList())
-                .build();
-    }
-
     @Override
     public List<AQuestionResponse> getAllByTest(Test test) {
         List<Question> questions = questionRepository.getAllByTest(test);
-        return questions.stream().map(this::entityMap).toList();
+        return questions.stream().map(this::entityAMap).toList();
     }
 
     @Override
     public List<AQuestionResponse> getAllByCreatedDate(LocalDate date) {
         List<Question> questions = questionRepository.getAllByCreatedDate(date);
-        return questions.stream().map(this::entityMap).toList();
+        return questions.stream().map(this::entityAMap).toList();
     }
 
     @Override
     public List<AQuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd) {
-        List<Question> questions = questionRepository.getAllFromDayToDay(dateStart,dateEnd);
-        return questions.stream().map(this::entityMap).toList();
+        List<Question> questions = questionRepository.getAllFromDayToDay(dateStart, dateEnd);
+        return questions.stream().map(this::entityAMap).toList();
     }
-
+    @Override
+    public Question entityAMap(AQuestionRequest questionRequest) {
+        EQuestionLevel questionLevel = switch (questionRequest.getQuestionLevel()) {
+            case "EASY" -> EQuestionLevel.EASY;
+            case "NORMAL" -> EQuestionLevel.NORMAL;
+            case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
+            default -> null;
+        };
+        EQuestionType questionType = switch (questionRequest.getQuestionType()) {
+            case "SINGLE" -> EQuestionType.SINGLE;
+            case "MULTIPLE" -> EQuestionType.MULTIPLE;
+            default -> null;
+        };
+        return Question.builder()
+                .questionContent(questionRequest.getQuestionContent())
+                .questionLevel(questionLevel)
+                .questionType(questionType)
+                .image(questionRequest.getImage())
+                .status(EActiveStatus.ACTIVE)
+                .test(testService.getTestById(questionRequest.getTestId()).get())
+                .build();
+    }
+    @Override
+    public AQuestionResponse entityAMap(Question question) {
+        return AQuestionResponse.builder()
+                .questionId(question.getId())
+                .questionContent(question.getQuestionContent())
+                .questionLevel(question.getQuestionLevel())
+                .questionType(question.getQuestionType())
+                .image(question.getImage())
+                .status(question.getStatus())
+                .createdDate(question.getCreatedDate())
+                .test(question.getTest())
+                .options(question.getOptions().stream().map(optionService::entityAMap).toList())
+                .build();
+    }
 }

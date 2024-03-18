@@ -14,7 +14,7 @@ import trainingmanagement.model.enums.EOptionStatus;
 @Entity
 @Table(name = "options")
 public class Option extends BaseModel {
-    private String contentOptions;
+    private String optionContent;
     @Enumerated(EnumType.STRING)
     @Column(name = "is_correct")
     private EOptionStatus isCorrect;

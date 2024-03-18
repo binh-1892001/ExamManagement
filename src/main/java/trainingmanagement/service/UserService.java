@@ -15,9 +15,9 @@ public interface UserService {
     Optional<AUserResponse> getUserResponseById(Long userId);
     void deleteById(Long userId);
     JwtResponse handleLogin(LoginRequest userLogin);
-    User addUser(RegisterRequest registerRequest);
     User save(User users);
     User updateAcc(RegisterRequest registerRequest, Long id);
+    User handleRegister(RegisterRequest RegisterRequest);
     Optional<User> getByUsername(String username);
     List<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword);
     AUserResponse entityMap(User user);

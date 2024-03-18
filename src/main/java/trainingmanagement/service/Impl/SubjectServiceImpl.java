@@ -17,14 +17,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
+
     @Override
     public List<Subject> getAllToList() {
         return subjectRepository.findAll();
     }
+
     @Override
     public List<ASubjectResponse> getAllSubjectResponsesToList() {
         return getAllToList().stream().map(this::entityMap).toList();
     }
+
     @Override
     public Optional<Subject> getById(Long subjectId) {
         return subjectRepository.findById(subjectId);
@@ -36,22 +39,22 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Subject save(ASubjectRequest ASubjectRequest) {
-        return subjectRepository.save(entityMap(ASubjectRequest));
+    public Subject save(ASubjectRequest subjectRequest) {
+        return subjectRepository.save(entityMap(subjectRequest));
     }
 
     @Override
-    public Subject patchUpdate(Long subjectId, ASubjectRequest ASubjectRequest) {
+    public Subject patchUpdate(Long subjectId, ASubjectRequest subjectRequest) {
         Optional<Subject> updateSubject = getById(subjectId);
-        if(updateSubject.isPresent()) {
+        if (updateSubject.isPresent()) {
             Subject subject = updateSubject.get();
             AuditableEntity auditableEntity = updateSubject.get();
             if (auditableEntity.getCreatedDate() != null)
                 auditableEntity.setCreatedDate(auditableEntity.getCreatedDate());
-            if (ASubjectRequest.getSubjectName() != null)
-                subject.setSubjectName(ASubjectRequest.getSubjectName());
-            if (ASubjectRequest.getStatus() != null)
-                subject.setStatus(EActiveStatus.valueOf(ASubjectRequest.getStatus()));
+            if (subjectRequest.getSubjectName() != null)
+                subject.setSubjectName(subjectRequest.getSubjectName());
+            if (subjectRequest.getStatus() != null)
+                subject.setStatus(EActiveStatus.valueOf(subjectRequest.getStatus()));
             return save(subject);
         }
         return null;
@@ -62,6 +65,7 @@ public class SubjectServiceImpl implements SubjectService {
         return subjectRepository.findBySubjectNameContainingIgnoreCase(subjectName)
                 .stream().map(this::entityMap).toList();
     }
+
     @Override
     public void deleteById(Long subjectId) {
         subjectRepository.deleteById(subjectId);
@@ -70,12 +74,13 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public Subject entityMap(ASubjectRequest ASubjectRequest) {
         return Subject.builder()
-            .subjectName(ASubjectRequest.getSubjectName())
-            .status(EActiveStatus.valueOf(ASubjectRequest.getStatus()))
-            .build();
+                .subjectName(ASubjectRequest.getSubjectName())
+                .status(EActiveStatus.valueOf(ASubjectRequest.getStatus()))
+                .build();
     }
 
     @Override
+
     public List<ASubjectResponse> getAllByClassId(Long classId) {
         List<Subject> subjects = subjectRepository.getAllByClassId(classId);
         return subjects.stream().map(this::entityMap).toList();
@@ -84,7 +89,8 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public ASubjectResponse entityMap(Subject subject) {
         return ASubjectResponse.builder()
-            .subjectName(subject.getSubjectName())
-            .build();
+                .subjectName(subject.getSubjectName())
+                .status(subject.getStatus())
+                .build();
     }
 }

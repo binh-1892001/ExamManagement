@@ -141,27 +141,27 @@ public class TestServiceImpl implements TestService {
                 default -> null;
             };
         return Test.builder()
-                .testName(testRequest.getTestName())
-                .testTime(testRequest.getTestTime())
-                .testType(testType)
-                .resources(testRequest.getResources())
-                .status(status)
-                .build();
+            .testName(testRequest.getTestName())
+            .testTime(testRequest.getTestTime())
+            .testType(testType)
+            .resources(testRequest.getResources())
+            .status(status)
+            .build();
     }
 
     @Override
     public ATestResponse entityAMap(Test test) {
         return ATestResponse.builder()
-                .testId(test.getId())
-                .testName(test.getTestName())
-                .testTime(test.getTestTime())
-                .testType(test.getTestType())
-                .resources(test.getResources())
-                .createdDate(test.getCreatedDate())
-                .modifyDate(test.getModifyDate())
-                .createdBy(test.getCreateBy())
-                .modifyBy(test.getModifyBy())
-                .status(test.getStatus())
-                .build();
+            .testId(test.getId())
+            .testName(test.getTestName())
+            .testTime(test.getTestTime())
+            .testType(test.getTestType())
+            .resources(test.getResources())
+            .createdDate(test.getCreatedDate())
+            .modifyDate(test.getModifyDate())
+            .createdBy(test.getCreateBy())
+            .modifyBy(test.getModifyBy())
+            .status(test.getStatus())
+            .build();
     }
 }

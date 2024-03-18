@@ -17,7 +17,6 @@ import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.Exam;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.ExamService;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -72,8 +71,8 @@ public class AExamController {
     }
     // * Create new Exam.
     @PostMapping
-    public ResponseEntity<?> createNewExam(@RequestBody AExamRequest AExamRequest) {
-        Exam exam = examService.save(AExamRequest);
+    public ResponseEntity<?> createNewExam(@RequestBody AExamRequest examRequest) {
+        Exam exam = examService.save(examRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,

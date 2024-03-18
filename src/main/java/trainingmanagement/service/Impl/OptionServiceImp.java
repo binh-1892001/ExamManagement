@@ -1,8 +1,6 @@
 package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import trainingmanagement.model.dto.request.admin.AOptionRequest;
 import trainingmanagement.model.dto.response.admin.AOptionResponse;
@@ -13,7 +11,6 @@ import trainingmanagement.model.entity.Question;
 import trainingmanagement.repository.OptionRepository;
 import trainingmanagement.repository.QuestionRepository;
 import trainingmanagement.service.OptionService;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +19,6 @@ import java.util.Optional;
 public class OptionServiceImp implements OptionService {
     private final OptionRepository optionRepository;
     private final QuestionRepository questionRepository;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public List<Option> getAllToList() {
@@ -31,7 +27,7 @@ public class OptionServiceImp implements OptionService {
 
     @Override
     public List<AOptionResponse> getAllOptionResponsesToList() {
-        return getAllToList().stream().map(this::entityMap).toList();
+        return getAllToList().stream().map(this::entityAMap).toList();
     }
 
     @Override
@@ -45,8 +41,8 @@ public class OptionServiceImp implements OptionService {
     }
 
     @Override
-    public Option save(AOptionRequest AOptionRequest) {
-        return optionRepository.save(entityMap((AOptionRequest)));
+    public Option save(AOptionRequest optionRequest) {
+        return optionRepository.save(entityAMap((optionRequest)));
     }
 
     @Override
@@ -62,7 +58,7 @@ public class OptionServiceImp implements OptionService {
     @Override
     public List<AOptionResponse> findAllByQuestion(Question question) {
         List<Option> options = optionRepository.findAllByQuestion(question);
-        return options.stream().map(this::entityMap).toList();
+        return options.stream().map(this::entityAMap).toList();
     }
 
     @Override
@@ -71,26 +67,26 @@ public class OptionServiceImp implements OptionService {
     }
 
     @Override
-    public Option patchUpdateOption(Long optionId, AOptionRequest AOptionRequest) {
+    public Option patchUpdateOption(Long optionId, AOptionRequest optionRequest) {
         Optional<Option> updateOption = optionRepository.findById(optionId);
         if(updateOption.isPresent()){
             Option option = updateOption.get();
-            if(AOptionRequest.getContentOptions() != null)
-                option.setContentOptions(AOptionRequest.getContentOptions());
-            if(AOptionRequest.getQuestionId() != null){
-                Question question = questionRepository.findById(AOptionRequest.getQuestionId()).orElse(null);
+            if(optionRequest.getOptionContent() != null)
+                option.setOptionContent(optionRequest.getOptionContent());
+            if(optionRequest.getQuestionId() != null){
+                Question question = questionRepository.findById(optionRequest.getQuestionId()).orElse(null);
                 option.setQuestion(question);
             }
-            if(AOptionRequest.getIsCorrect() != null){
-                EOptionStatus isCorrect = switch (AOptionRequest.getIsCorrect().toUpperCase()) {
+            if(optionRequest.getIsCorrect() != null){
+                EOptionStatus isCorrect = switch (optionRequest.getIsCorrect().toUpperCase()) {
                     case "INCORRECT" -> EOptionStatus.INCORRECT;
                     case "CORRECT" -> EOptionStatus.CORRECT;
                     default -> null;
                 };
                 option.setIsCorrect(isCorrect);
             }
-            if(AOptionRequest.getStatus() != null){
-                EActiveStatus status = switch (AOptionRequest.getStatus().toUpperCase()) {
+            if(optionRequest.getStatus() != null){
+                EActiveStatus status = switch (optionRequest.getStatus().toUpperCase()) {
                     case "INACTIVE" -> EActiveStatus.INACTIVE;
                     case "ACTIVE" -> EActiveStatus.ACTIVE;
                     default -> null;
@@ -101,32 +97,30 @@ public class OptionServiceImp implements OptionService {
         }
         return null;
     }
-
     @Override
-    public Option entityMap(AOptionRequest AOptionRequest) {
-        EOptionStatus isCorrect = switch (AOptionRequest.getIsCorrect().toUpperCase()) {
+    public Option entityAMap(AOptionRequest optionRequest) {
+        EOptionStatus isCorrect = switch (optionRequest.getIsCorrect().toUpperCase()) {
             case "INCORRECT" -> EOptionStatus.INCORRECT;
             case "CORRECT" -> EOptionStatus.CORRECT;
             default -> null;
         };
-        EActiveStatus status = switch (AOptionRequest.getStatus().toUpperCase()) {
+        EActiveStatus status = switch (optionRequest.getStatus().toUpperCase()) {
             case "INACTIVE" -> EActiveStatus.INACTIVE;
             case "ACTIVE" -> EActiveStatus.ACTIVE;
             default -> null;
         };
         return Option.builder()
-            .contentOptions(AOptionRequest.getContentOptions())
-            .question(questionRepository.findById(AOptionRequest.getQuestionId()).orElse(null))
+            .optionContent(optionRequest.getOptionContent())
+            .question(questionRepository.findById(optionRequest.getQuestionId()).orElse(null))
             .isCorrect(isCorrect)
             .status(status)
             .build();
     }
-
     @Override
-    public AOptionResponse entityMap(Option option) {
+    public AOptionResponse entityAMap(Option option) {
         return AOptionResponse.builder()
             .optionId(option.getId())
-            .contentOptions(option.getContentOptions())
+            .optionContent(option.getOptionContent())
             .isCorrect(option.getIsCorrect())
             .status(option.getStatus())
             .build();

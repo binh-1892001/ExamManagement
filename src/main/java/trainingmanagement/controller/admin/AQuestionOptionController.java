@@ -137,7 +137,7 @@ public class AQuestionOptionController {
                         EHttpStatus.SUCCESS,
                         HttpStatus.OK.value(),
                         HttpStatus.OK.name(),
-                        question.stream().map(questionService::entityMap)
+                        question.stream().map(questionService::entityAMap)
                 ), HttpStatus.OK);
     }
 
@@ -146,7 +146,7 @@ public class AQuestionOptionController {
     public ResponseEntity<?> addQuestionAndOption(
             @RequestBody AQuestionOptionRequest questionOptionRequest) {
         Question question = questionService.saveQuestionAndOption(questionOptionRequest);
-        AQuestionResponse questionResponse = questionService.entityMap(question);
+        AQuestionResponse questionResponse = questionService.entityAMap(question);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -175,7 +175,7 @@ public class AQuestionOptionController {
                         EHttpStatus.SUCCESS,
                         HttpStatus.OK.value(),
                         HttpStatus.OK.name(),
-                        questionService.entityMap(question)
+                        questionService.entityAMap(question)
                 ), HttpStatus.OK);
     }
 

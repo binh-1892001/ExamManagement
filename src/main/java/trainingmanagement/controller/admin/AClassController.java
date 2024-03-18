@@ -23,7 +23,6 @@ import trainingmanagement.service.CommonService;
 import trainingmanagement.service.UserClassService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/v1/admin/classes")
@@ -49,12 +48,12 @@ public class AClassController {
             Page<?> classrooms = commonService.convertListToPages(pageable, classroomResponses);
             if (!classrooms.isEmpty()) {
                 return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                classrooms.getContent()
-                        ), HttpStatus.OK);
+                    new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            classrooms.getContent()
+                    ), HttpStatus.OK);
             }
             throw new CustomException("Classes page is empty.");
         } catch (IllegalArgumentException e) {
@@ -64,16 +63,14 @@ public class AClassController {
     // * Get classroom by id.
     @GetMapping("/{classId}")
     public ResponseEntity<?> getClassById(@PathVariable("classId") Long classId) throws CustomException{
-        Optional<Classroom> classroom = classroomService.getById(classId);
-        if(classroom.isPresent())
-            return new ResponseEntity<>(
-                    new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        classroom.get()
-                    ), HttpStatus.OK);
-        throw new CustomException("Class is not exists.");
+        AClassResponse classroom = classroomService.getAClassResponseById(classId);
+        return new ResponseEntity<>(
+            new ResponseWrapper<>(
+                EHttpStatus.SUCCESS,
+                HttpStatus.OK.value(),
+                HttpStatus.OK.name(),
+                classroom
+            ), HttpStatus.OK);
     }
     // * Create new classroom.
     @PostMapping
@@ -87,9 +84,9 @@ public class AClassController {
                     classroom
             ), HttpStatus.CREATED);
     }
-    // * Update an existed classroom.
+    // * patchUpdate an exists classroom.
     @PatchMapping("/{classId}")
-    public ResponseEntity<?> pathUpdateClass(
+    public ResponseEntity<?> patchUpdateClass(
             @PathVariable("classId") Long updateClassroomId,
             @RequestBody AClassRequest AClassRequest
     ) {
@@ -102,10 +99,22 @@ public class AClassController {
                     classroom
             ), HttpStatus.OK);
     }
-    // * Delete an existed classroom.
+    // * softDelete an exists classroom.
     @DeleteMapping("/{classId}")
-    public ResponseEntity<?> deleteClassById(@PathVariable("classId") Long classId) {
-        classroomService.deleteById(classId);
+    public ResponseEntity<?> softDeleteClassById(@PathVariable("classId") Long classId) throws CustomException {
+        classroomService.softDeleteByClassId(classId);
+        return new ResponseEntity<>(
+            new ResponseWrapper<>(
+                EHttpStatus.SUCCESS,
+                HttpStatus.OK.value(),
+                HttpStatus.OK.name(),
+                "Delete class successfully."
+            ), HttpStatus.OK);
+    }
+    // * hardDelete an exists classroom.
+    @DeleteMapping("delete/{classId}")
+    public ResponseEntity<?> hardDeleteClassById(@PathVariable("classId") Long classId) throws CustomException {
+        classroomService.hardDeleteByClassId(classId);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,

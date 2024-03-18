@@ -14,11 +14,10 @@ public interface OptionService {
     List<AOptionResponse> findAllByQuestion(Question question);
     List<Option> getAllByQuestion(Question question);
     Option save(Option option);
-    Option save(AOptionRequest AOptionRequest);
-    void deleteById(Long optionId);
+    Option save(AOptionRequest optionRequest);
+    Option patchUpdateOption(Long optionId, AOptionRequest optionRequest);
     void deleteByQuestion(Question question);
-    Option patchUpdateOption(Long optionId, AOptionRequest AOptionRequest);
-    Option entityMap(AOptionRequest AOptionRequest);
-    AOptionResponse entityMap(Option option);
-
+    void deleteById(Long optionId);
+    Option entityAMap(AOptionRequest optionRequest);
+    AOptionResponse entityAMap(Option option);
 }

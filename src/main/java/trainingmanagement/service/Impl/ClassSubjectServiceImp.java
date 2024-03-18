@@ -22,7 +22,7 @@ public class ClassSubjectServiceImp implements ClassSubjectService {
 
     @Override
     public ClassSubject save(AClassSubjectRequest AClassSubjectRequest) {
-        Optional<Classroom> classroom = classroomService.getById(AClassSubjectRequest.getClassId());
+        Optional<Classroom> classroom = classroomService.getClassById(AClassSubjectRequest.getClassId());
         Optional<Subject> subject = subjectService.getById(AClassSubjectRequest.getSubjectId());
         ClassSubject classSubject = new ClassSubject();
         if (classroom.isPresent() && subject.isPresent()){

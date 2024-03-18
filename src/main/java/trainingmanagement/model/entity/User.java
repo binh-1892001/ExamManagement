@@ -30,6 +30,7 @@ public class User extends BaseModel {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private EActiveStatus status;
+    // ? Relationship.
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     @JsonIgnore

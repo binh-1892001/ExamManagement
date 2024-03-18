@@ -1,7 +1,6 @@
 package trainingmanagement.model.dto.auth;
 
 import lombok.*;
-
 import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor

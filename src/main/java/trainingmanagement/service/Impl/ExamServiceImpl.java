@@ -12,7 +12,6 @@ import trainingmanagement.model.entity.Subject;
 import trainingmanagement.repository.ExamRepository;
 import trainingmanagement.service.ExamService;
 import trainingmanagement.service.SubjectService;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +27,7 @@ public class ExamServiceImpl implements ExamService {
     }
     @Override
     public List<AExamResponse> getAllExamResponsesToList() {
-        return getAllToList().stream().map(this::entityMap).toList();
+        return getAllToList().stream().map(this::entityAMap).toList();
     }
     @Override
     public Optional<Exam> getById(Long examId) {
@@ -40,7 +39,7 @@ public class ExamServiceImpl implements ExamService {
     }
     @Override
     public Exam save(AExamRequest AExamRequest) {
-        return examRepository.save(entityMap(AExamRequest));
+        return examRepository.save(entityAMap(AExamRequest));
     }
     @Override
     public Exam patchUpdateExam(Long examId, AExamRequest AExamRequest) throws CustomException {
@@ -69,11 +68,10 @@ public class ExamServiceImpl implements ExamService {
     }
     @Override
     public List<AExamResponse> searchByExamName(String examName) {
-        return examRepository.findByExamName(examName).stream().map(this::entityMap).toList();
+        return examRepository.findByExamName(examName).stream().map(this::entityAMap).toList();
     }
-
     @Override
-    public Exam entityMap(AExamRequest AExamRequest) {
+    public Exam entityAMap(AExamRequest AExamRequest) {
         EActiveStatus activeStatus = switch (AExamRequest.getStatus().toUpperCase()) {
             case "INACTIVE" -> EActiveStatus.ACTIVE;
             case "ACTIVE" -> EActiveStatus.INACTIVE;
@@ -85,9 +83,8 @@ public class ExamServiceImpl implements ExamService {
             .subject(subjectService.getById(AExamRequest.getSubjectId()).orElse(null))
             .build();
     }
-
     @Override
-    public AExamResponse entityMap(Exam exam) {
+    public AExamResponse entityAMap(Exam exam) {
         return AExamResponse.builder()
                 .examId(exam.getId())
                 .examName(exam.getExamName())
@@ -97,7 +94,7 @@ public class ExamServiceImpl implements ExamService {
                 .build();
     }
     @Override
-    public TExamResponse entityMapTeacher(Exam exam) {
+    public TExamResponse entityTMap(Exam exam) {
         return TExamResponse.builder()
                 .examId(exam.getId())
                 .examName(exam.getExamName())
@@ -109,31 +106,27 @@ public class ExamServiceImpl implements ExamService {
     public List<Exam> getAllExamsToListWithActiveStatus() {
         return examRepository.getAllByStatus(EActiveStatus.ACTIVE);
     }
-
     @Override
     public List<TExamResponse> getAllExamResponsesToListWithActiveStatus() {
-        return getAllExamsToListWithActiveStatus().stream().map(this::entityMapTeacher).toList();
+        return getAllExamsToListWithActiveStatus().stream().map(this::entityTMap).toList();
     }
     // Lấy ra Exam theo id với trang thái Active(Teacher)
     @Override
     public Optional<Exam> getExamByIdWithActiveStatus(Long examId) {
         return examRepository.findByIdAndStatus(examId, EActiveStatus.ACTIVE);
     }
-
     @Override
     public Optional<TExamResponse> getExamResponsesByIdWithActiveStatus(Long examId) {
         Optional<Exam> optionalExam = getExamByIdWithActiveStatus(examId);
         if (optionalExam.isPresent()){
             Exam exam = optionalExam.get();
-            return Optional.ofNullable(entityMapTeacher(exam));
+            return Optional.ofNullable(entityTMap(exam));
         }
         return Optional.empty();
     }
-
     //Lấy danh sách Exam theo ngày tạo
-
     @Override
     public List<AExamResponse> getAllExamByCreatedDate(LocalDate date) {
-        return examRepository.findByCreatedDate(date).stream().map(this::entityMap).toList();
+        return examRepository.findByCreatedDate(date).stream().map(this::entityAMap).toList();
     }
 }

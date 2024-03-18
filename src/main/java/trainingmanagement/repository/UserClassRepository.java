@@ -6,7 +6,6 @@ import org.springframework.stereotype.Repository;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.model.entity.UserClass;
-
 import java.util.List;
 
 @Repository

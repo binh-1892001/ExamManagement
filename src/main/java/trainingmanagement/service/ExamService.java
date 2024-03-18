@@ -5,7 +5,6 @@ import trainingmanagement.model.dto.request.admin.AExamRequest;
 import trainingmanagement.model.dto.response.admin.AExamResponse;
 import trainingmanagement.model.dto.response.teacher.TExamResponse;
 import trainingmanagement.model.entity.Exam;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -19,10 +18,9 @@ public interface ExamService {
     Exam patchUpdateExam(Long examId, AExamRequest AExamRequest) throws CustomException;
     void deleteById(Long examId);
     List<AExamResponse> searchByExamName(String examName);
-    Exam entityMap(AExamRequest AExamRequest);
-    AExamResponse entityMap(Exam exam);
-    TExamResponse entityMapTeacher(Exam exam);
-
+    Exam entityAMap(AExamRequest AExamRequest);
+    AExamResponse entityAMap(Exam exam);
+    TExamResponse entityTMap(Exam exam);
     //Lấy danh sách Exam với trạng thái Active (Teacher)
     List<Exam> getAllExamsToListWithActiveStatus();
     List<TExamResponse> getAllExamResponsesToListWithActiveStatus();

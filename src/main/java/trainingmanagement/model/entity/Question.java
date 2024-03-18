@@ -17,14 +17,14 @@ import java.util.List;
 @Builder
 @Entity
 public class Question extends BaseModel {
-    private String contentQuestion;
-    private String image;
+    private String questionContent;
     @Enumerated(EnumType.STRING)
     @Column(name = "question_type")
-    private EQuestionType typeQuestion;
+    private EQuestionType questionType;
     @Enumerated(EnumType.STRING)
     @Column(name = "question_level")
-    private EQuestionLevel levelQuestion;
+    private EQuestionLevel questionLevel;
+    private String image;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private EActiveStatus status;
