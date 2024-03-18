@@ -1,8 +1,8 @@
 package trainingmanagement.model.dto.response.admin;
 
 import lombok.*;
-import trainingmanagement.model.entity.Enum.EActiveStatus;
-import trainingmanagement.model.entity.Enum.EClassStatus;
+import trainingmanagement.model.enums.EActiveStatus;
+import trainingmanagement.model.enums.EClassStatus;
 
 @NoArgsConstructor
 @AllArgsConstructor

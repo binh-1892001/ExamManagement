@@ -11,13 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.AQuestionRequest;
 import trainingmanagement.model.dto.response.admin.AQuestionResponse;
-import trainingmanagement.model.entity.Enum.EHttpStatus;
+import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.service.CommonService;
-import trainingmanagement.service.Question.QuestionService;
+import trainingmanagement.service.QuestionService;
 import java.util.List;
 import java.util.Optional;
 

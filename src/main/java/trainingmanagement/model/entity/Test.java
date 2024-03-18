@@ -12,8 +12,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
-import trainingmanagement.model.entity.Enum.EActiveStatus;
-import trainingmanagement.model.entity.Enum.ETestType;
+import trainingmanagement.model.enums.EActiveStatus;
+import trainingmanagement.model.enums.ETestType;
 import java.util.List;
 
 @Entity

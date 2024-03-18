@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import trainingmanagement.model.entity.Enum.EClassStatus;
+import trainingmanagement.model.enums.EClassStatus;
 
 @NoArgsConstructor
 @AllArgsConstructor

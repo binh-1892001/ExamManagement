@@ -3,7 +3,7 @@ package trainingmanagement.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
-import trainingmanagement.model.entity.Enum.EOptionStatus;
+import trainingmanagement.model.enums.EOptionStatus;
 
 @Entity
 @NoArgsConstructor

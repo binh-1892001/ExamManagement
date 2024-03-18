@@ -1,12 +1,11 @@
 package trainingmanagement.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
-import trainingmanagement.model.entity.Enum.EActiveStatus;
-import trainingmanagement.model.entity.Enum.EGender;
+import trainingmanagement.model.enums.EActiveStatus;
+import trainingmanagement.model.enums.EGender;
 
 import java.time.LocalDate;
 import java.util.List;

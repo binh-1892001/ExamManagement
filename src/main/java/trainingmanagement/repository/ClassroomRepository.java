@@ -3,7 +3,7 @@ package trainingmanagement.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import trainingmanagement.model.entity.Classroom;
-import trainingmanagement.model.entity.Enum.EActiveStatus;
+import trainingmanagement.model.enums.EActiveStatus;
 
 import java.util.List;
 

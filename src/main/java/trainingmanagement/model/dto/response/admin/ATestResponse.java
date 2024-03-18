@@ -12,8 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import trainingmanagement.model.entity.Enum.EActiveStatus;
-import trainingmanagement.model.entity.Enum.ETestType;
+import trainingmanagement.model.enums.EActiveStatus;
+import trainingmanagement.model.enums.ETestType;
 
 import java.time.LocalDate;
 

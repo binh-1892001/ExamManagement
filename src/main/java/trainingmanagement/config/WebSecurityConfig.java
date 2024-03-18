@@ -18,7 +18,7 @@ import trainingmanagement.security.Jwt.AccessDenied;
 import trainingmanagement.security.Jwt.JwtEntryPoint;
 import trainingmanagement.security.Jwt.JwtTokenFilter;
 import trainingmanagement.security.UserDetail.UserDetailService;
-import trainingmanagement.model.entity.Enum.ERoleName;
+import trainingmanagement.model.enums.ERoleName;
 
 @Configuration
 @EnableWebSecurity
