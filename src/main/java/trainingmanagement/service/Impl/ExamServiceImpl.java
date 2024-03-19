@@ -43,11 +43,9 @@ public class ExamServiceImpl implements ExamService {
     }
     @Override
     public Exam patchUpdateExam(Long examId, AExamRequest AExamRequest) throws CustomException {
-        Optional<Exam> updateExam = getById(examId);
+        Optional<Exam> updateExam = examRepository.findById(examId);
         if(updateExam.isPresent()){
             Exam exam = updateExam.get();
-            Optional<Subject> subject = subjectService.getById(AExamRequest.getSubjectId());
-            if(subject.isEmpty()) throw new CustomException("Subject is not exists.");
             if(AExamRequest.getExamName() != null) exam.setExamName(AExamRequest.getExamName());
             if(AExamRequest.getStatus() != null) {
                 EActiveStatus activeStatus = switch (AExamRequest.getStatus().toUpperCase()) {
@@ -57,7 +55,11 @@ public class ExamServiceImpl implements ExamService {
                 };
                 exam.setStatus(activeStatus);
             }
-            if(AExamRequest.getSubjectId() != null) exam.setSubject(subject.get());
+            if(AExamRequest.getSubjectId() != null) {
+                Optional<Subject> subject = subjectService.getById(AExamRequest.getSubjectId());
+                if(subject.isEmpty()) throw new CustomException("Subject is not exists.");
+                exam.setSubject(subject.get());
+            }
             return examRepository.save(exam);
         }
         throw new CustomException("Exam is not exists to update.");
@@ -68,7 +70,7 @@ public class ExamServiceImpl implements ExamService {
     }
     @Override
     public List<AExamResponse> searchByExamName(String examName) {
-        return examRepository.findByExamName(examName).stream().map(this::entityAMap).toList();
+        return examRepository.findByExamNameContainingIgnoreCase(examName).stream().map(this::entityAMap).toList();
     }
     @Override
     public Exam entityAMap(AExamRequest AExamRequest) {
