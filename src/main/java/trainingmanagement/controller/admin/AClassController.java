@@ -41,11 +41,8 @@ public class AClassController {
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
         Pageable pageable;
-        if (order.equals("asc")) {
-            pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        }else {
-            pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        }
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
             List<AClassResponse> classroomResponses = classroomService.getAllClassResponsesToList();
             Page<?> classrooms = commonService.convertListToPages(pageable, classroomResponses);
@@ -77,8 +74,8 @@ public class AClassController {
     }
     // * Create new classroom.
     @PostMapping
-    public ResponseEntity<?> createClass(@RequestBody AClassRequest AClassRequest) {
-        Classroom classroom = classroomService.save(AClassRequest);
+    public ResponseEntity<?> createClass(@RequestBody AClassRequest classRequest) {
+        Classroom classroom = classroomService.save(classRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                     EHttpStatus.SUCCESS,
@@ -91,9 +88,9 @@ public class AClassController {
     @PatchMapping("/{classId}")
     public ResponseEntity<?> patchUpdateClass(
             @PathVariable("classId") Long updateClassroomId,
-            @RequestBody AClassRequest AClassRequest
+            @RequestBody AClassRequest classRequest
     ) {
-        Classroom classroom = classroomService.patchUpdate(updateClassroomId, AClassRequest);
+        Classroom classroom = classroomService.patchUpdate(updateClassroomId, classRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                     EHttpStatus.SUCCESS,
@@ -157,8 +154,8 @@ public class AClassController {
     }
     // * add subject to class
     @PostMapping("/addSubject")
-    public ResponseEntity<?> addSubjectToClass(@RequestBody AClassSubjectRequest AClassSubjectRequest){
-        classSubjectService.save(AClassSubjectRequest);
+    public ResponseEntity<?> addSubjectToClass(@RequestBody AClassSubjectRequest classSubjectRequest){
+        classSubjectService.save(classSubjectRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -170,8 +167,8 @@ public class AClassController {
 
     // * add student to class
     @PostMapping("/saveStudent")
-    public ResponseEntity<?> saveStudent(@RequestBody AUserClassRequest AUserClassRequest){
-        UserClass userClass = userClassService.saveStudent(AUserClassRequest);
+    public ResponseEntity<?> saveStudent(@RequestBody AUserClassRequest userClassRequest){
+        UserClass userClass = userClassService.saveStudent(userClassRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -180,5 +177,4 @@ public class AClassController {
                         userClass
                 ), HttpStatus.CREATED);
     }
-
- }
+}
