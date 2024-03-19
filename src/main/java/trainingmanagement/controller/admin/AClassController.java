@@ -67,29 +67,29 @@ public class AClassController {
     }
     // * Create new classroom.
     @PostMapping
-    public ResponseEntity<?> createClass(@RequestBody @Valid AClassRequest AClassRequest) {
-        Classroom classroom = classroomService.save(AClassRequest);
+    public ResponseEntity<?> createClass(@RequestBody @Valid AClassRequest classRequest) {
+        Classroom classroom = classroomService.save(classRequest);
         return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                    EHttpStatus.SUCCESS,
-                    HttpStatus.CREATED.value(),
-                    HttpStatus.CREATED.name(),
-                    classroom
-            ), HttpStatus.CREATED);
+            new ResponseWrapper<>(
+                EHttpStatus.SUCCESS,
+                HttpStatus.CREATED.value(),
+                HttpStatus.CREATED.name(),
+                classroom
+        ), HttpStatus.CREATED);
     }
     // * patchUpdate an exists classroom.
     @PatchMapping("/{classId}")
     public ResponseEntity<?> patchUpdateClass(
             @PathVariable("classId") Long updateClassroomId,
-            @RequestBody @Valid AClassRequest AClassRequest
+            @RequestBody @Valid AClassRequest classRequest
     ) {
-        Classroom classroom = classroomService.patchUpdate(updateClassroomId, AClassRequest);
+        Classroom classroom = classroomService.patchUpdate(updateClassroomId, classRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
-                    EHttpStatus.SUCCESS,
-                    HttpStatus.OK.value(),
-                    HttpStatus.OK.name(),
-                    classroom
+                EHttpStatus.SUCCESS,
+                HttpStatus.OK.value(),
+                HttpStatus.OK.name(),
+                classroom
             ), HttpStatus.OK);
     }
     // * softDelete an exists classroom.

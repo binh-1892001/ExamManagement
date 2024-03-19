@@ -9,8 +9,8 @@ import lombok.*;
 @Data
 @Builder
 public class AClassRequest {
-    @NotEmpty(message = "Ten lop khong nhan null")
+    @NotEmpty(message = "Class name must not be Null.")
     private String className;
-    @Pattern(regexp = "^(?i)(FINISH|NEW|OJT)$", message = "Chuỗi phải là 'NEW' hoặc 'FINISH' hoặc 'OJT'")
+    @Pattern(regexp = "^(?i)(NEW|OJT/FINISH)$", message = "String value must be \"NEW/OJT/FINISH\"")
     private String classStatus;
 }
