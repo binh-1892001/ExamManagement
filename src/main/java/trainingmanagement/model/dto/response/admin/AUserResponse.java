@@ -39,12 +39,11 @@ public class AUserResponse {
     private Long userId;
     private String fullName;
     private String username;
-    private String password;
+    private String avatar;
     private String email;
     private String phone;
-    @JsonFormat(pattern = "dd/MM/yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate dateOfBirth;
-    private String avatar;
     private EGender gender;
     private EActiveStatus status;
     @JsonFormat(pattern = "dd-MM-yyyy")

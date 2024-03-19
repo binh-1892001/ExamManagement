@@ -21,7 +21,7 @@ public class UserLogin {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             UserPrincipal userPrinciple = (UserPrincipal) authentication.getPrincipal();
-            Optional<User> userOption = userService.getById(userPrinciple.getUser().getId());
+            Optional<User> userOption = userService.getUserById(userPrinciple.getUser().getId());
             if (userOption.isPresent()) {
                 return userOption.get();
             }
