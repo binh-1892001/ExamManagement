@@ -14,6 +14,9 @@
 
 package trainingmanagement.model.dto.request.admin;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @NoArgsConstructor
@@ -21,8 +24,12 @@ import lombok.*;
 @Data
 @Builder
 public class AClassRequest {
+    @NotEmpty(message = "Không được bỏ trống chỗ này nha!!")
     private String className;
+    @Pattern(regexp = "^(?i)(NEW|OJT|FINISH)$", message = "Chuỗi phải là 'NEW' hoặc 'OJT' hoặc 'FINISH'")
     private String classStatus;
+    @NotNull(message = "Không được bỏ trống chỗ này nha!!")
     private Long teacherId;
+    @Pattern(regexp = "^(?i)(ACTIVE|INACTIVE)$", message = "Chuỗi phải là 'ACTIVE' hoặc 'INACTIVE'")
     private String status;
 }

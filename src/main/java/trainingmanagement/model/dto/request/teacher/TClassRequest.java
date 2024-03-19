@@ -11,6 +11,7 @@
 
 package trainingmanagement.model.dto.request.teacher;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +22,6 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class TClassRequest {
+    @NotEmpty(message = "Không được bỏ trống chỗ này nha!!")
     private String className;
 }
