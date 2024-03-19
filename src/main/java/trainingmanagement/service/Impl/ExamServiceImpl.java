@@ -43,7 +43,7 @@ public class ExamServiceImpl implements ExamService {
     }
     @Override
     public Exam patchUpdateExam(Long examId, AExamRequest AExamRequest) throws CustomException {
-        Optional<Exam> updateExam = examRepository.findById(examId);
+        Optional<Exam> updateExam = getById(examId);
         if(updateExam.isPresent()){
             Exam exam = updateExam.get();
             Optional<Subject> subject = subjectService.getById(AExamRequest.getSubjectId());
@@ -73,8 +73,8 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public Exam entityAMap(AExamRequest AExamRequest) {
         EActiveStatus activeStatus = switch (AExamRequest.getStatus().toUpperCase()) {
-            case "INACTIVE" -> EActiveStatus.ACTIVE;
-            case "ACTIVE" -> EActiveStatus.INACTIVE;
+            case "INACTIVE" -> EActiveStatus.INACTIVE;
+            case "ACTIVE" -> EActiveStatus.ACTIVE;
             default -> null;
         };
         return Exam.builder()
