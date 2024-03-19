@@ -72,18 +72,19 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
+
+    public List<ASubjectResponse> getAllByClassId(Long classId) {
+        List<Subject> subjects = subjectRepository.getAllByClassId(classId);
+        return subjects.stream().map(this::entityMap).toList();
+    }
+
+    //    *********************************************entityMap*********************************************
+    @Override
     public Subject entityMap(ASubjectRequest ASubjectRequest) {
         return Subject.builder()
                 .subjectName(ASubjectRequest.getSubjectName())
                 .status(EActiveStatus.valueOf(ASubjectRequest.getStatus()))
                 .build();
-    }
-
-    @Override
-
-    public List<ASubjectResponse> getAllByClassId(Long classId) {
-        List<Subject> subjects = subjectRepository.getAllByClassId(classId);
-        return subjects.stream().map(this::entityMap).toList();
     }
 
     @Override

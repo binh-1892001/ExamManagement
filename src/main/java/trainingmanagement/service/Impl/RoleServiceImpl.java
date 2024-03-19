@@ -34,6 +34,8 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.findAllByRoleNameContainingIgnoreCase(roleName).stream().map(this::entityMap).toList();
     }
 
+    //    *********************************************entityMap*********************************************
+
     @Override
     public ARoleResponse entityMap(Role role) {
         return ARoleResponse.builder()

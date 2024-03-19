@@ -70,37 +70,6 @@ public class ExamServiceImpl implements ExamService {
     public List<AExamResponse> searchByExamName(String examName) {
         return examRepository.findByExamName(examName).stream().map(this::entityAMap).toList();
     }
-    @Override
-    public Exam entityAMap(AExamRequest AExamRequest) {
-        EActiveStatus activeStatus = switch (AExamRequest.getStatus().toUpperCase()) {
-            case "INACTIVE" -> EActiveStatus.ACTIVE;
-            case "ACTIVE" -> EActiveStatus.INACTIVE;
-            default -> null;
-        };
-        return Exam.builder()
-            .examName(AExamRequest.getExamName())
-            .status(activeStatus)
-            .subject(subjectService.getById(AExamRequest.getSubjectId()).orElse(null))
-            .build();
-    }
-    @Override
-    public AExamResponse entityAMap(Exam exam) {
-        return AExamResponse.builder()
-                .examId(exam.getId())
-                .examName(exam.getExamName())
-                .status(exam.getStatus())
-                .subject(exam.getSubject())
-                .createdDate(exam.getCreatedDate())
-                .build();
-    }
-    @Override
-    public TExamResponse entityTMap(Exam exam) {
-        return TExamResponse.builder()
-                .examId(exam.getId())
-                .examName(exam.getExamName())
-                .subject(exam.getSubject())
-                .build();
-    }
     //Lấy danh sách Exam với trạng thái Active (Teacher)
     @Override
     public List<Exam> getAllExamsToListWithActiveStatus() {
@@ -128,5 +97,37 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public List<AExamResponse> getAllExamByCreatedDate(LocalDate date) {
         return examRepository.findByCreatedDate(date).stream().map(this::entityAMap).toList();
+    }
+    //    *********************************************entityMap*********************************************
+    @Override
+    public Exam entityAMap(AExamRequest AExamRequest) {
+        EActiveStatus activeStatus = switch (AExamRequest.getStatus().toUpperCase()) {
+            case "INACTIVE" -> EActiveStatus.ACTIVE;
+            case "ACTIVE" -> EActiveStatus.INACTIVE;
+            default -> null;
+        };
+        return Exam.builder()
+                .examName(AExamRequest.getExamName())
+                .status(activeStatus)
+                .subject(subjectService.getById(AExamRequest.getSubjectId()).orElse(null))
+                .build();
+    }
+    @Override
+    public AExamResponse entityAMap(Exam exam) {
+        return AExamResponse.builder()
+                .examId(exam.getId())
+                .examName(exam.getExamName())
+                .status(exam.getStatus())
+                .subject(exam.getSubject())
+                .createdDate(exam.getCreatedDate())
+                .build();
+    }
+    @Override
+    public TExamResponse entityTMap(Exam exam) {
+        return TExamResponse.builder()
+                .examId(exam.getId())
+                .examName(exam.getExamName())
+                .subject(exam.getSubject())
+                .build();
     }
 }
