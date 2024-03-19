@@ -51,8 +51,8 @@ public class ExamServiceImpl implements ExamService {
             if(AExamRequest.getExamName() != null) exam.setExamName(AExamRequest.getExamName());
             if(AExamRequest.getStatus() != null) {
                 EActiveStatus activeStatus = switch (AExamRequest.getStatus().toUpperCase()) {
-                    case "INACTIVE" -> EActiveStatus.ACTIVE;
-                    case "ACTIVE" -> EActiveStatus.INACTIVE;
+                    case "INACTIVE" -> EActiveStatus.INACTIVE;
+                    case "ACTIVE" -> EActiveStatus.ACTIVE;
                     default -> null;
                 };
                 exam.setStatus(activeStatus);
@@ -73,8 +73,8 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public Exam entityAMap(AExamRequest AExamRequest) {
         EActiveStatus activeStatus = switch (AExamRequest.getStatus().toUpperCase()) {
-            case "INACTIVE" -> EActiveStatus.ACTIVE;
-            case "ACTIVE" -> EActiveStatus.INACTIVE;
+            case "INACTIVE" -> EActiveStatus.INACTIVE;
+            case "ACTIVE" -> EActiveStatus.ACTIVE;
             default -> null;
         };
         return Exam.builder()
