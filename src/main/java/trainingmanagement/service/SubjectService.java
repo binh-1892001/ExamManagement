@@ -15,7 +15,7 @@ public interface SubjectService {
     Subject patchUpdate(Long subjectId, ASubjectRequest ASubjectRequest);
     List<ASubjectResponse> findBySubjectName(String className);
     void deleteById(Long subjectId);
-    ASubjectResponse entityMap(Subject subject);
-    Subject entityMap(ASubjectRequest ASubjectRequest);
     List<ASubjectResponse> getAllByClassId(Long classId);
+    Subject entityAMap(ASubjectRequest ASubjectRequest);
+    ASubjectResponse entityAMap(Subject subject);
 }
