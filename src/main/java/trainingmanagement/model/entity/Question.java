@@ -4,25 +4,29 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
-import trainingmanagement.model.entity.Enum.EActiveStatus;
-import trainingmanagement.model.entity.Enum.EQuestionLevel;
-import trainingmanagement.model.entity.Enum.EQuestionType;
+import trainingmanagement.model.enums.EActiveStatus;
+import trainingmanagement.model.enums.EQuestionLevel;
+import trainingmanagement.model.enums.EQuestionType;
 
 import java.util.List;
 
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Builder
+@Entity
 public class Question extends BaseModel {
-    private String contentQuestion;
+    private String questionContent;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "question_type")
+    private EQuestionType questionType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "question_level")
+    private EQuestionLevel questionLevel;
     private String image;
     @Enumerated(EnumType.STRING)
-    private EQuestionType typeQuestion;
-    @Enumerated(EnumType.STRING)
-    private EQuestionLevel levelQuestion;
+    @Column(name = "status")
     private EActiveStatus status;
     @ManyToOne
     @JoinColumn(name = "test_id", referencedColumnName = "id")

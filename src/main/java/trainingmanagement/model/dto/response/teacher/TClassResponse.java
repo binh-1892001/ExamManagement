@@ -1,10 +1,7 @@
 package trainingmanagement.model.dto.response.teacher;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import trainingmanagement.model.entity.Enum.EClassStatus;
+import lombok.*;
+import trainingmanagement.model.enums.EClassStatus;
 
 @NoArgsConstructor
 @AllArgsConstructor

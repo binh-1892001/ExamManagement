@@ -9,10 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.response.teacher.TClassResponse;
-import trainingmanagement.model.entity.Enum.EHttpStatus;
-import trainingmanagement.service.Classroom.ClassroomService;
+import trainingmanagement.model.enums.EHttpStatus;
+import trainingmanagement.service.ClassroomService;
 import trainingmanagement.service.CommonService;
 
 import java.util.List;
@@ -38,8 +38,8 @@ public class TClassController {
             pageable = PageRequest.of(page,limit,Sort.by(sort).descending());
         }
         try {
-            List<TClassResponse> TClassRespons = classroomService.teacherGetListClassrooms();
-            Page<?> classroom = commonService.convertListToPages(pageable, TClassRespons);
+            List<TClassResponse> classResponses = classroomService.teacherGetListClassrooms();
+            Page<?> classroom = commonService.convertListToPages(pageable, classResponses);
             if (!classroom.isEmpty()) {
                 return new ResponseEntity<>(
                     new ResponseWrapper<>(
@@ -79,8 +79,8 @@ public class TClassController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<TClassResponse> TClassRespons = classroomService.teacherFindClassByName(keyword);
-            Page<?> classrooms = commonService.convertListToPages(pageable, TClassRespons);
+            List<TClassResponse> classResponses = classroomService.teacherFindClassByName(keyword);
+            Page<?> classrooms = commonService.convertListToPages(pageable, classResponses);
             if (!classrooms.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

@@ -11,13 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.ASubjectRequest;
 import trainingmanagement.model.dto.response.admin.ASubjectResponse;
-import trainingmanagement.model.entity.Enum.EHttpStatus;
+import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.Subject;
 import trainingmanagement.service.CommonService;
-import trainingmanagement.service.Subject.SubjectService;
+import trainingmanagement.service.SubjectService;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,8 +40,8 @@ public class ASubjectController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ASubjectResponse> ASubjectRespons = subjectService.getAllSubjectResponsesToList();
-            Page<?> subjects = commonService.convertListToPages(pageable, ASubjectRespons);
+            List<ASubjectResponse> subjectResponses = subjectService.getAllSubjectResponsesToList();
+            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
             if (!subjects.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
@@ -72,8 +72,8 @@ public class ASubjectController {
     }
     // * Create new subject.
     @PostMapping
-    public ResponseEntity<?> createSubject(@RequestBody ASubjectRequest ASubjectRequest) {
-        Subject subject = subjectService.save(ASubjectRequest);
+    public ResponseEntity<?> createSubject(@RequestBody ASubjectRequest subjectRequest) {
+        Subject subject = subjectService.save(subjectRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -86,9 +86,9 @@ public class ASubjectController {
     @PatchMapping("/{subjectId}")
     public ResponseEntity<?> pathUpdateSubject(
             @PathVariable("subjectId") Long updateSubjectId,
-            @RequestBody ASubjectRequest ASubjectRequest
+            @RequestBody ASubjectRequest subjectRequest
     ) {
-        Subject subject = subjectService.patchUpdate(updateSubjectId, ASubjectRequest);
+        Subject subject = subjectService.patchUpdate(updateSubjectId, subjectRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -122,8 +122,38 @@ public class ASubjectController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ASubjectResponse> ASubjectRespons = subjectService.findBySubjectName(keyword);
-            Page<?> subjects = commonService.convertListToPages(pageable, ASubjectRespons);
+            List<ASubjectResponse> subjectResponses = subjectService.findBySubjectName(keyword);
+            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
+            if (!subjects.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                subjects.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Subjects page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Subjects page is out of range.");
+        }
+    }
+
+    //* lấy danh sách môn học theo classId
+    @GetMapping("/class/{classId}")
+    public ResponseEntity<?> getAllSubjectByClassIdToPages(
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "subjectName", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @PathVariable Long classId
+    ) throws CustomException{
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            List<ASubjectResponse> subjectResponses = subjectService.getAllByClassId(classId);
+            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
             if (!subjects.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(

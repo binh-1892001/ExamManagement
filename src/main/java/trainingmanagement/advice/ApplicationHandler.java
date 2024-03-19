@@ -6,8 +6,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.entity.Enum.EHttpStatus;
+import trainingmanagement.model.dto.wrapper.ResponseWrapper;
+import trainingmanagement.model.enums.EHttpStatus;
 import java.util.HashMap;
 import java.util.Map;
 

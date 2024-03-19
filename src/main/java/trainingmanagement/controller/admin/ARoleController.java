@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.Wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.response.admin.RoleResponse;
-import trainingmanagement.model.entity.Enum.EHttpStatus;
+import trainingmanagement.model.dto.wrapper.ResponseWrapper;
+import trainingmanagement.model.dto.response.admin.ARoleResponse;
+import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.service.CommonService;
-import trainingmanagement.service.Role.RoleService;
+import trainingmanagement.service.RoleService;
 import java.util.List;
 
 @RestController
@@ -36,7 +36,7 @@ public class ARoleController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<RoleResponse> roleResponses = roleService.getAllRoleResponsesToList();
+            List<ARoleResponse> roleResponses = roleService.getAllRoleResponsesToList();
             Page<?> roles = commonService.convertListToPages(pageable, roleResponses);
             if (!roles.isEmpty()) {
                 return new ResponseEntity<>(
@@ -64,7 +64,7 @@ public class ARoleController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<RoleResponse> roleResponses = roleService.findAllByRoleNameContainingIgnoreCase(keyword);
+            List<ARoleResponse> roleResponses = roleService.findAllByRoleNameContainingIgnoreCase(keyword);
             Page<?> roles = commonService.convertListToPages(pageable, roleResponses);
             if (!roles.isEmpty()) {
                 return new ResponseEntity<>(
