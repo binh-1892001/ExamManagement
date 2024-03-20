@@ -1,4 +1,4 @@
-USE `exammanagement`;
+USE exammanagement;
 INSERT INTO user(date_of_birth, email, full_name, gender, password, phone, status, username)
     VALUES ('2000-10-04', 'admin01@gmail.com', 'Nguyen Van A', 'MALE','$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi', '0351875345', 'ACTIVE', 'admin'),
        ('1999-03-12', 'user01@gmail.com', 'Nguyen Thi B', 'FEMALE','$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi', '0894936182', 'ACTIVE', 'user01'),

@@ -14,7 +14,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
+import trainingmanagement.model.dto.response.admin.ASubjectResponse;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
+import trainingmanagement.model.entity.Subject;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.ETestType;
 import trainingmanagement.model.entity.Test;
@@ -163,5 +165,12 @@ public class TestServiceImpl implements TestService {
             .modifyBy(test.getModifyBy())
             .status(test.getStatus())
             .build();
+    }
+
+    //find by examId
+    @Override
+    public List<ATestResponse> getAllByExamId(Long examId) {
+        List<Test> tests = testRepository.getAllByExamId (examId);
+        return tests.stream().map(this::entityAMap).toList();
     }
 }

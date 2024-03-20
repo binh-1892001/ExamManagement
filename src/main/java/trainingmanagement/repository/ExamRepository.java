@@ -1,6 +1,7 @@
 package trainingmanagement.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.entity.Exam;
@@ -15,4 +16,8 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     List<Exam> findByCreatedDate(LocalDate createDate);
     Boolean existsByExamName(String examName);
     Optional<Exam> findByIdAndStatus(Long examId, EActiveStatus status);
+
+    //Find All Exam By SubjectId
+    @Query("select ex from Exam ex where ex.subject.id=:subject_id")
+    List<Exam> getAllBySubjectId(Long subjectId);
 }

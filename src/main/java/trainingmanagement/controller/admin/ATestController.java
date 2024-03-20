@@ -141,4 +141,34 @@ public class ATestController {
             throw new CustomException("Tests page is out of range.");
         }
     }
+
+    //* lấy danh sách test theo examId
+    @GetMapping("/exam/{examId}")
+    public ResponseEntity<?> getAllTestByExamIdToPages(
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "testName", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @PathVariable Long examId
+    ) throws CustomException{
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            List<ATestResponse> testResponses = testService.getAllByExamId (examId);
+            Page<?> tests = commonService.convertListToPages(pageable, testResponses);
+            if (!tests.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                tests.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Tests page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Tests page is out of range.");
+        }
+    }
 }

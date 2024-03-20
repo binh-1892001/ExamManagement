@@ -3,6 +3,7 @@ package trainingmanagement.service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.AExamRequest;
 import trainingmanagement.model.dto.response.admin.AExamResponse;
+import trainingmanagement.model.dto.response.admin.ASubjectResponse;
 import trainingmanagement.model.dto.response.teacher.TExamResponse;
 import trainingmanagement.model.entity.Exam;
 import java.time.LocalDate;
@@ -29,4 +30,7 @@ public interface ExamService {
     Optional<TExamResponse> getExamResponsesByIdWithActiveStatus(Long examId);
     //Lấy danh sách Exam theo thời gian tạo(createdDate)
     List<AExamResponse> getAllExamByCreatedDate(LocalDate date);
+
+    //find by subjectId
+    List<AExamResponse> getAllBySubjectId(Long subjectId);
 }
