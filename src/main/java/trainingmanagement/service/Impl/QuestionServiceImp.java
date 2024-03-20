@@ -127,6 +127,8 @@ public class QuestionServiceImp implements QuestionService {
         List<Question> questions = questionRepository.getAllFromDayToDay(dateStart, dateEnd);
         return questions.stream().map(this::entityAMap).toList();
     }
+
+    //    *********************************************entityMap*********************************************
     @Override
     public Question entityAMap(AQuestionRequest questionRequest) {
         EQuestionLevel questionLevel = switch (questionRequest.getQuestionLevel()) {

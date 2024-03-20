@@ -123,7 +123,7 @@ public class TestServiceImpl implements TestService {
         return testRepository.findByTestNameContainingIgnoreCase(testName)
                 .stream().map(this::entityAMap).toList();
     }
-
+    //    *********************************************entityMap*********************************************
     @Override
     public Test entityAMap(ATestRequest testRequest) {
         ETestType testType = null;

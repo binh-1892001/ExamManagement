@@ -38,26 +38,28 @@ public class ExamServiceImpl implements ExamService {
         return examRepository.save(exam);
     }
     @Override
-    public Exam save(AExamRequest AExamRequest) {
-        return examRepository.save(entityAMap(AExamRequest));
+    public Exam save(AExamRequest examRequest) {
+        return examRepository.save(entityAMap(examRequest));
     }
     @Override
-    public Exam patchUpdateExam(Long examId, AExamRequest AExamRequest) throws CustomException {
+    public Exam patchUpdateExam(Long examId, AExamRequest examRequest) throws CustomException {
         Optional<Exam> updateExam = examRepository.findById(examId);
         if(updateExam.isPresent()){
             Exam exam = updateExam.get();
-            Optional<Subject> subject = subjectService.getById(AExamRequest.getSubjectId());
-            if(subject.isEmpty()) throw new CustomException("Subject is not exists.");
-            if(AExamRequest.getExamName() != null) exam.setExamName(AExamRequest.getExamName());
-            if(AExamRequest.getStatus() != null) {
-                EActiveStatus activeStatus = switch (AExamRequest.getStatus().toUpperCase()) {
-                    case "INACTIVE" -> EActiveStatus.ACTIVE;
-                    case "ACTIVE" -> EActiveStatus.INACTIVE;
+            if(examRequest.getExamName() != null) exam.setExamName(examRequest.getExamName());
+            if(examRequest.getStatus() != null) {
+                EActiveStatus activeStatus = switch (examRequest.getStatus().toUpperCase()) {
+                    case "INACTIVE" -> EActiveStatus.INACTIVE;
+                    case "ACTIVE" -> EActiveStatus.ACTIVE;
                     default -> null;
                 };
                 exam.setStatus(activeStatus);
             }
-            if(AExamRequest.getSubjectId() != null) exam.setSubject(subject.get());
+            if(examRequest.getSubjectId() != null) {
+                Optional<Subject> subject = subjectService.getById(examRequest.getSubjectId());
+                if(subject.isEmpty()) throw new CustomException("Subject is not exists.");
+                exam.setSubject(subject.get());
+            }
             return examRepository.save(exam);
         }
         throw new CustomException("Exam is not exists to update.");
@@ -68,38 +70,7 @@ public class ExamServiceImpl implements ExamService {
     }
     @Override
     public List<AExamResponse> searchByExamName(String examName) {
-        return examRepository.findByExamName(examName).stream().map(this::entityAMap).toList();
-    }
-    @Override
-    public Exam entityAMap(AExamRequest AExamRequest) {
-        EActiveStatus activeStatus = switch (AExamRequest.getStatus().toUpperCase()) {
-            case "INACTIVE" -> EActiveStatus.ACTIVE;
-            case "ACTIVE" -> EActiveStatus.INACTIVE;
-            default -> null;
-        };
-        return Exam.builder()
-            .examName(AExamRequest.getExamName())
-            .status(activeStatus)
-            .subject(subjectService.getById(AExamRequest.getSubjectId()).orElse(null))
-            .build();
-    }
-    @Override
-    public AExamResponse entityAMap(Exam exam) {
-        return AExamResponse.builder()
-                .examId(exam.getId())
-                .examName(exam.getExamName())
-                .status(exam.getStatus())
-                .subject(exam.getSubject())
-                .createdDate(exam.getCreatedDate())
-                .build();
-    }
-    @Override
-    public TExamResponse entityTMap(Exam exam) {
-        return TExamResponse.builder()
-                .examId(exam.getId())
-                .examName(exam.getExamName())
-                .subject(exam.getSubject())
-                .build();
+        return examRepository.findByExamNameContainingIgnoreCase(examName).stream().map(this::entityAMap).toList();
     }
     //Lấy danh sách Exam với trạng thái Active (Teacher)
     @Override
@@ -128,5 +99,36 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public List<AExamResponse> getAllExamByCreatedDate(LocalDate date) {
         return examRepository.findByCreatedDate(date).stream().map(this::entityAMap).toList();
+    }
+    @Override
+    public Exam entityAMap(AExamRequest examRequest) {
+        EActiveStatus activeStatus = switch (examRequest.getStatus().toUpperCase()) {
+            case "INACTIVE" -> EActiveStatus.INACTIVE;
+            case "ACTIVE" -> EActiveStatus.ACTIVE;
+            default -> null;
+        };
+        return Exam.builder()
+                .examName(examRequest.getExamName())
+                .status(activeStatus)
+                .subject(subjectService.getById(examRequest.getSubjectId()).orElse(null))
+                .build();
+    }
+    @Override
+    public AExamResponse entityAMap(Exam exam) {
+        return AExamResponse.builder()
+                .examId(exam.getId())
+                .examName(exam.getExamName())
+                .status(exam.getStatus())
+                .subject(exam.getSubject())
+                .createdDate(exam.getCreatedDate())
+                .build();
+    }
+    @Override
+    public TExamResponse entityTMap(Exam exam) {
+        return TExamResponse.builder()
+                .examId(exam.getId())
+                .examName(exam.getExamName())
+                .subject(exam.getSubject())
+                .build();
     }
 }

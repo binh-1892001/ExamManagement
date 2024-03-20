@@ -1,5 +1,6 @@
 package trainingmanagement.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -71,7 +72,7 @@ public class AExamController {
     }
     // * Create new Exam.
     @PostMapping
-    public ResponseEntity<?> createNewExam(@RequestBody AExamRequest examRequest) {
+    public ResponseEntity<?> createNewExam(@RequestBody @Valid AExamRequest examRequest) {
         Exam exam = examService.save(examRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
@@ -85,8 +86,8 @@ public class AExamController {
     @PatchMapping("/{examId}")
     public ResponseEntity<?> patchUpdateExam(
             @PathVariable("examId") Long examId,
-            @RequestBody AExamRequest AExamRequest) throws CustomException {
-        Exam exam = examService.patchUpdateExam (examId, AExamRequest);
+            @RequestBody @Valid AExamRequest examRequest) throws CustomException {
+        Exam exam = examService.patchUpdateExam (examId, examRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,

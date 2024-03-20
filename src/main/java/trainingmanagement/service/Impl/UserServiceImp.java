@@ -47,7 +47,21 @@ public class UserServiceImp implements UserService {
 
     @Override
     public List<AUserResponse> getAllUserResponsesToList() {
-        return getAllToList().stream().map(this::entityMap).toList();
+        return getAllToList().stream().map(this::entityAMap).toList();
+    }
+    @Override
+    public Optional<User> getUserById(Long userId) {
+        return userRepository.findById(userId);
+    }
+
+    @Override
+    public Optional<AUserResponse> getAUserResponseById(Long userId) {
+        Optional<User> optionalUser = getUserById(userId);
+        return optionalUser.map(this::entityAMap);
+    }
+    @Override
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.getUserByUsername(username);
     }
 
     @Override
@@ -101,17 +115,6 @@ public class UserServiceImp implements UserService {
                 .build();
         return userRepository.save(users);
     }
-
-    @Override
-    public Optional<User> getById(Long userId) {
-        return userRepository.findById(userId);
-    }
-
-    @Override
-    public Optional<AUserResponse> getUserResponseById(Long userId) {
-        return Optional.ofNullable(entityMap(userRepository.findByUserId(userId).orElse(null)));
-    }
-
     @Override
     public void deleteById(Long userId) {
         userRepository.deleteById(userId);
@@ -126,7 +129,7 @@ public class UserServiceImp implements UserService {
     public User updateAcc(RegisterRequest RegisterRequest, Long id) {
         if (userRepository.existsByUsername(RegisterRequest.getUsername()))
             throw new RuntimeException("username is exists");
-        User userOld = getById(id).get();
+        User userOld = getUserById(id).get();
         Set<Role> roles = userOld.getRoles();
         User users = User.builder()
                 .fullName(RegisterRequest.getFullName())
@@ -146,15 +149,12 @@ public class UserServiceImp implements UserService {
         return userRepository.save(users);
     }
 
-    @Override
-    public Optional<User> getByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
+
 
     @Override
     public List<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword) {
         return userRepository.findByUsernameOrFullNameContainingIgnoreCase(keyword)
-                .stream().map(this::entityMap).toList();
+                .stream().map(this::entityAMap).toList();
     }
 
     @Override
@@ -180,26 +180,31 @@ public class UserServiceImp implements UserService {
     @Override
     public List<AUserResponse> getAllTeacher() {
         List<User> users = userRepository.getAllTeacher();
-        return users.stream().map(this::entityMap).toList();
+        return users.stream().map(this::entityAMap).toList();
     }
 
     @Override
     public List<AUserResponse> getAllStudentByClassId(Long classId) {
         List<User> users = userRepository.getAllByClassIdAndRole(ERoleName.ROLE_STUDENT, classId);
-        return users.stream().map(this::entityMap).toList();
+        return users.stream().map(this::entityAMap).toList();
     }
 
     @Override
-    public AUserResponse entityMap(User user) {
+    public AUserResponse entityAMap(User user) {
         return AUserResponse.builder()
-                .fullName(user.getFullName())
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .phone(user.getPhone())
-                .avatar(user.getAvatar())
-                .dateOfBirth(user.getDateOfBirth())
-                .gender(user.getGender())
-                .status(user.getStatus())
-                .build();
+            .userId(user.getId())
+            .fullName(user.getFullName())
+            .username(user.getUsername())
+            .avatar(user.getAvatar())
+            .email(user.getEmail())
+            .phone(user.getPhone())
+            .dateOfBirth(user.getDateOfBirth())
+            .gender(user.getGender())
+            .status(user.getStatus())
+            .createdDate(user.getCreatedDate())
+            .modifyDate(user.getModifyDate())
+            .createdBy(user.getCreateBy())
+            .modifyBy(user.getModifyBy())
+            .build();
     }
 }

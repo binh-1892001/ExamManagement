@@ -97,6 +97,8 @@ public class OptionServiceImp implements OptionService {
         }
         return null;
     }
+
+    //    *********************************************entityMap*********************************************
     @Override
     public Option entityAMap(AOptionRequest optionRequest) {
         EOptionStatus isCorrect = switch (optionRequest.getIsCorrect().toUpperCase()) {
