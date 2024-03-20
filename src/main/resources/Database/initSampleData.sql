@@ -1,12 +1,30 @@
-USE exammanagement;
-INSERT INTO user(date_of_birth, email, full_name, gender, password, phone, status, username)
-    VALUES ('2000-10-04', 'admin01@gmail.com', 'Nguyen Van A', 'MALE','$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi', '0351875345', 'ACTIVE', 'admin'),
-       ('1999-03-12', 'user01@gmail.com', 'Nguyen Thi B', 'FEMALE','$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi', '0894936182', 'ACTIVE', 'user01'),
-       ('1997-06-11', 'user02@gmail.com', 'Nguyen Van C', 'MALE','$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi', '0849798973', 'ACTIVE', 'user02'),
-       ('1994-09-18', 'user03@gmail.com', 'Nguyen Thi D', 'FEMALE','$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi', '0238634287', 'INACTIVE', 'user03'),
-       ('1992-05-12', 'user04@gmail.com', 'Le Van E', 'MALE','$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi', '0783648232', 'ACTIVE', 'user04'),
-       ('1992-02-12', 'user05@gmail.com', 'Nguyen Van F', 'FEMALE','$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi', '0125236524', 'ACTIVE', 'user05'),
-       ('1992-05-17', 'user06@gmail.com', 'Tran Van G', 'MALE','$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi', '0785698635', 'ACTIVE', 'user06');
+USE `exammanagement`;
+# Admin account.
+INSERT INTO user(id, full_name, username, password, avatar, email, phone, date_of_birth, gender, status, created_date, modify_date, create_by, modify_by)
+    VALUES (1, 'Administrator', 'admin', '$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi',
+        null, 'admin@gmail.com', null, CURRENT_DATE(), 'MALE', 'ACTIVE', CURRENT_DATE(), CURRENT_DATE(), 'maiyon9x', 'maiyon9x');
+# Teacher account.
+INSERT INTO user(id, full_name, username, password, avatar, email, phone, date_of_birth, gender, status, created_date, modify_date, create_by, modify_by)
+    VALUES (2, 'Nguyễn Hồng Quân', 'maiyon9x', '$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi',
+        null, 'maiyonaisu1102@gmail.com', '0822206919', CURRENT_DATE(), 'MALE', 'ACTIVE', CURRENT_DATE(), CURRENT_DATE(), 'maiyon9x', 'maiyon9x');
+INSERT INTO user(id, full_name, username, password, avatar, email, phone, date_of_birth, gender, status, created_date, modify_date, create_by, modify_by)
+    VALUES (3, 'Nguyễn Đức Hải', 'ndhhhhhh', '$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi',
+        null, 'hai@gmail.com', '0989510496', '2002-11-06', 'MALE', 'ACTIVE', CURRENT_DATE(), CURRENT_DATE(), 'maiyon9x', 'maiyon9x');
+INSERT INTO user(id, full_name, username, password, avatar, email, phone, date_of_birth, gender, status, created_date, modify_date, create_by, modify_by)
+    VALUES (4, 'Hoàng Thị Thuỳ', 'hoangthuy', '$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi',
+        null, 'hithuy98@gmail.com', '', '1998-06-10', 'FEMALE', 'ACTIVE', CURRENT_DATE(), CURRENT_DATE(), 'maiyon9x', 'maiyon9x');
+INSERT INTO user(id, full_name, username, password, avatar, email, phone, date_of_birth, gender, status, created_date, modify_date, create_by, modify_by)
+    VALUES (5, 'Thân Lê Quang Nhật', 'NhatThan', '$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi',
+        null, 'nhatthan1234@gmail.com', '0123456789', '2000-11-4', 'MALE', 'ACTIVE', CURRENT_DATE(), CURRENT_DATE(), 'maiyon9x', 'maiyon9x');
+INSERT INTO user(id, full_name, username, password, avatar, email, phone, date_of_birth, gender, status, created_date, modify_date, create_by, modify_by)
+    VALUES (6, 'Ngô Quốc Đạt', 'Danny', '$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi',
+        null, 'dannysadoa@1212gmail.com' , '0912433568', '2000-11-19', 'MALE', 'ACTIVE', CURRENT_DATE(), CURRENT_DATE(), 'maiyon9x', 'maiyon9x');
+INSERT INTO user(id, full_name, username, password, avatar, email, phone, date_of_birth, gender, status, created_date, modify_date, create_by, modify_by)
+    VALUES (7, 'Nguyễn Minh Hoàng', 'hoanghoutarou', '$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi',
+        null, 'nminhhoang5520@gmail.com', '0978380781', '2000-05-05', 'MALE', 'ACTIVE', CURRENT_DATE(), CURRENT_DATE(), 'maiyon9x', 'maiyon9x');
+INSERT INTO user(id, full_name, username, password, avatar, email, phone, date_of_birth, gender, status, created_date, modify_date, create_by, modify_by)
+    VALUES (8, 'Phạm Văn Tùng', 'Dvalin', '$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi',
+        null, 'tirtusmx@1234gmail.com', '075270815720', '2002-10-11', 'MALE', 'ACTIVE', CURRENT_DATE(), CURRENT_DATE(), 'maiyon9x', 'maiyon9x');
 INSERT INTO role(role_name)
     VALUES ('ROLE_ADMIN'),
        ('ROLE_TEACHER'),

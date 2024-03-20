@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface ExamRepository extends JpaRepository<Exam, Long> {
     List<Exam> getAllByStatus(EActiveStatus status);
-    List<Exam> findByExamName(String examName);
+    List<Exam> findByExamNameContainingIgnoreCase(String examName);
     List<Exam> findByCreatedDate(LocalDate createDate);
     Boolean existsByExamName(String examName);
     Optional<Exam> findByIdAndStatus(Long examId, EActiveStatus status);

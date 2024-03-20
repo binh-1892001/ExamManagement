@@ -15,11 +15,11 @@ public interface ExamService {
     List<AExamResponse> getAllExamResponsesToList();
     Optional<Exam> getById(Long examId);
     Exam save(Exam exam);
-    Exam save(AExamRequest AExamRequest);
-    Exam patchUpdateExam(Long examId, AExamRequest AExamRequest) throws CustomException;
+    Exam save(AExamRequest examRequest);
+    Exam patchUpdateExam(Long examId, AExamRequest examRequest) throws CustomException;
     void deleteById(Long examId);
     List<AExamResponse> searchByExamName(String examName);
-    Exam entityAMap(AExamRequest AExamRequest);
+    Exam entityAMap(AExamRequest examRequest);
     AExamResponse entityAMap(Exam exam);
     TExamResponse entityTMap(Exam exam);
     //Lấy danh sách Exam với trạng thái Active (Teacher)

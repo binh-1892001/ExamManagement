@@ -57,10 +57,11 @@ public class QuestionServiceImp implements QuestionService {
     @Override
     public Question saveQuestionAndOption(AQuestionOptionRequest questionOptionRequest) {
         Question question = save(questionOptionRequest.getAQuestionRequest());
-        List<AOptionRequest> AOptionRequests = questionOptionRequest.getAOptionRequests();
-        for (AOptionRequest AOptionRequest : AOptionRequests) {
-            AOptionRequest.setQuestionId(question.getId());
-            optionService.save(AOptionRequest);
+        List<AOptionRequest> aOptionRequests = questionOptionRequest.getAOptionRequests();
+        for (AOptionRequest aOptionRequest : aOptionRequests) {
+            aOptionRequest.setQuestionId(question.getId());
+            aOptionRequest.setStatus("ACTIVE");
+            optionService.save(aOptionRequest);
         }
         List<Option> options = optionService.getAllByQuestion(question);
         question.setOptions(options);
@@ -127,6 +128,8 @@ public class QuestionServiceImp implements QuestionService {
         List<Question> questions = questionRepository.getAllFromDayToDay(dateStart, dateEnd);
         return questions.stream().map(this::entityAMap).toList();
     }
+
+    //    *********************************************entityMap*********************************************
     @Override
     public Question entityAMap(AQuestionRequest questionRequest) {
         EQuestionLevel questionLevel = switch (questionRequest.getQuestionLevel()) {

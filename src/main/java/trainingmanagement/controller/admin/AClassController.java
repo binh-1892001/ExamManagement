@@ -1,5 +1,6 @@
 package trainingmanagement.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.AClassRequest;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.request.admin.AClassSubjectRequest;
-import trainingmanagement.model.dto.request.admin.AUserClassRequest;
 import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.enums.EHttpStatus;
@@ -21,6 +20,7 @@ import trainingmanagement.service.ClassSubjectService;
 import trainingmanagement.service.ClassroomService;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.UserClassService;
+
 import java.util.List;
 
 @RestController
@@ -29,8 +29,6 @@ import java.util.List;
 public class AClassController {
     private final CommonService commonService;
     private final ClassroomService classroomService;
-    private final ClassSubjectService classSubjectService;
-    private final UserClassService userClassService;
     // * Get all classes to pages.
     @GetMapping
     public ResponseEntity<?> getAllClassesToPages(
@@ -73,29 +71,29 @@ public class AClassController {
     }
     // * Create new classroom.
     @PostMapping
-    public ResponseEntity<?> createClass(@RequestBody AClassRequest AClassRequest) {
-        Classroom classroom = classroomService.save(AClassRequest);
+    public ResponseEntity<?> createClass(@RequestBody @Valid AClassRequest classRequest) {
+        Classroom classroom = classroomService.save(classRequest);
         return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                    EHttpStatus.SUCCESS,
-                    HttpStatus.CREATED.value(),
-                    HttpStatus.CREATED.name(),
-                    classroom
-            ), HttpStatus.CREATED);
+            new ResponseWrapper<>(
+                EHttpStatus.SUCCESS,
+                HttpStatus.CREATED.value(),
+                HttpStatus.CREATED.name(),
+                classroom
+        ), HttpStatus.CREATED);
     }
     // * patchUpdate an exists classroom.
     @PatchMapping("/{classId}")
     public ResponseEntity<?> patchUpdateClass(
             @PathVariable("classId") Long updateClassroomId,
-            @RequestBody AClassRequest AClassRequest
+            @RequestBody @Valid AClassRequest classRequest
     ) {
-        Classroom classroom = classroomService.patchUpdate(updateClassroomId, AClassRequest);
+        Classroom classroom = classroomService.patchUpdate(updateClassroomId, classRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
-                    EHttpStatus.SUCCESS,
-                    HttpStatus.OK.value(),
-                    HttpStatus.OK.name(),
-                    classroom
+                EHttpStatus.SUCCESS,
+                HttpStatus.OK.value(),
+                HttpStatus.OK.name(),
+                classroom
             ), HttpStatus.OK);
     }
     // * softDelete an exists classroom.
@@ -151,30 +149,4 @@ public class AClassController {
             throw new CustomException("Classes page is out of range.");
         }
     }
-    // * add subject to class
-    @PostMapping("/addSubject")
-    public ResponseEntity<?> addSubjectToClass(@RequestBody AClassSubjectRequest AClassSubjectRequest){
-        classSubjectService.save(AClassSubjectRequest);
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.CREATED.value(),
-                        HttpStatus.CREATED.name(),
-                        "Add complete"
-                ), HttpStatus.CREATED);
-    }
-
-    // * add student to class
-    @PostMapping("/saveStudent")
-    public ResponseEntity<?> saveStudent(@RequestBody AUserClassRequest AUserClassRequest){
-        UserClass userClass = userClassService.saveStudent(AUserClassRequest);
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.CREATED.value(),
-                        HttpStatus.CREATED.name(),
-                        userClass
-                ), HttpStatus.CREATED);
-    }
-
- }
+}

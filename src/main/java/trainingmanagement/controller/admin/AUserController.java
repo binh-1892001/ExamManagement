@@ -56,16 +56,15 @@ public class AUserController {
     // * Get user by id.
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable("userId") Long userId) throws CustomException{
-        Optional<User> user = userService.getById(userId);
-        if(user.isEmpty())
-            throw new CustomException("User is not exists.");
+        Optional<AUserResponse> user = userService.getAUserResponseById(userId);
+        if(user.isEmpty()) throw new CustomException("User is not exists.");
         return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        user.get()
-                ), HttpStatus.OK);
+            new ResponseWrapper<>(
+                EHttpStatus.SUCCESS,
+                HttpStatus.OK.value(),
+                HttpStatus.OK.name(),
+                user.get()
+            ), HttpStatus.OK);
     }
 
 //    @PutMapping("/{id}")
@@ -78,7 +77,7 @@ public class AUserController {
     public ResponseEntity<?> deleteAccount(@PathVariable("userId") Long userId) throws CustomException{
         // ! Cần thêm không thể xoá người dùng hiện tại.
         // ! Cần thêm không thể xoá quyền admin.
-        Optional<User> deleteUser = userService.getById(userId);
+        Optional<User> deleteUser = userService.getUserById(userId);
         if(deleteUser.isPresent()){
             userService.deleteById(userId);
             return new ResponseEntity<>(
@@ -98,7 +97,7 @@ public class AUserController {
     public ResponseEntity<?> switchUserStatus(@PathVariable("userId") Long userId) throws CustomException {
         // ! Cần thêm không thể khoá/mở khoá người dùng hiện tại.
         // ! Cần thêm không thể khoá/mở khoá người dùng có quyền admin.
-        Optional<User> updateUser = userService.getById(userId);
+        Optional<User> updateUser = userService.getUserById(userId);
         if(updateUser.isPresent()) {
             User user = updateUser.get();
             user.setStatus(user.getStatus() == EActiveStatus.ACTIVE ? EActiveStatus.INACTIVE : EActiveStatus.ACTIVE);
@@ -172,33 +171,4 @@ public class AUserController {
         }
     }
 
-    // * lấy về danh sách sinh viên theo class
-    @GetMapping("/allStudent/{classId}")
-    public ResponseEntity<?> getAllStudentByClassToPages(
-            @RequestParam(defaultValue = "5", name = "limit") int limit,
-            @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "username", name = "sort") String sort,
-            @RequestParam(defaultValue = "asc", name = "order") String order,
-            @PathVariable Long classId
-    ) throws CustomException{
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<AUserResponse> userResponses = userService.getAllStudentByClassId(classId);
-            Page<?> users = commonService.convertListToPages(pageable, userResponses);
-            if (!users.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                users.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Users page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Users page is out of range.");
-        }
-    }
 }

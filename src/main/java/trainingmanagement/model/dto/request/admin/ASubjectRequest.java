@@ -13,6 +13,8 @@
 
 package trainingmanagement.model.dto.request.admin;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @NoArgsConstructor
@@ -20,6 +22,8 @@ import lombok.*;
 @Data
 @Builder
 public class ASubjectRequest {
+    @NotEmpty(message = "Không được bỏ trống chỗ này nha!!")
     private String subjectName;
+    @Pattern(regexp = "^(?i)(ACTIVE|INACTIVE)$", message = "Chuỗi phải là 'ACTIVE' hoặc 'INACTIVE'")
     private String status;
 }

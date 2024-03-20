@@ -17,6 +17,7 @@
 
 package trainingmanagement.model.dto.request.admin;
 
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @NoArgsConstructor
@@ -24,10 +25,16 @@ import lombok.*;
 @Data
 @Builder
 public class ATestRequest {
+    @NotEmpty(message = "Không được bỏ trống chỗ này nha!!")
     private String testName;
+    @Min(15)
+    @Max(150)
     private Integer testTime;
+    @Pattern(regexp = "^(?i)(WRITENTEST|QUIZTEST)$", message = "Chuỗi phải là 'WRITENTEST' hoặc 'QUIZTEST'")
     private String testType;
     private String resources;
+    @Pattern(regexp = "^(?i)(ACTIVE|INACTIVE)$", message = "Chuỗi phải là 'ACTIVE' hoặc 'INACTIVE'")
     private String status;
+    @NotNull(message = "Không được bỏ trống chỗ này nha!!")
     private Long examId;
 }

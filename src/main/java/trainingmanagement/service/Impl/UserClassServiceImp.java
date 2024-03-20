@@ -23,9 +23,9 @@ public class UserClassServiceImp implements UserClassService {
     private final UserRepository userRepository;
     private final ClassroomRepository classroomRepository;
     @Override
-    public UserClass saveStudent(AUserClassRequest AUserClassRequest) {
-        Optional<User> userOptional = userRepository.findById(AUserClassRequest.getUserId());
-        Optional<Classroom> classroomOptional = classroomRepository.findById(AUserClassRequest.getClassId());
+    public UserClass add(AUserClassRequest aUserClassRequest) {
+        Optional<User> userOptional = userRepository.findById(aUserClassRequest.getUserId());
+        Optional<Classroom> classroomOptional = classroomRepository.findById(aUserClassRequest.getClassId());
         UserClass userClass = new UserClass();
         if (userOptional.isPresent() && classroomOptional.isPresent()){
             User user = userOptional.get();
@@ -44,31 +44,46 @@ public class UserClassServiceImp implements UserClassService {
     }
 
     @Override
+    public UserClass update(AUserClassRequest userClassRequest,Long id) {
+        Optional<UserClass> userClassOptional = findById(id);
+        Optional<User> userOptional = userRepository.findById(userClassRequest.getUserId());
+        Optional<Classroom> classroomOptional = classroomRepository.findById(userClassRequest.getClassId());
+        if (userClassOptional.isPresent()){
+            UserClass userClass = userClassOptional.get();
+            if (userOptional.isPresent() && classroomOptional.isPresent()){
+                User user = userOptional.get();
+                Classroom classroom = classroomOptional.get();
+                for (Role role:user.getRoles()){
+                    if (role.getRoleName().equals(ERoleName.ROLE_STUDENT)){
+                        if (userClassRepository.findByUserAndClassroom(user,classroom)==null){
+                            userClass.setUser(user);
+                            userClass.setClassroom(classroom);
+                            return userClassRepository.save(userClass);
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        userClassRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<UserClass> findById(Long id) {
+        return userClassRepository.findById(id);
+    }
+
+    @Override
     public List<UserClass> findByClassId(Long classId) {
         return userClassRepository.findStudentByClassId(classId);
     }
-//
-//    @Override
-//    public UserClass saveTeacher(UserClassRequest userClassRequest) {
-//        Optional<User> userOptional = userRepository.findById(userClassRequest.getUserId());
-//        Optional<Classroom> classroomOptional = classroomRepository.findById(userClassRequest.getClassId());
-//        if (userOptional.isPresent() && classroomOptional.isPresent()){
-//            List<User> users = userRepository.getAllByClassIdAndRole(ERoles.ROLE_TEACHER, userClassRequest.getClassId());
-//            for(User user:users){
-//                for (Role role:user.getRoles()){
-//                    if (!role.getRoleName().equals(ERoles.ROLE_TEACHER) && !role.getRoleName().equals(ERoles.ROLE_ADMIN)){
-//                        UserClass userClass = new UserClass();
-//                        userClass.setUser(userOptional.get());
-//                        userClass.setClassroom(classroomOptional.get());
-//                        return userClassRepository.save(userClass);
-//                    }else if (role.getRoleName().equals(ERoles.ROLE_TEACHER)){
-//                        UserClass userClass = userClassRepository.findByClassroom(classroomOptional.get());
-//                        userClass.setUser(userOptional.get());
-//                        return userClassRepository.save(userClass);
-//                    }
-//                }
-//            }
-//        }
-//        return null;
-//    }
+
+    @Override
+    public List<UserClass> findClassByStudent(Long studentId) {
+        return userClassRepository.findClassByStudent(studentId);
+    }
 }
