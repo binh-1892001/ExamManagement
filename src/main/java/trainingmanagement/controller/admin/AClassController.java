@@ -155,8 +155,8 @@ public class AClassController {
     }
     // * add subject to class
     @PostMapping("/addSubject")
-    public ResponseEntity<?> addSubjectToClass(@RequestBody AClassSubjectRequest AClassSubjectRequest){
-        classSubjectService.save(AClassSubjectRequest);
+    public ResponseEntity<?> addSubjectToClass(@RequestBody AClassSubjectRequest classSubjectRequest){
+        classSubjectService.save(classSubjectRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -168,8 +168,8 @@ public class AClassController {
 
     // * add student to class
     @PostMapping("/saveStudent")
-    public ResponseEntity<?> saveStudent(@RequestBody AUserClassRequest AUserClassRequest){
-        UserClass userClass = userClassService.saveStudent(AUserClassRequest);
+    public ResponseEntity<?> saveStudent(@RequestBody AUserClassRequest userClassRequest){
+        UserClass userClass = userClassService.saveStudent(userClassRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -178,5 +178,4 @@ public class AClassController {
                         userClass
                 ), HttpStatus.CREATED);
     }
-
- }
+}
