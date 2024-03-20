@@ -25,7 +25,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public List<ASubjectResponse> getAllSubjectResponsesToList() {
-        return getAllToList().stream().map(this::entityMap).toList();
+        return getAllToList().stream().map(this::entityAMap).toList();
     }
 
     @Override
@@ -40,7 +40,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public Subject save(ASubjectRequest subjectRequest) {
-        return subjectRepository.save(entityMap(subjectRequest));
+        return subjectRepository.save(entityAMap(subjectRequest));
     }
 
     @Override
@@ -63,7 +63,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public List<ASubjectResponse> findBySubjectName(String subjectName) {
         return subjectRepository.findBySubjectNameContainingIgnoreCase(subjectName)
-                .stream().map(this::entityMap).toList();
+                .stream().map(this::entityAMap).toList();
     }
 
     @Override
@@ -72,23 +72,21 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-
     public List<ASubjectResponse> getAllByClassId(Long classId) {
         List<Subject> subjects = subjectRepository.getAllByClassId(classId);
-        return subjects.stream().map(this::entityMap).toList();
+        return subjects.stream().map(this::entityAMap).toList();
     }
 
-    //    *********************************************entityMap*********************************************
     @Override
-    public Subject entityMap(ASubjectRequest ASubjectRequest) {
+    public Subject entityAMap(ASubjectRequest subjectRequest) {
         return Subject.builder()
-                .subjectName(ASubjectRequest.getSubjectName())
-                .status(EActiveStatus.valueOf(ASubjectRequest.getStatus()))
+                .subjectName(subjectRequest.getSubjectName())
+                .status(EActiveStatus.valueOf(subjectRequest.getStatus()))
                 .build();
     }
 
     @Override
-    public ASubjectResponse entityMap(Subject subject) {
+    public ASubjectResponse entityAMap(Subject subject) {
         return ASubjectResponse.builder()
                 .subjectName(subject.getSubjectName())
                 .status(subject.getStatus())
