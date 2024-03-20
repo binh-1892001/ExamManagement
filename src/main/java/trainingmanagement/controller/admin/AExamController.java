@@ -172,4 +172,34 @@ public class AExamController {
             throw new CustomException("Exam page is out of range.");
         }
     }
+
+    //* lấy danh sách exam theo subjectId
+    @GetMapping("/subject/{subjectId}")
+    public ResponseEntity<?> getAllExamBySubjectIdToPages(
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "examName", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @PathVariable Long subjectId
+    ) throws CustomException{
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            List<AExamResponse> examResponses = examService.getAllBySubjectId(subjectId);
+            Page<?> exams = commonService.convertListToPages(pageable, examResponses);
+            if (!exams.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                exams.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Exams page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Exams page is out of range.");
+        }
+    }
 }

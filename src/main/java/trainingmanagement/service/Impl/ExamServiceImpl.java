@@ -5,7 +5,9 @@ import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.AExamRequest;
 import trainingmanagement.model.dto.response.admin.AExamResponse;
+import trainingmanagement.model.dto.response.admin.ATestResponse;
 import trainingmanagement.model.dto.response.teacher.TExamResponse;
+import trainingmanagement.model.entity.Test;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.entity.Exam;
 import trainingmanagement.model.entity.Subject;
@@ -99,6 +101,12 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public List<AExamResponse> getAllExamByCreatedDate(LocalDate date) {
         return examRepository.findByCreatedDate(date).stream().map(this::entityAMap).toList();
+    }
+    //find by subjectId
+    @Override
+    public List<AExamResponse> getAllBySubjectId(Long subjectId) {
+        List<Exam> exams = examRepository.getAllBySubjectId(subjectId);
+        return exams.stream().map(this::entityAMap).toList();
     }
     @Override
     public Exam entityAMap(AExamRequest examRequest) {

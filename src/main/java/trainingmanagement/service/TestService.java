@@ -11,6 +11,7 @@
 package trainingmanagement.service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
+import trainingmanagement.model.dto.response.admin.AExamResponse;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
 import trainingmanagement.model.entity.Test;
 import java.util.List;
@@ -30,4 +31,7 @@ public interface TestService {
     void hardDeleteByTestId(Long testId) throws CustomException;
     Test entityAMap(ATestRequest testRequest);
     ATestResponse entityAMap(Test test);
+
+    //find by subjectId
+    List<ATestResponse> getAllByExamId(Long examId);
 }
