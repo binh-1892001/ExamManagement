@@ -126,12 +126,8 @@ public class ClassroomServiceImpl implements ClassroomService {
         return classroomRepository.findByClassNameContainingIgnoreCase(className)
                 .stream().map(this::entityTMap).toList();
     }
-    @Override
-    public Optional<Classroom> findByUserId(Long userId) {
-        return classroomRepository.findByUserId(userId);
-    }
-    //* User khi check la teacher
 
+    //* User khi check la teacher
     @Override
     public Classroom entityAMap(AClassRequest classRequest) {
         EClassStatus classStatus = switch (classRequest.getClassStatus()) {

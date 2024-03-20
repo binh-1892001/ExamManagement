@@ -26,7 +26,6 @@ public interface ClassroomService {
     Classroom putUpdate(Long classId, AClassRequest AClassRequest);
     Classroom patchUpdate(Long classroomId, AClassRequest classRequest);
     List<AClassResponse> findByClassName(String className);
-    Optional<Classroom> findByUserId(Long userId);
     List<TClassResponse>teacherGetListClassrooms();
     AClassResponse getAClassResponseById(Long classId) throws CustomException;
     Optional<TClassResponse> teacherGetClassById(Long classroomId);

@@ -182,11 +182,6 @@ public class UserServiceImp implements UserService {
         return users.stream().map(this::entityMap).toList();
     }
 
-    @Override
-    public List<AUserResponse> getAllStudentByClassId(Long classId) {
-        List<User> users = userRepository.getAllByClassIdAndRole(ERoleName.ROLE_STUDENT, classId);
-        return users.stream().map(this::entityMap).toList();
-    }
 
     @Override
     public AUserResponse entityMap(User user) {

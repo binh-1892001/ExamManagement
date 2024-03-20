@@ -172,33 +172,4 @@ public class AUserController {
         }
     }
 
-    // * lấy về danh sách sinh viên theo class
-    @GetMapping("/allStudent/{classId}")
-    public ResponseEntity<?> getAllStudentByClassToPages(
-            @RequestParam(defaultValue = "5", name = "limit") int limit,
-            @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "username", name = "sort") String sort,
-            @RequestParam(defaultValue = "asc", name = "order") String order,
-            @PathVariable Long classId
-    ) throws CustomException{
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<AUserResponse> userResponses = userService.getAllStudentByClassId(classId);
-            Page<?> users = commonService.convertListToPages(pageable, userResponses);
-            if (!users.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                users.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Users page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Users page is out of range.");
-        }
-    }
 }

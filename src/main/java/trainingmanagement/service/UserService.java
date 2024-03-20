@@ -24,5 +24,4 @@ public interface UserService {
     User entityMap(RegisterRequest userRequest);
 //    List<UserResponse> getAllStudentInClassroom(Long userId);
     List<AUserResponse> getAllTeacher();
-    List<AUserResponse> getAllStudentByClassId(Long classId);
 }

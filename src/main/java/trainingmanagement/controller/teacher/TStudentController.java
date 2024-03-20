@@ -29,23 +29,6 @@ public class TStudentController {
     private final UserService userService;
     private final CommonService commonService;
 
-    @GetMapping("/class/{classId}")
-    public ResponseEntity<?> getStudentByClassId(@PathVariable("classId") Long id) throws CustomException{
-        List<UserClass> userClasses = userClassService.findByClassId(id);
-        List<AUserResponse> users = new ArrayList<>();
-        for (UserClass userClass : userClasses) {
-            EActiveStatus isActive = userService.getById(userClass.getUser().getId()).orElse(null).getStatus();
-            if (isActive == EActiveStatus.ACTIVE) {
-                users.add(userService.getUserResponseById(userClass.getUser().getId()).orElse(null));
-            }
-        }
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        users), HttpStatus.OK);
-    }
 
     // * Get user by id.
     @GetMapping("/{userId}")
