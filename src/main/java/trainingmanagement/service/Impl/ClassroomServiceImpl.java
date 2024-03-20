@@ -132,6 +132,7 @@ public class ClassroomServiceImpl implements ClassroomService {
     }
     //* User khi check la teacher
 
+//    *********************************************entityMap*********************************************
     @Override
     public Classroom entityAMap(AClassRequest classRequest) {
         EClassStatus classStatus = switch (classRequest.getClassStatus()) {

@@ -78,10 +78,10 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public Subject entityAMap(ASubjectRequest ASubjectRequest) {
+    public Subject entityAMap(ASubjectRequest subjectRequest) {
         return Subject.builder()
-                .subjectName(ASubjectRequest.getSubjectName())
-                .status(EActiveStatus.valueOf(ASubjectRequest.getStatus()))
+                .subjectName(subjectRequest.getSubjectName())
+                .status(EActiveStatus.valueOf(subjectRequest.getStatus()))
                 .build();
     }
 
