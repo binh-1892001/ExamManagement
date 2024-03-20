@@ -186,7 +186,7 @@ public class AExamController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AExamResponse> examResponses = examService.getAllBySubjectId (subjectId);
+            List<AExamResponse> examResponses = examService.getAllBySubjectId(subjectId);
             Page<?> exams = commonService.convertListToPages(pageable, examResponses);
             if (!exams.isEmpty()) {
                 return new ResponseEntity<>(

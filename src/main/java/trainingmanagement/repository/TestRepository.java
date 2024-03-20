@@ -18,6 +18,6 @@ public interface TestRepository extends JpaRepository<Test,Long> {
     List<Test> findByTestNameContainingIgnoreCase(String testName);
 
     //Find All Test By ExamId
-    @Query("select ts from Test ts where ts.exam.id=:exam_id")
+    @Query(value = "select * from Test t where t.exam_id=:examId", nativeQuery = true)
     List<Test> getAllByExamId(Long examId);
 }

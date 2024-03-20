@@ -16,8 +16,7 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     List<Exam> findByCreatedDate(LocalDate createDate);
     Boolean existsByExamName(String examName);
     Optional<Exam> findByIdAndStatus(Long examId, EActiveStatus status);
-
     //Find All Exam By SubjectId
-    @Query("select ex from Exam ex where ex.subject.id=:subject_id")
+    @Query(value = "SELECT * FROM Exam e WHERE e.subject_id=:subjectId", nativeQuery = true)
     List<Exam> getAllBySubjectId(Long subjectId);
 }
