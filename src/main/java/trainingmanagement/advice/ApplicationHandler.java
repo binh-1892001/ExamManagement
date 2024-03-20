@@ -13,12 +13,19 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class ApplicationHandler {
-	public ResponseEntity<Map<String, String>> handleInvalidException(MethodArgumentNotValidException e) {
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<?> handleInvalidException(MethodArgumentNotValidException e) {
 		Map<String, String> errors = new HashMap<>();
 		e.getFieldErrors().forEach(err -> {
 			errors.put(err.getField(), err.getDefaultMessage());
 		});
-		return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(
+			new ResponseWrapper<>(
+				EHttpStatus.FAILURE,
+				HttpStatus.BAD_REQUEST.value(),
+				HttpStatus.BAD_REQUEST.name(),
+				errors
+			), HttpStatus.BAD_REQUEST);
 	}
 	@ExceptionHandler(CustomException.class)
 	public ResponseEntity<?> handleCustomException(CustomException e) {

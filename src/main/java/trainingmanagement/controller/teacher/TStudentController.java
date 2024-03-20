@@ -34,9 +34,9 @@ public class TStudentController {
         List<UserClass> userClasses = userClassService.findByClassId(id);
         List<AUserResponse> users = new ArrayList<>();
         for (UserClass userClass : userClasses) {
-            EActiveStatus isActive = userService.getById(userClass.getUser().getId()).orElse(null).getStatus();
+            EActiveStatus isActive = userService.getUserById(userClass.getUser().getId()).orElse(null).getStatus();
             if (isActive == EActiveStatus.ACTIVE) {
-                users.add(userService.getUserResponseById(userClass.getUser().getId()).orElse(null));
+                users.add(userService.getAUserResponseById(userClass.getUser().getId()).orElse(null));
             }
         }
         return new ResponseEntity<>(
@@ -50,7 +50,7 @@ public class TStudentController {
     // * Get user by id.
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable("userId") Long userId) throws CustomException {
-        Optional<AUserResponse> user = userService.getUserResponseById(userId);
+        Optional<AUserResponse> user = userService.getAUserResponseById(userId);
         if (user.isEmpty())
             throw new CustomException("User is not exists.");
         return new ResponseEntity<>(
