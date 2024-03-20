@@ -1,6 +1,8 @@
 package trainingmanagement.service;
 
+import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.ASubjectRequest;
+import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.dto.response.admin.ASubjectResponse;
 import trainingmanagement.model.entity.Subject;
 import java.util.List;
@@ -16,6 +18,7 @@ public interface SubjectService {
     List<ASubjectResponse> findBySubjectName(String className);
     void deleteById(Long subjectId);
     List<ASubjectResponse> getAllByClassId(Long classId);
+    ASubjectResponse getASubjectResponseById(Long subjectId) throws CustomException;
     Subject entityAMap(ASubjectRequest subjectRequest);
     ASubjectResponse entityAMap(Subject subject);
 }

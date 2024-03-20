@@ -127,13 +127,6 @@ public class ClassroomServiceImpl implements ClassroomService {
                 .stream().map(this::entityTMap).toList();
     }
     @Override
-    public Optional<Classroom> findByUserId(Long userId) {
-        return classroomRepository.findByUserId(userId);
-    }
-    //* User khi check la teacher
-
-//    *********************************************entityMap*********************************************
-    @Override
     public Classroom entityAMap(AClassRequest classRequest) {
         EClassStatus classStatus = switch (classRequest.getClassStatus()) {
             case "NEW" -> EClassStatus.NEW;

@@ -57,10 +57,11 @@ public class QuestionServiceImp implements QuestionService {
     @Override
     public Question saveQuestionAndOption(AQuestionOptionRequest questionOptionRequest) {
         Question question = save(questionOptionRequest.getAQuestionRequest());
-        List<AOptionRequest> AOptionRequests = questionOptionRequest.getAOptionRequests();
-        for (AOptionRequest AOptionRequest : AOptionRequests) {
-            AOptionRequest.setQuestionId(question.getId());
-            optionService.save(AOptionRequest);
+        List<AOptionRequest> aOptionRequests = questionOptionRequest.getAOptionRequests();
+        for (AOptionRequest aOptionRequest : aOptionRequests) {
+            aOptionRequest.setQuestionId(question.getId());
+            aOptionRequest.setStatus("ACTIVE");
+            optionService.save(aOptionRequest);
         }
         List<Option> options = optionService.getAllByQuestion(question);
         question.setOptions(options);

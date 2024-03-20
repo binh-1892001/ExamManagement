@@ -28,7 +28,6 @@ public class TStudentController {
     private final UserClassService userClassService;
     private final UserService userService;
     private final CommonService commonService;
-
     @GetMapping("/class/{classId}")
     public ResponseEntity<?> getStudentByClassId(@PathVariable("classId") Long id) throws CustomException{
         List<UserClass> userClasses = userClassService.findByClassId(id);
@@ -46,7 +45,6 @@ public class TStudentController {
                         HttpStatus.OK.name(),
                         users), HttpStatus.OK);
     }
-
     // * Get user by id.
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable("userId") Long userId) throws CustomException {

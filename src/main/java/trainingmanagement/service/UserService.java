@@ -21,8 +21,6 @@ public interface UserService {
     User handleRegister(RegisterRequest RegisterRequest);
     List<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword);
     User entityMap(RegisterRequest userRequest);
-//    List<UserResponse> getAllStudentInClassroom(Long userId);
     List<AUserResponse> getAllTeacher();
-    List<AUserResponse> getAllStudentByClassId(Long classId);
     AUserResponse entityAMap(User user);
 }
