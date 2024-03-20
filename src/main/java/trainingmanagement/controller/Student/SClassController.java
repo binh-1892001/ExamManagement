@@ -50,7 +50,7 @@ public class SClassController {
             List<UserClass> userClasses = userClassService.findClassByStudent(userLogin.userLogin().getId());
             List<AClassResponse> classes = new ArrayList<>();
             for (UserClass userClass : userClasses) {
-                EActiveStatus isActive = Objects.requireNonNull(userService.getById(userClass.getUser().getId()).orElse(null)).getStatus();
+                EActiveStatus isActive = Objects.requireNonNull(userService.getUserById(userClass.getUser().getId()).orElse(null)).getStatus();
                 if (isActive == EActiveStatus.ACTIVE) {
                     classes.add(classroomService.getAClassResponseById(userClass.getClassroom().getId()));
                 }

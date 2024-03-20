@@ -49,7 +49,7 @@ public class AClassUserController {
             List<UserClass> userClasses = userClassService.findByClassId(classId);
             List<AUserResponse> users = new ArrayList<>();
             for (UserClass userClass : userClasses) {
-                users.add(userService.getUserResponseById(userClass.getUser().getId()).orElse(null));
+                users.add(userService.getAUserResponseById(userClass.getUser().getId()).orElse(null));
             }
             Page<?> usersDisplay = commonService.convertListToPages(pageable, users);
             if (!users.isEmpty()) {
