@@ -11,17 +11,16 @@ import java.util.Optional;
 public interface UserService {
     List<User> getAllToList();
     List<AUserResponse> getAllUserResponsesToList();
-    Optional<User> getById(Long userId);
-    Optional<AUserResponse> getUserResponseById(Long userId);
+    Optional<User> getUserById(Long userId);
+    Optional<User> getUserByUsername(String username);
+    Optional<AUserResponse> getAUserResponseById(Long userId);
     void deleteById(Long userId);
     JwtResponse handleLogin(LoginRequest userLogin);
     User save(User users);
     User updateAcc(RegisterRequest registerRequest, Long id);
     User handleRegister(RegisterRequest RegisterRequest);
-    Optional<User> getByUsername(String username);
     List<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword);
-    AUserResponse entityMap(User user);
     User entityMap(RegisterRequest userRequest);
-//    List<UserResponse> getAllStudentInClassroom(Long userId);
     List<AUserResponse> getAllTeacher();
+    AUserResponse entityAMap(User user);
 }

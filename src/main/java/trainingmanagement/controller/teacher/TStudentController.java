@@ -28,12 +28,27 @@ public class TStudentController {
     private final UserClassService userClassService;
     private final UserService userService;
     private final CommonService commonService;
-
-
+    @GetMapping("/class/{classId}")
+    public ResponseEntity<?> getStudentByClassId(@PathVariable("classId") Long id) throws CustomException{
+        List<UserClass> userClasses = userClassService.findByClassId(id);
+        List<AUserResponse> users = new ArrayList<>();
+        for (UserClass userClass : userClasses) {
+            EActiveStatus isActive = userService.getUserById(userClass.getUser().getId()).orElse(null).getStatus();
+            if (isActive == EActiveStatus.ACTIVE) {
+                users.add(userService.getAUserResponseById(userClass.getUser().getId()).orElse(null));
+            }
+        }
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        users), HttpStatus.OK);
+    }
     // * Get user by id.
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable("userId") Long userId) throws CustomException {
-        Optional<AUserResponse> user = userService.getUserResponseById(userId);
+        Optional<AUserResponse> user = userService.getAUserResponseById(userId);
         if (user.isEmpty())
             throw new CustomException("User is not exists.");
         return new ResponseEntity<>(

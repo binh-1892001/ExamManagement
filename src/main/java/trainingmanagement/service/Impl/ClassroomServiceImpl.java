@@ -126,8 +126,6 @@ public class ClassroomServiceImpl implements ClassroomService {
         return classroomRepository.findByClassNameContainingIgnoreCase(className)
                 .stream().map(this::entityTMap).toList();
     }
-
-    //* User khi check la teacher
     @Override
     public Classroom entityAMap(AClassRequest classRequest) {
         EClassStatus classStatus = switch (classRequest.getClassStatus()) {
@@ -148,10 +146,13 @@ public class ClassroomServiceImpl implements ClassroomService {
     @Override
     public AClassResponse entityAMap(Classroom classroom) {
         return AClassResponse.builder()
-            .className(classroom.getClassName())
-            .classStatus(classroom.getClassStatus())
-            .status(classroom.getStatus())
-            .build();
+                .classId(classroom.getId())
+                .className(classroom.getClassName())
+                .classStatus(classroom.getClassStatus())
+                .status(classroom.getStatus())
+                .createdDate(classroom.getCreatedDate())
+                .modifyDate(classroom.getModifyDate())
+                .build();
     }
     @Override
     public TClassResponse entityTMap(Classroom classroom) {

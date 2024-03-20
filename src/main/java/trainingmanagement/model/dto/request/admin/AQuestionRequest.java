@@ -17,6 +17,9 @@
 
 package trainingmanagement.model.dto.request.admin;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 @NoArgsConstructor
@@ -24,10 +27,15 @@ import lombok.*;
 @Data
 @Builder
 public class AQuestionRequest {
+    @NotEmpty(message = "Không được bỏ trống chỗ này nha!!")
     private String questionContent;
+    @Pattern(regexp = "^(?i)(EASY|NORMAL|DIFFICULTY)$", message = "Chuỗi phải là 'EASY' hoặc 'NORMAL' hoặc 'DIFFICULTY' ")
     private String questionLevel;
+    @Pattern(regexp = "^(?i)(MULTIPLE|SINGLE)$", message = "Chuỗi phải là 'MULTIPLE' hoặc 'SINGLE'")
     private String questionType;
     private String image;
+    @Pattern(regexp = "^(?i)(ACTIVE|INACTIVE)$", message = "Chuỗi phải là 'ACTIVE' hoặc 'INACTIVE'")
     private String status;
+    @NotNull(message = "Không được bỏ trống chỗ này nha!!")
     private Long testId;
 }

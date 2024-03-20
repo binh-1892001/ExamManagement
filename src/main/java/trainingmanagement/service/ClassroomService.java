@@ -23,7 +23,7 @@ public interface ClassroomService {
     Optional<Classroom> getClassById(Long classId);
     Classroom save(Classroom classroom);
     Classroom save(AClassRequest classRequest);
-    Classroom putUpdate(Long classId, AClassRequest AClassRequest);
+    Classroom putUpdate(Long classId, AClassRequest classRequest);
     Classroom patchUpdate(Long classroomId, AClassRequest classRequest);
     List<AClassResponse> findByClassName(String className);
     List<TClassResponse>teacherGetListClassrooms();
@@ -33,6 +33,6 @@ public interface ClassroomService {
     void softDeleteByClassId(Long classId) throws CustomException;
     void hardDeleteByClassId(Long classId) throws CustomException;
     AClassResponse entityAMap(Classroom classroom);
-    Classroom entityAMap(AClassRequest AClassRequest);
+    Classroom entityAMap(AClassRequest classRequest);
     TClassResponse entityTMap(Classroom classroom);
 }
