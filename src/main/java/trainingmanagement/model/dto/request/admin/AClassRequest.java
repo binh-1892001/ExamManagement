@@ -15,6 +15,7 @@
 package trainingmanagement.model.dto.request.admin;
 
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
@@ -27,6 +28,8 @@ public class AClassRequest {
     private String className;
     @Pattern(regexp = "^(?i)(NEW|OJT/FINISH)$", message = "String value must be \"NEW/OJT/FINISH\"")
     private String classStatus;
+    @NotNull(message = "Không được bỏ trống chỗ này nha!!")
     private Long teacherId;
+    @Pattern(regexp = "^(?i)(ACTIVE|INACTIVE)$", message = "Chuỗi phải là 'ACTIVE' hoặc 'INACTIVE'")
     private String status;
 }

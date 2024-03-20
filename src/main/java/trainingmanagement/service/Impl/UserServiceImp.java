@@ -24,6 +24,7 @@ import trainingmanagement.security.UserDetail.UserPrincipal;
 import trainingmanagement.service.RoleService;
 import trainingmanagement.service.UserService;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -107,7 +108,7 @@ public class UserServiceImp implements UserService {
                 .email(RegisterRequest.getEmail())
                 .avatar(RegisterRequest.getAvatar())
                 .phone(RegisterRequest.getPhone())
-                .dateOfBirth(RegisterRequest.getDateOfBirth())
+                .dateOfBirth( LocalDate.parse ( RegisterRequest.getDateOfBirth() ) )
                 .status(EActiveStatus.INACTIVE)
                 .gender(userGender)
                 .roles(userRoles)
@@ -137,7 +138,7 @@ public class UserServiceImp implements UserService {
                 .email(RegisterRequest.getEmail())
                 .avatar(RegisterRequest.getAvatar())
                 .phone(RegisterRequest.getPhone())
-                .dateOfBirth(RegisterRequest.getDateOfBirth())
+                .dateOfBirth( LocalDate.parse ( RegisterRequest.getDateOfBirth() ) )
                 .status(EActiveStatus.ACTIVE)
                 .gender(RegisterRequest.getGender().equalsIgnoreCase(EGender.MALE.name())
                         ? EGender.MALE : EGender.FEMALE)
@@ -164,7 +165,7 @@ public class UserServiceImp implements UserService {
                 .email(userRequest.getEmail())
                 .phone(userRequest.getPhone())
                 .avatar(userRequest.getAvatar())
-                .dateOfBirth(userRequest.getDateOfBirth())
+                .dateOfBirth( LocalDate.parse ( userRequest.getDateOfBirth() ) )
                 .gender(userRequest.getGender().equalsIgnoreCase(EGender.MALE.name()) ? EGender.MALE : EGender.FEMALE)
                 .status(EActiveStatus.INACTIVE)
                 .build();
