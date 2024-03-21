@@ -3,9 +3,6 @@ package trainingmanagement.controller.admin;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,47 +12,31 @@ import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.enums.EHttpStatus;
-import trainingmanagement.model.entity.UserClass;
-import trainingmanagement.service.ClassSubjectService;
 import trainingmanagement.service.ClassroomService;
 import trainingmanagement.service.CommonService;
-import trainingmanagement.service.UserClassService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/admin/classes")
 @RequiredArgsConstructor
 public class AClassController {
-    private final CommonService commonService;
     private final ClassroomService classroomService;
     // * Get all classes to pages.
     @GetMapping
     public ResponseEntity<?> getAllClassesToPages(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "className", name = "sort") String sort,
+            @RequestParam(defaultValue = "Id", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<AClassResponse> classroomResponses = classroomService.getAllClassResponsesToList();
-            Page<?> classrooms = commonService.convertListToPages(pageable, classroomResponses);
-            if (!classrooms.isEmpty()) {
-                return new ResponseEntity<>(
-                    new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                            HttpStatus.OK.value(),
-                            HttpStatus.OK.name(),
-                            classrooms.getContent()
-                    ), HttpStatus.OK);
-            }
-            throw new CustomException("Classes page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Classes page is out of range.");
-        }
+        Page<Classroom> classes = classroomService.getAllClassToPages(limit, page, sort, order);
+        Page<AClassResponse> classResponses = classroomService.convertPagesToAClassResponse(classes);
+        return new ResponseEntity<>(
+            new ResponseWrapper<>(
+                EHttpStatus.SUCCESS,
+                    HttpStatus.OK.value(),
+                    HttpStatus.OK.name(),
+                    classResponses.getContent()
+            ), HttpStatus.OK);
     }
     // * Get classroom by id.
     @GetMapping("/{classId}")
@@ -129,24 +110,14 @@ public class AClassController {
             @RequestParam(defaultValue = "className", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<AClassResponse> classroomResponses = classroomService.findByClassName(keyword);
-            Page<?> classrooms = commonService.convertListToPages(pageable, classroomResponses);
-            if (!classrooms.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                classrooms.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Classes page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Classes page is out of range.");
-        }
+        Page<Classroom> classes = classroomService.searchAllClassByClassNameToPages(keyword, limit, page, sort, order);
+        Page<AClassResponse> classResponses = classroomService.convertPagesToAClassResponse(classes);
+        return new ResponseEntity<>(
+            new ResponseWrapper<>(
+                EHttpStatus.SUCCESS,
+                HttpStatus.OK.value(),
+                HttpStatus.OK.name(),
+                classResponses.getContent()
+            ), HttpStatus.OK);
     }
 }
