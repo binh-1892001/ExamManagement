@@ -237,4 +237,34 @@ public class AQuestionOptionController {
         }
         throw new CustomException("Questions is empty.");
     }
+
+    // * lay danh sach question va option theo test
+    @GetMapping("/tests/{testId}")
+    public ResponseEntity<?> getAllQuestionAndOptionByTestRandom(
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @PathVariable Long testId) throws CustomException {
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            Optional<Test> test = testService.getTestById(testId);
+            List<AQuestionResponse> questionResponses = questionService.getAllByTestRandom (test.get());
+            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
+            if (!questions.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                questions.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Questions page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Questions page is out of range.");
+        }
+    }
 }
