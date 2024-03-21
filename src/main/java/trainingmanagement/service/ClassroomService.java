@@ -1,14 +1,18 @@
 /**
- * * Fixed by NguyenHongQuan:
  * * - Create standard CRUD for ClassService.
  * * - Add both Put and Patch method to edit Class entity.
  * * - Add both softDelete and hardDelete to delete Class entity.
- * @author: NguyenMinhHoang.
- * @since: 13/3/2024.
+ * * - Sửa lại để có thể lấy cả theo List, Page và ép kiểu theo từng role.
+ * * - Sắp xếp lại các Method và Comment để có thể dễ đọc hơn.
+ * @ModifyBy: Nguyễn Hồng Quân.
+ * @ModifyDate: 20/03/2025.
+ * @CreatedBy: Mguyễn Minh Hoàng.
+ * @CreatedDate: 13/3/2024.
  * */
 
 package trainingmanagement.service;
 
+import org.springframework.data.domain.Page;
 import trainingmanagement.model.dto.request.admin.AClassRequest;
 import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.dto.response.teacher.TClassResponse;
@@ -18,21 +22,37 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ClassroomService {
+    // ? Lấy theo List và chuyển đổi bằng entityMap.
     List<Classroom> getAllToList();
-    List<AClassResponse> getAllClassResponsesToList();
+    // ? Lấy theo Pages và chuyển đổi bằng entityMap.
+    Page<Classroom> getAllClassToPages(
+        Integer limit,
+        Integer page,
+        String sort,
+        String order
+    ) throws CustomException;
+    Page<Classroom> searchAllClassByClassNameToPages(String className,
+         Integer limit, Integer page, String sort, String order)
+            throws CustomException;
+    // * Func convert sang ứng với quyền admin.
+    Page<AClassResponse> entityAMap(Page<Classroom> classPage);
+    // ? Lấy theo Id và chuyển đổi bằng entityMap.
     Optional<Classroom> getClassById(Long classId);
+    AClassResponse getAClassById(Long classId) throws CustomException;
+    // ? CRUD Functions.
     Classroom save(Classroom classroom);
     Classroom save(AClassRequest classRequest);
-    Classroom putUpdate(Long classId, AClassRequest classRequest);
-    Classroom patchUpdate(Long classroomId, AClassRequest classRequest);
-    List<AClassResponse> findByClassName(String className);
-    List<TClassResponse>teacherGetListClassrooms();
-    AClassResponse getAClassResponseById(Long classId) throws CustomException;
-    Optional<TClassResponse> teacherGetClassById(Long classroomId);
-    List<TClassResponse> teacherFindClassByName(String className);
+    Classroom putUpdateClass(Long classId, AClassRequest classRequest);
+    Classroom patchUpdate(Long classId, AClassRequest classRequest);
     void softDeleteByClassId(Long classId) throws CustomException;
     void hardDeleteByClassId(Long classId) throws CustomException;
+    // ? Functional dành cho Teacher.
+    List<TClassResponse> getTAllToList();
+    Optional<TClassResponse> getTClassById(Long classId);
+    List<TClassResponse> findTClassByClassName(String className);
+    // ? EntityMap dùng để ép kiểu dành cho Admin.
     AClassResponse entityAMap(Classroom classroom);
     Classroom entityAMap(AClassRequest classRequest);
+    // ? EntityMap dùng để ép kiểu dành cho Teacher.
     TClassResponse entityTMap(Classroom classroom);
 }
