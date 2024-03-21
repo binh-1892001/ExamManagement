@@ -6,7 +6,7 @@ import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.base.AuditableEntity;
 import trainingmanagement.model.dto.request.admin.ASubjectRequest;
 import trainingmanagement.model.dto.response.admin.ASubjectResponse;
-import trainingmanagement.model.entity.Exam;
+import trainingmanagement.model.dto.response.teacher.TSubjectResponse;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.entity.Subject;
 import trainingmanagement.repository.SubjectRepository;
@@ -111,5 +111,41 @@ public class SubjectServiceImpl implements SubjectService {
                 .subjectName(subject.getSubjectName())
                 .status(subject.getStatus())
                 .build();
+    }
+
+    //Lấy danh sách Subject với trạng thái Active
+    @Override
+    public List<Subject> getAllSubjectWithActiveStatus(){
+        return subjectRepository.getAllByStatus (EActiveStatus.ACTIVE);
+    }
+    @Override
+    public List<TSubjectResponse> getAllSubjectResponsesToListRoleTeacher() {
+        return getAllSubjectWithActiveStatus ().stream ().map ( this::entityMapRoleTeacher ).toList ();
+    }
+    // Lấy ra Subject theo id với trạng thái Active
+    @Override
+    public Optional<Subject> getSubjectByIdWithActiveStatus(Long subjectId) {
+        return subjectRepository.findByIdAndStatus (subjectId, EActiveStatus.ACTIVE);
+    }
+
+    @Override
+    public Optional<TSubjectResponse> getSubjectResponsesByIdWithActiveStatus(Long subjectId) {
+        Optional<Subject> TSubject = getSubjectByIdWithActiveStatus (subjectId);
+        if (TSubject.isPresent()){
+            Subject subject = TSubject.get();
+            return Optional.ofNullable(entityMapRoleTeacher (subject));
+        }
+        return Optional.empty();
+    }
+    @Override
+    public List<TSubjectResponse> findBySubjectNameRoleTeacher(String subjectName) {
+        return subjectRepository.findBySubjectNameContainingIgnoreCase ( subjectName )
+                .stream ().map ( this::entityMapRoleTeacher ).toList ();
+    }
+    @Override
+    public TSubjectResponse entityMapRoleTeacher(Subject subject) {
+        return TSubjectResponse.builder ()
+                .subjectName ( subject.getSubjectName () )
+                .build ();
     }
 }

@@ -1,5 +1,6 @@
 package trainingmanagement.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -68,7 +69,7 @@ public class ATestController {
     }
     // * Create a new test.
     @PostMapping
-    public ResponseEntity<?> createTest(@RequestBody ATestRequest testRequest) {
+    public ResponseEntity<?> createTest(@RequestBody @Valid ATestRequest testRequest) {
         ATestResponse testCreate = testService.save(testRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
@@ -82,7 +83,7 @@ public class ATestController {
     @PatchMapping("/{testId}")
     public ResponseEntity<?> patchUpdateTest(
             @PathVariable("testId") Long testId,
-            @RequestBody ATestRequest ATestRequest) throws CustomException{
+            @RequestBody @Valid ATestRequest ATestRequest) throws CustomException{
         ATestResponse testUpdate = testService.patchUpdateATest(testId, ATestRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(

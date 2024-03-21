@@ -1,6 +1,7 @@
 package trainingmanagement.controller.admin;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -181,7 +182,7 @@ public class AQuestionOptionController {
     //* Them question va cac option
     @PostMapping("/addQuestion")
     public ResponseEntity<?> addQuestionAndOption(
-            @RequestBody AQuestionOptionRequest questionOptionRequest) {
+            @RequestBody @Valid AQuestionOptionRequest questionOptionRequest) {
         Question question = questionService.saveQuestionAndOption(questionOptionRequest);
         AQuestionResponse questionResponse = questionService.entityAMap(question);
         return new ResponseEntity<>(
@@ -198,7 +199,7 @@ public class AQuestionOptionController {
     @PostMapping("/{questionId}")
     public ResponseEntity<?> patchUpdateQuestionAndOption(
             @PathVariable("questionId") Long questionId,
-            @RequestBody AQuestionOptionRequest AQuestionOptionRequest) {
+            @RequestBody @Valid AQuestionOptionRequest AQuestionOptionRequest) {
         Question question = questionService.patchUpdateQuestion(questionId, AQuestionOptionRequest.getAQuestionRequest());
         optionService.deleteByQuestion(question);
         List<AOptionRequest> AOptionRequests = AQuestionOptionRequest.getAOptionRequests();

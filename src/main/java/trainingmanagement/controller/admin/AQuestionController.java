@@ -1,5 +1,6 @@
 package trainingmanagement.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,7 +74,7 @@ public class AQuestionController {
     }
     // * Create new question.
     @PostMapping
-    public ResponseEntity<?> createNewQuestion(@RequestBody AQuestionRequest questionRequest) {
+    public ResponseEntity<?> createNewQuestion(@RequestBody @Valid AQuestionRequest questionRequest) {
         Question question = questionService.save(questionRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
@@ -87,7 +88,7 @@ public class AQuestionController {
     @PatchMapping("/{questionId}")
     public ResponseEntity<?> patchUpdateQuestion(
             @PathVariable("questionId") Long questionId,
-            @RequestBody AQuestionRequest questionRequest) {
+            @RequestBody @Valid AQuestionRequest questionRequest) {
         Question question = questionService.patchUpdateQuestion(questionId, questionRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(

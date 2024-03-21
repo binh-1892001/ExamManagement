@@ -1,5 +1,6 @@
 package trainingmanagement.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +73,7 @@ public class ASubjectController {
     }
     // * Create new subject.
     @PostMapping
-    public ResponseEntity<?> createSubject(@RequestBody ASubjectRequest subjectRequest) {
+    public ResponseEntity<?> createSubject(@RequestBody @Valid ASubjectRequest subjectRequest) {
         Subject subject = subjectService.save(subjectRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
@@ -86,7 +87,7 @@ public class ASubjectController {
     @PatchMapping("/{subjectId}")
     public ResponseEntity<?> pathUpdateSubject(
             @PathVariable("subjectId") Long updateSubjectId,
-            @RequestBody ASubjectRequest subjectRequest
+            @RequestBody @Valid ASubjectRequest subjectRequest
     ) {
         Subject subject = subjectService.patchUpdate(updateSubjectId, subjectRequest);
         return new ResponseEntity<>(
