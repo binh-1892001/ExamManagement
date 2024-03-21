@@ -16,9 +16,7 @@ import trainingmanagement.repository.QuestionRepository;
 import trainingmanagement.service.OptionService;
 import trainingmanagement.service.QuestionService;
 import trainingmanagement.service.TestService;
-
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -127,7 +125,13 @@ public class QuestionServiceImp implements QuestionService {
 
     @Override
     public List<AQuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd) {
-        List<Question> questions = questionRepository.getAllFromDayToDay(dateStart, dateEnd);
+        List<Question> questions = questionRepository.getAllFromDateToDate(dateStart, dateEnd);
+        return questions.stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<AQuestionResponse> getAllByQuestionLevel(EQuestionLevel questionLevel) {
+        List<Question> questions = questionRepository.getAllByQuestionLevel(questionLevel);
         return questions.stream().map(this::entityAMap).toList();
     }
 

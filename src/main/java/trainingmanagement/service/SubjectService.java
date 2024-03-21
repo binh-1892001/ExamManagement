@@ -17,7 +17,8 @@ public interface SubjectService {
     Subject save(ASubjectRequest subjectRequest);
     Subject patchUpdate(Long subjectId, ASubjectRequest subjectRequest);
     List<ASubjectResponse> findBySubjectName(String className);
-    void deleteById(Long subjectId);
+    void hardDeleteById(Long subjectId) throws CustomException;
+    void softDeleteById(Long subjectId) throws CustomException;
     List<ASubjectResponse> getAllByClassId(Long classId);
     ASubjectResponse getASubjectResponseById(Long subjectId) throws CustomException;
     Subject entityAMap(ASubjectRequest subjectRequest);

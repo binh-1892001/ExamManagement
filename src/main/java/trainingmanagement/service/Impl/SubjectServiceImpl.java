@@ -68,8 +68,21 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public void deleteById(Long subjectId) {
+    public void hardDeleteById(Long subjectId) throws CustomException {
+        if(!subjectRepository.existsById(subjectId))
+            throw new CustomException("Subject is not exists to delete.");
         subjectRepository.deleteById(subjectId);
+    }
+
+    @Override
+    public void softDeleteById(Long subjectId) throws CustomException {
+        // ? Exception cần tìm thấy thì mới có thể xoá mềm.
+        Optional<Subject> deleteSubject = getById(subjectId);
+        if(deleteSubject.isEmpty())
+            throw new CustomException("Subject is not exists to delete.");
+        Subject subject = deleteSubject.get();
+        subject.setStatus(EActiveStatus.INACTIVE);
+        subjectRepository.save(subject);
     }
 
     @Override

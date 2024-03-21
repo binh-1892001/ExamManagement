@@ -221,5 +221,3 @@ INSERT INTO options(option_content, is_correct, question_id)
        ('Lựa chọn 2 cho câu hỏi 10 về Javascript', 'INCORRECT', 20),
        ('Lựa chọn 3 cho câu hỏi 10 về Javascript', 'CORRECT', 20),
        ('Lựa chọn 4 cho câu hỏi 10 về Javascript', 'INCORRECT', 20);
-
-SELECT * FROM Exam e WHERE e.subject_id= 1
