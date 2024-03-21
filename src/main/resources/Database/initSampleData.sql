@@ -1,4 +1,4 @@
-USE `exammanagement`;
+USE exammanagement;
 # Admin account.
 INSERT INTO user(id, full_name, username, password, avatar, email, phone, date_of_birth, gender, status, created_date, modify_date, create_by, modify_by)
     VALUES (1, 'Administrator', 'admin', '$2a$10$IQKi2qaOX.VCs9A45eVXzu.cudImQwTfA3Shp1NYY7yi5SlRHx9Hi',

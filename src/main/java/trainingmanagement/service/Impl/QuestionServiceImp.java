@@ -18,6 +18,8 @@ import trainingmanagement.service.QuestionService;
 import trainingmanagement.service.TestService;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -165,5 +167,12 @@ public class QuestionServiceImp implements QuestionService {
                 .test(question.getTest())
                 .options(question.getOptions().stream().map(optionService::entityAMap).toList())
                 .build();
+    }
+
+    @Override
+    public List<AQuestionResponse> getAllByTestRandom(Test test) {
+        List<Question> questions = questionRepository.getAllByTest(test);
+        Collections.shuffle ( questions );
+        return questions.stream().map(this::entityAMap).toList();
     }
 }
