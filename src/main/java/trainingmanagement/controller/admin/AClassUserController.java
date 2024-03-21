@@ -1,5 +1,6 @@
 package trainingmanagement.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -102,7 +103,7 @@ public class AClassUserController {
 
     // * add studentClass
     @PostMapping("/addStudentClass")
-    public ResponseEntity<?> addStudentClass(@RequestBody AUserClassRequest userClassRequest) {
+    public ResponseEntity<?> addStudentClass(@RequestBody @Valid AUserClassRequest userClassRequest) {
         userClassService.add(userClassRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
@@ -116,7 +117,7 @@ public class AClassUserController {
     // * update studentClass
     @PutMapping("/updateStudentClass/{id}")
     public ResponseEntity<?> updateStudentClass(
-            @RequestBody AUserClassRequest userClassRequest
+            @RequestBody @Valid AUserClassRequest userClassRequest
             ,@PathVariable Long id) {
         userClassService.update(userClassRequest, id);
         return new ResponseEntity<>(

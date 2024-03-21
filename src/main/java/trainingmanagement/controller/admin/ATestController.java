@@ -1,5 +1,6 @@
 package trainingmanagement.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,12 +10,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.time.DateSearch;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
 import trainingmanagement.model.enums.EHttpStatus;
+import trainingmanagement.model.enums.ETestType;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.TestService;
+
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -64,7 +69,7 @@ public class ATestController {
     }
     // * Create a new test.
     @PostMapping
-    public ResponseEntity<?> createTest(@RequestBody ATestRequest testRequest) {
+    public ResponseEntity<?> createTest(@RequestBody @Valid ATestRequest testRequest) {
         ATestResponse testCreate = testService.save(testRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
@@ -78,7 +83,7 @@ public class ATestController {
     @PatchMapping("/{testId}")
     public ResponseEntity<?> patchUpdateTest(
             @PathVariable("testId") Long testId,
-            @RequestBody ATestRequest ATestRequest) throws CustomException{
+            @RequestBody @Valid ATestRequest ATestRequest) throws CustomException{
         ATestResponse testUpdate = testService.patchUpdateATest(testId, ATestRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
@@ -156,6 +161,102 @@ public class ATestController {
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
             List<ATestResponse> testResponses = testService.getAllByExamId (examId);
+            Page<?> tests = commonService.convertListToPages(pageable, testResponses);
+            if (!tests.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                tests.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Tests page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Tests page is out of range.");
+        }
+    }
+
+    //* lấy danh sách test kiểu bài test
+    @GetMapping("/{typeTest}")
+    public ResponseEntity<?> getAllTestByTypeTest(
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "testName", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @PathVariable String typeTest
+    ) throws CustomException{
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            List<ATestResponse> testResponses = null;
+            if (typeTest.equalsIgnoreCase(String.valueOf(ETestType.QUIZTEST))){
+                testResponses = testService.getAllByTestType(ETestType.QUIZTEST);
+            }else if(typeTest.equalsIgnoreCase(String.valueOf(ETestType.WRITENTEST))){
+                testResponses = testService.getAllByTestType(ETestType.WRITENTEST);
+            }
+            Page<?> tests = commonService.convertListToPages(pageable, testResponses);
+            if (!tests.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                tests.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Tests page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Tests page is out of range.");
+        }
+    }
+
+    //* lấy danh sách test ngày tháng tạo
+    @GetMapping("/createdDateTest")
+    public ResponseEntity<?> getAllTestByCreatedDate(
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "testName", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @RequestBody DateSearch dateSearch
+    ) throws CustomException{
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            LocalDate date = LocalDate.parse(dateSearch.getCreateDate());
+            List<ATestResponse> testResponses = testService.getAllByCreatedDate(date);
+            Page<?> tests = commonService.convertListToPages(pageable, testResponses);
+            if (!tests.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                tests.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Tests page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Tests page is out of range.");
+        }
+    }
+
+    //* lấy danh sách test theo khoảng thời gian tạo
+    @GetMapping("/fromDateToDate")
+    public ResponseEntity<?> getAllTestFromDateToDate(
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "testName", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @RequestBody DateSearch dateSearch
+    ) throws CustomException{
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            List<ATestResponse> testResponses = testService.getAllFromDateToDate(dateSearch.getStartDate(), dateSearch.getEndDate());
             Page<?> tests = commonService.convertListToPages(pageable, testResponses);
             if (!tests.isEmpty()) {
                 return new ResponseEntity<>(

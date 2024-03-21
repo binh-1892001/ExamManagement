@@ -116,7 +116,7 @@ public class ClassroomServiceImpl implements ClassroomService {
     @Override
     public AClassResponse getAClassById(Long classId) throws CustomException{
         Optional<Classroom> optionalClass = getClassById(classId);
-        // * Exception cần tìm thấy thì mới có thể chuyển thành Dto.
+        // ? Exception cần tìm thấy thì mới có thể chuyển thành Dto.
         if(optionalClass.isEmpty()) throw new CustomException("Class is not exists.");
         Classroom classroom = optionalClass.get();
         return entityAMap(classroom);

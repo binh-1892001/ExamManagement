@@ -1,5 +1,6 @@
 package trainingmanagement.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -91,7 +92,7 @@ public class AOptionController {
     }
     // * Create new option.
     @PostMapping
-    public ResponseEntity<?> createNewOption(@RequestBody AOptionRequest optionRequest) {
+    public ResponseEntity<?> createNewOption(@RequestBody @Valid AOptionRequest optionRequest) {
         Option option = optionService.save(optionRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
@@ -105,7 +106,7 @@ public class AOptionController {
     @PatchMapping("/{optionId}")
     public ResponseEntity<?> patchUpdateOption(
             @PathVariable("optionId") Long optionId,
-            @RequestBody AOptionRequest optionRequest) {
+            @RequestBody @Valid AOptionRequest optionRequest) {
         Option updatedOption = optionService.patchUpdateOption(optionId, optionRequest);
         return new ResponseEntity<>(
             new ResponseWrapper<>(

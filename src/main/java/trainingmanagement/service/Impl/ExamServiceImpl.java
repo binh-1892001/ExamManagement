@@ -7,6 +7,7 @@ import trainingmanagement.model.dto.request.admin.AExamRequest;
 import trainingmanagement.model.dto.response.admin.AExamResponse;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
 import trainingmanagement.model.dto.response.teacher.TExamResponse;
+import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.entity.Exam;
@@ -67,9 +68,21 @@ public class ExamServiceImpl implements ExamService {
         throw new CustomException("Exam is not exists to update.");
     }
     @Override
-    public void deleteById(Long examId) {
+    public void hardDeleteById(Long examId) {
         examRepository.deleteById (examId);
     }
+
+    @Override
+    public void softDeleteById(Long examId) throws CustomException {
+        // ? Exception cần tìm thấy thì mới có thể xoá mềm.
+        Optional<Exam> deleteExam = getById(examId);
+        if(deleteExam.isEmpty())
+            throw new CustomException("Exam is not exists to delete.");
+        Exam exam = deleteExam.get();
+        exam.setStatus(EActiveStatus.INACTIVE);
+        examRepository.save(exam);
+    }
+
     @Override
     public List<AExamResponse> searchByExamName(String examName) {
         return examRepository.findByExamNameContainingIgnoreCase(examName).stream().map(this::entityAMap).toList();
@@ -97,11 +110,18 @@ public class ExamServiceImpl implements ExamService {
         }
         return Optional.empty();
     }
-    //Lấy danh sách Exam theo ngày tạo
+    //*Lấy danh sách Exam theo ngày tạo
     @Override
     public List<AExamResponse> getAllExamByCreatedDate(LocalDate date) {
         return examRepository.findByCreatedDate(date).stream().map(this::entityAMap).toList();
     }
+    //*Lấy danh sách Exam theo khoảng thời gian tạo
+    @Override
+    public List<AExamResponse> getAllExamFromDateToDate(String dateStart, String dateEnd) {
+        List<Exam> exams = examRepository.getAllFromDateToDate(dateStart,dateEnd);
+        return exams.stream().map(this::entityAMap).toList();
+    }
+
     //find by subjectId
     @Override
     public List<AExamResponse> getAllBySubjectId(Long subjectId) {
