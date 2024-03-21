@@ -35,21 +35,21 @@ public interface ClassroomService {
          Integer limit, Integer page, String sort, String order)
             throws CustomException;
     // * Func convert sang ứng với quyền admin.
-    Page<AClassResponse> convertPagesToAClassResponse(Page<Classroom> classPage);
+    Page<AClassResponse> entityAMap(Page<Classroom> classPage);
     // ? Lấy theo Id và chuyển đổi bằng entityMap.
     Optional<Classroom> getClassById(Long classId);
-    AClassResponse getAClassResponseById(Long classId) throws CustomException;
+    AClassResponse getAClassById(Long classId) throws CustomException;
     // ? CRUD Functions.
     Classroom save(Classroom classroom);
     Classroom save(AClassRequest classRequest);
-    Classroom putUpdate(Long classId, AClassRequest classRequest);
-    Classroom patchUpdate(Long classroomId, AClassRequest classRequest);
+    Classroom putUpdateClass(Long classId, AClassRequest classRequest);
+    Classroom patchUpdate(Long classId, AClassRequest classRequest);
     void softDeleteByClassId(Long classId) throws CustomException;
     void hardDeleteByClassId(Long classId) throws CustomException;
     // ? Functional dành cho Teacher.
-    List<TClassResponse>teacherGetListClassrooms();
-    Optional<TClassResponse> teacherGetClassById(Long classroomId);
-    List<TClassResponse> teacherFindClassByName(String className);
+    List<TClassResponse> getTAllToList();
+    Optional<TClassResponse> getTClassById(Long classId);
+    List<TClassResponse> findTClassByClassName(String className);
     // ? EntityMap dùng để ép kiểu dành cho Admin.
     AClassResponse entityAMap(Classroom classroom);
     Classroom entityAMap(AClassRequest classRequest);

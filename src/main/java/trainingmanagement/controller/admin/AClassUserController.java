@@ -82,7 +82,7 @@ public class AClassUserController {
             List<UserClass> userClasses = userClassService.findClassByStudent(id);
             List<AClassResponse> classes = new ArrayList<>();
             for (UserClass userClass : userClasses) {
-                classes.add(classroomService.getAClassResponseById(userClass.getClassroom().getId()));
+                classes.add(classroomService.getAClassById(userClass.getClassroom().getId()));
             }
             Page<?> classDisplay = commonService.convertListToPages(pageable, classes);
             if (!classDisplay.isEmpty()) {

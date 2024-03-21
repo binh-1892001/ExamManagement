@@ -13,7 +13,6 @@ import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.service.ClassroomService;
-import trainingmanagement.service.CommonService;
 
 @RestController
 @RequestMapping("/v1/admin/classes")
@@ -29,7 +28,7 @@ public class AClassController {
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
         Page<Classroom> classes = classroomService.getAllClassToPages(limit, page, sort, order);
-        Page<AClassResponse> classResponses = classroomService.convertPagesToAClassResponse(classes);
+        Page<AClassResponse> classResponses = classroomService.entityAMap(classes);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
@@ -41,7 +40,7 @@ public class AClassController {
     // * Get classroom by id.
     @GetMapping("/{classId}")
     public ResponseEntity<?> getClassById(@PathVariable("classId") Long classId) throws CustomException{
-        AClassResponse classroom = classroomService.getAClassResponseById(classId);
+        AClassResponse classroom = classroomService.getAClassById(classId);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
@@ -111,7 +110,7 @@ public class AClassController {
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
         Page<Classroom> classes = classroomService.searchAllClassByClassNameToPages(keyword, limit, page, sort, order);
-        Page<AClassResponse> classResponses = classroomService.convertPagesToAClassResponse(classes);
+        Page<AClassResponse> classResponses = classroomService.entityAMap(classes);
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
