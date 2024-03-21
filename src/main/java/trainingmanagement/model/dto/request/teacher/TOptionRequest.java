@@ -11,6 +11,8 @@ import lombok.*;
 @Setter
 @Builder
 public class TOptionRequest {
+    @Pattern(regexp = "^(?i)(CORRECT|INCORRECT)$", message = "Chuỗi phải là 'CORRECT' hoặc 'INCORRECT'")
+    private String isCorrect;
     @NotEmpty(message = "Không được bỏ trống chỗ này nha!!")
     private String contentOptions;
     @NotNull(message = "Không được bỏ trống chỗ này nha!!")

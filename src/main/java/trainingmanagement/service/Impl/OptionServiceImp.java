@@ -3,7 +3,9 @@ package trainingmanagement.service.Impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import trainingmanagement.model.dto.request.admin.AOptionRequest;
+import trainingmanagement.model.dto.request.teacher.TOptionRequest;
 import trainingmanagement.model.dto.response.admin.AOptionResponse;
+import trainingmanagement.model.dto.response.teacher.TOptionResponse;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EOptionStatus;
 import trainingmanagement.model.entity.Option;
@@ -43,6 +45,11 @@ public class OptionServiceImp implements OptionService {
     @Override
     public Option save(AOptionRequest optionRequest) {
         return optionRepository.save(entityAMap((optionRequest)));
+    }
+
+    @Override
+    public Option save(TOptionRequest optionRequest) {
+        return optionRepository.save(entityTMap((optionRequest)));
     }
 
     @Override
@@ -118,6 +125,27 @@ public class OptionServiceImp implements OptionService {
             .status(status)
             .build();
     }
+
+    @Override
+    public Option entityTMap(TOptionRequest optionRequest) {
+        EOptionStatus isCorrect = switch (optionRequest.getIsCorrect().toUpperCase()) {
+            case "INCORRECT" -> EOptionStatus.INCORRECT;
+            case "CORRECT" -> EOptionStatus.CORRECT;
+            default -> null;
+        };
+        EActiveStatus status = switch (optionRequest.getStatus().toUpperCase()) {
+            case "INACTIVE" -> EActiveStatus.INACTIVE;
+            case "ACTIVE" -> EActiveStatus.ACTIVE;
+            default -> null;
+        };
+        return Option.builder()
+                .optionContent(optionRequest.getContentOptions())
+                .question(questionRepository.findById(optionRequest.getQuestionId()).orElse(null))
+                .isCorrect(isCorrect)
+                .status(status)
+                .build();
+    }
+
     @Override
     public AOptionResponse entityAMap(Option option) {
         return AOptionResponse.builder()
@@ -126,5 +154,15 @@ public class OptionServiceImp implements OptionService {
             .isCorrect(option.getIsCorrect())
             .status(option.getStatus())
             .build();
+    }
+
+    @Override
+    public TOptionResponse entityTMap(Option option) {
+        return TOptionResponse.builder()
+                .optionId(option.getId())
+                .contentOptions(option.getOptionContent())
+                .isCorrect(option.getIsCorrect())
+                .status(option.getStatus())
+                .build();
     }
 }
