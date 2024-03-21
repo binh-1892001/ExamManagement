@@ -68,7 +68,7 @@ public class AUserController {
     }
 
 //    @PutMapping("/{id}")
-//    public ResponseEntity<User> updateAccount(@RequestBody UserRegisterRequest userRegisterRequest, @PathVariable("id") Long id) {
+//    public ResponseEntity<User> updateAccount(@RequestBody @Valid UserRegisterRequest userRegisterRequest, @PathVariable("id") Long id) {
 //        User user = userService.updateAcc(userRegisterRequest, id);
 //        return new ResponseEntity<>(user, HttpStatus.OK);
 //    }

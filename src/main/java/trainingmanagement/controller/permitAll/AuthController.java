@@ -1,5 +1,6 @@
 package trainingmanagement.controller.permitAll;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/sign-in")
-    public ResponseEntity<?> handleLogin(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> handleLogin(@RequestBody @Valid LoginRequest loginRequest) {
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
@@ -30,7 +31,7 @@ public class AuthController {
             ), HttpStatus.OK);
     }
     @PostMapping("/sign-up")
-    public ResponseEntity<?> handleRegister(@RequestBody RegisterRequest RegisterRequest) {
+    public ResponseEntity<?> handleRegister(@RequestBody @Valid RegisterRequest RegisterRequest) {
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
