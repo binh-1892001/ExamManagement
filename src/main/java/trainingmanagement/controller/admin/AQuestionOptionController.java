@@ -19,6 +19,7 @@ import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.model.entity.Test;
+import trainingmanagement.model.enums.EQuestionLevel;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.OptionService;
 import trainingmanagement.service.QuestionService;
@@ -67,8 +68,8 @@ public class AQuestionOptionController {
         }
     }
 
-    //* Tim kiem danh sach question va option theo ngay thang tao
-    @PostMapping("/date")
+    //* Hien thi danh sach question va option theo ngay thang tao
+    @PostMapping("/createdDateExam")
     public ResponseEntity<?> getAllQuestionAndOptionByCreateDate(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
@@ -97,8 +98,8 @@ public class AQuestionOptionController {
         }
     }
 
-    //* Tim kiem danh sach question va option theo khoang thoi gian
-    @PostMapping("/FromDateToDate")
+    //* Hien thi danh sach question va option theo khoang thoi gian
+    @PostMapping("/fromDateToDate")
     public ResponseEntity<?> getAllQuestionAndOptionFromDateToDate(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
@@ -110,6 +111,42 @@ public class AQuestionOptionController {
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
             List<AQuestionResponse> questionResponses = questionService.getAllFromDayToDay(dateSearch.getStartDate(), dateSearch.getEndDate());
+            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
+            if (!questions.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                questions.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Questions page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Questions page is out of range.");
+        }
+    }
+
+    //* Hien thi danh sach question va option theo level question
+    @PostMapping("/{levelQuestion}")
+    public ResponseEntity<?> getAllQuestionAndOptionByLevelQuestion(
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @PathVariable String levelQuestion) throws CustomException {
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            List<AQuestionResponse> questionResponses= null;
+            if (levelQuestion.equalsIgnoreCase(String.valueOf(EQuestionLevel.EASY))){
+                questionResponses = questionService.getAllByQuestionLevel(EQuestionLevel.EASY);
+            }else if (levelQuestion.equalsIgnoreCase(String.valueOf(EQuestionLevel.NORMAL))){
+                questionResponses = questionService.getAllByQuestionLevel(EQuestionLevel.NORMAL);
+            }else if (levelQuestion.equalsIgnoreCase(String.valueOf(EQuestionLevel.DIFFICULTY))){
+                questionResponses = questionService.getAllByQuestionLevel(EQuestionLevel.DIFFICULTY);
+            }
             Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
@@ -156,6 +193,7 @@ public class AQuestionOptionController {
                 ), HttpStatus.CREATED);
     }
 
+    //* Update question and Option
     @Transactional
     @PostMapping("/{questionId}")
     public ResponseEntity<?> patchUpdateQuestionAndOption(
@@ -179,6 +217,7 @@ public class AQuestionOptionController {
                 ), HttpStatus.OK);
     }
 
+    //* delete question and option
     @Transactional
     @DeleteMapping("/{questionId}")
     public ResponseEntity<?> deleteQuestionAndOption(

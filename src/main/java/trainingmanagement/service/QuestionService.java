@@ -5,6 +5,8 @@ import trainingmanagement.model.dto.request.admin.AQuestionRequest;
 import trainingmanagement.model.dto.response.admin.AQuestionResponse;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.model.entity.Test;
+import trainingmanagement.model.enums.EQuestionLevel;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +26,6 @@ public interface QuestionService {
     List<AQuestionResponse> getAllByTest(Test test);
     List<AQuestionResponse> getAllByCreatedDate(LocalDate date);
     List<AQuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd);
+    List<AQuestionResponse> getAllByQuestionLevel(EQuestionLevel questionLevel);
+
 }

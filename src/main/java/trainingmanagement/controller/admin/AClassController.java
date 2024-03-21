@@ -97,7 +97,7 @@ public class AClassController {
             ), HttpStatus.OK);
     }
     // * softDelete an exists classroom.
-    @DeleteMapping("/{classId}")
+    @DeleteMapping("{classId}")
     public ResponseEntity<?> softDeleteClassById(@PathVariable("classId") Long classId) throws CustomException {
         classroomService.softDeleteByClassId(classId);
         return new ResponseEntity<>(
@@ -109,7 +109,7 @@ public class AClassController {
             ), HttpStatus.OK);
     }
     // * hardDelete an exists classroom.
-    @DeleteMapping("delete/{classId}")
+    @DeleteMapping("/delete/{classId}")
     public ResponseEntity<?> hardDeleteClassById(@PathVariable("classId") Long classId) throws CustomException {
         classroomService.hardDeleteByClassId(classId);
         return new ResponseEntity<>(

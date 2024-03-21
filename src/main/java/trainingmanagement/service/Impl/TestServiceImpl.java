@@ -23,6 +23,7 @@ import trainingmanagement.model.entity.Test;
 import trainingmanagement.repository.TestRepository;
 import trainingmanagement.service.TestService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,6 +126,32 @@ public class TestServiceImpl implements TestService {
         return testRepository.findByTestNameContainingIgnoreCase(testName)
                 .stream().map(this::entityAMap).toList();
     }
+    //find by examId
+    @Override
+    public List<ATestResponse> getAllByExamId(Long examId) {
+        List<Test> tests = testRepository.getAllByExamId (examId);
+        return tests.stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<ATestResponse> getAllByTestType(ETestType testType) {
+        List<Test> tests = testRepository.getAllByTestType(testType);
+        return tests.stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<ATestResponse> getAllByCreatedDate(LocalDate createdDate) {
+        List<Test> tests = testRepository.getAllByCreatedDate(createdDate);
+        return tests.stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<ATestResponse> getAllFromDateToDate(String dateStart, String dateEnd) {
+        List<Test> tests = testRepository.getAllFromDateToDate(dateStart,dateEnd);
+        return tests.stream().map(this::entityAMap).toList();
+    }
+
+
     //    *********************************************entityMap*********************************************
     @Override
     public Test entityAMap(ATestRequest testRequest) {
@@ -167,10 +194,5 @@ public class TestServiceImpl implements TestService {
             .build();
     }
 
-    //find by examId
-    @Override
-    public List<ATestResponse> getAllByExamId(Long examId) {
-        List<Test> tests = testRepository.getAllByExamId (examId);
-        return tests.stream().map(this::entityAMap).toList();
-    }
+
 }
