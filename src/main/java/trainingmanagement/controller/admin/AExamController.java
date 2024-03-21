@@ -96,12 +96,24 @@ public class AExamController {
                 exam
             ), HttpStatus.OK);
     }
-    // * Delete Exam by id.
-    @DeleteMapping("/{examId}")
-    public ResponseEntity<?> deleteExamById(@PathVariable("examId") Long examId) throws CustomException {
+    // * softDelete Exam by id.
+    @DeleteMapping("{examId}")
+    public ResponseEntity<?> softDeleteExamById(@PathVariable("examId") Long examId) throws CustomException {
+        examService.softDeleteById(examId);
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        "Delete exam successfully."
+                ), HttpStatus.OK);
+    }
+    // * hardDelete Exam by id.
+    @DeleteMapping("delete/{examId}")
+    public ResponseEntity<?> hardDeleteExamById(@PathVariable("examId") Long examId) throws CustomException {
         Optional<Exam> deleteExam = examService.getById(examId);
         if(deleteExam.isPresent()){
-            examService.deleteById(examId);
+            examService.hardDeleteById(examId);
             return new ResponseEntity<>(
                 new ResponseWrapper<>(
                     EHttpStatus.SUCCESS,
@@ -142,8 +154,7 @@ public class AExamController {
             throw new CustomException("Exams page is out of range.");
         }
     }
-
-    // Tìm kiếm theo ngày tạo Exam
+    //* Tìm kiếm theo ngày tạo Exam
     @PostMapping("/createdDateExam")
     public ResponseEntity<?> findByCreatedDate(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
@@ -157,6 +168,34 @@ public class AExamController {
         try {
             LocalDate date = LocalDate.parse(dateSearch.getCreateDate());
             List<AExamResponse> examResponses = examService.getAllExamByCreatedDate(date);
+            Page<?> questions = commonService.convertListToPages(pageable, examResponses);
+            if (!questions.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                questions.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Exam page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Exam page is out of range.");
+        }
+    }
+
+    @PostMapping("/fromDateToDate")
+    public ResponseEntity<?> findFromDateToDate(
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @RequestBody DateSearch dateSearch) throws CustomException {
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            List<AExamResponse> examResponses = examService.getAllExamFromDateToDate(dateSearch.getStartDate(), dateSearch.getEndDate());
             Page<?> questions = commonService.convertListToPages(pageable, examResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(

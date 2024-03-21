@@ -125,7 +125,13 @@ public class QuestionServiceImp implements QuestionService {
 
     @Override
     public List<AQuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd) {
-        List<Question> questions = questionRepository.getAllFromDayToDay(dateStart, dateEnd);
+        List<Question> questions = questionRepository.getAllFromDateToDate(dateStart, dateEnd);
+        return questions.stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<AQuestionResponse> getAllByQuestionLevel(EQuestionLevel questionLevel) {
+        List<Question> questions = questionRepository.getAllByQuestionLevel(questionLevel);
         return questions.stream().map(this::entityAMap).toList();
     }
 

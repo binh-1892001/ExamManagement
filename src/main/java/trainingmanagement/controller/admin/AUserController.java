@@ -11,13 +11,20 @@ import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.response.admin.AUserResponse;
+import trainingmanagement.model.entity.Role;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.User;
+import trainingmanagement.model.enums.ERoleName;
+import trainingmanagement.security.UserDetail.UserLogin;
 import trainingmanagement.service.CommonService;
+import trainingmanagement.service.RoleService;
 import trainingmanagement.service.UserService;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +32,8 @@ import java.util.Optional;
 public class AUserController {
     private final UserService userService;
     private final CommonService commonService;
+    private final UserLogin userLogin;
+    private final RoleService roleService;
     // * Get all users to pages.
     @GetMapping
     public ResponseEntity<?> getAllUsersToPages(
@@ -75,10 +84,11 @@ public class AUserController {
     // * Delete user by id.
     @DeleteMapping("/{userId}")
     public ResponseEntity<?> deleteAccount(@PathVariable("userId") Long userId) throws CustomException{
-        // ! Cần thêm không thể xoá người dùng hiện tại.
-        // ! Cần thêm không thể xoá quyền admin.
         Optional<User> deleteUser = userService.getUserById(userId);
         if(deleteUser.isPresent()){
+            if (deleteUser.get().getId().equals(userLogin.userLogin().getId())){
+                throw new CustomException("Cant delete this account");
+            }
             userService.deleteById(userId);
             return new ResponseEntity<>(
                     new ResponseWrapper<>(
@@ -93,13 +103,14 @@ public class AUserController {
         throw new CustomException("User is not exists.");
     }
     // * Switch user status.
-    @PutMapping("/{userId}")
+    @PutMapping("/switchStatus/{userId}")
     public ResponseEntity<?> switchUserStatus(@PathVariable("userId") Long userId) throws CustomException {
-        // ! Cần thêm không thể khoá/mở khoá người dùng hiện tại.
-        // ! Cần thêm không thể khoá/mở khoá người dùng có quyền admin.
         Optional<User> updateUser = userService.getUserById(userId);
         if(updateUser.isPresent()) {
             User user = updateUser.get();
+            if (user.getId().equals(userLogin.userLogin().getId())){
+                throw new CustomException("Cant switch this account status");
+            }
             user.setStatus(user.getStatus() == EActiveStatus.ACTIVE ? EActiveStatus.INACTIVE : EActiveStatus.ACTIVE);
             User updatedUser = userService.save(user);
             return new ResponseEntity<>(
@@ -113,6 +124,42 @@ public class AUserController {
         // ? Xử lý Exception cần tìm được user theo id trước khi khoá/mở khoá trong Controller.
         throw new CustomException("User is not exists.");
     }
+
+    // * Switch user permission.
+    @PutMapping("/switchPermission/{userId}")
+    public ResponseEntity<?> switchPermissionStatus(@PathVariable("userId") Long userId) throws CustomException {
+        Optional<User> updateUser = userService.getUserById(userId);
+        if(updateUser.isPresent()) {
+            User user = updateUser.get();
+            if (user.getId().equals(userLogin.userLogin().getId())){
+                throw new CustomException("Cant switch this account permission");
+            }
+            Set<Role> roles = user.getRoles();
+            Set<Role> newRoles = new HashSet<>();
+
+            for (Role role : roles) {
+                if (role.getRoleName().equals(ERoleName.ROLE_TEACHER)) {
+                    Role studentRole = roleService.findByRoleName(ERoleName.ROLE_STUDENT);
+                    newRoles.add(studentRole);
+                } else {
+                    Role teacherRole = roleService.findByRoleName(ERoleName.ROLE_TEACHER);
+                    newRoles.add(teacherRole);
+                }
+            }
+            user.setRoles(newRoles);
+            User updatedUser = userService.save(user);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            updatedUser
+                    ), HttpStatus.OK);
+        }
+        // ? Xử lý Exception cần tìm được user theo id trước khi khoá/mở khoá trong Controller.
+        throw new CustomException("User is not exists.");
+    }
+
     // * Find Users by username or fullName.
     @GetMapping("/search")
     public ResponseEntity<?> searchByFullNameOrUserName(
