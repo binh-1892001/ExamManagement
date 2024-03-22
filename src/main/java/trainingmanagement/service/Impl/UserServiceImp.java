@@ -10,10 +10,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.ChangePassword;
+import trainingmanagement.model.dto.InformationAccount;
 import trainingmanagement.model.dto.auth.JwtResponse;
 import trainingmanagement.model.dto.auth.LoginRequest;
 import trainingmanagement.model.dto.auth.RegisterRequest;
-import trainingmanagement.model.dto.request.admin.AChangePassword;
 import trainingmanagement.model.dto.response.admin.AUserResponse;
 import trainingmanagement.model.entity.Role;
 import trainingmanagement.model.entity.User;
@@ -22,7 +23,6 @@ import trainingmanagement.model.enums.EGender;
 import trainingmanagement.model.enums.ERoleName;
 import trainingmanagement.repository.UserRepository;
 import trainingmanagement.security.Jwt.JwtProvider;
-import trainingmanagement.security.UserDetail.UserLogin;
 import trainingmanagement.security.UserDetail.UserPrincipal;
 import trainingmanagement.service.RoleService;
 import trainingmanagement.service.UserService;
@@ -165,17 +165,17 @@ public class UserServiceImp implements UserService {
 
     //* cập nhật mật khẩu
     @Override
-    public User updatePassword(AChangePassword aChangePassword,Long userId) throws CustomException {
+    public User updatePassword(ChangePassword changePassword, Long userId) throws CustomException {
         Optional<User> userOptional = getUserById(userId);
         User user = userOptional.get();
-        if (!aChangePassword.getOldPassword().equals(encoder.encode(user.getPassword()))){
+        if (!changePassword.getOldPassword().equals(encoder.encode(user.getPassword()))){
             throw new CustomException("Old password not true!");
-        }else if (aChangePassword.getOldPassword().equals(aChangePassword.getNewPassword())){
+        }else if (changePassword.getOldPassword().equals(changePassword.getNewPassword())){
             throw new CustomException("New password like old password!");
-        }else if (!aChangePassword.getNewPassword().equals(aChangePassword.getConfirmPassword())){
+        }else if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
             throw new CustomException("Confirm password not like new password");
         }
-        user.setPassword(aChangePassword.getConfirmPassword());
+        user.setPassword(changePassword.getConfirmPassword());
         return userRepository.save(user);
     }
 
@@ -197,6 +197,20 @@ public class UserServiceImp implements UserService {
                 .dateOfBirth( LocalDate.parse ( userRequest.getDateOfBirth() ) )
                 .gender(userRequest.getGender().equalsIgnoreCase(EGender.MALE.name()) ? EGender.MALE : EGender.FEMALE)
                 .status(EActiveStatus.INACTIVE)
+                .build();
+    }
+
+    @Override
+    public InformationAccount entityMap(User user) {
+        return InformationAccount.builder()
+                .userId(user.getId())
+                .fullName(user.getFullName())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .avatar(user.getAvatar())
+                .dateOfBirth(user.getDateOfBirth())
+                .gender(user.getGender())
                 .build();
     }
 

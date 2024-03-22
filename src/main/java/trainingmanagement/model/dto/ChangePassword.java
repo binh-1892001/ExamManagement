@@ -1,4 +1,4 @@
-package trainingmanagement.model.dto.request.admin;
+package trainingmanagement.model.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class AChangePassword {
+public class ChangePassword {
     @NotEmpty(message = "Old Password must not be empty")
     private String oldPassword;
     @NotEmpty(message = "Old Password must not be empty")

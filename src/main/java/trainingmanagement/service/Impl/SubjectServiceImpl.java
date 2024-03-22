@@ -7,10 +7,19 @@ import trainingmanagement.model.base.AuditableEntity;
 import trainingmanagement.model.dto.request.admin.ASubjectRequest;
 import trainingmanagement.model.dto.response.admin.ASubjectResponse;
 import trainingmanagement.model.dto.response.teacher.TSubjectResponse;
+import trainingmanagement.model.entity.ClassSubject;
+import trainingmanagement.model.entity.Classroom;
+import trainingmanagement.model.entity.UserClass;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.entity.Subject;
 import trainingmanagement.repository.SubjectRepository;
+import trainingmanagement.security.UserDetail.UserLogin;
+import trainingmanagement.service.ClassSubjectService;
+import trainingmanagement.service.ClassroomService;
 import trainingmanagement.service.SubjectService;
+import trainingmanagement.service.UserClassService;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +27,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
-
+    private final UserClassService userClassService;
+    private final UserLogin userLogin;
     @Override
     public List<Subject> getAllToList() {
         return subjectRepository.findAll();
@@ -147,5 +157,21 @@ public class SubjectServiceImpl implements SubjectService {
         return TSubjectResponse.builder ()
                 .subjectName ( subject.getSubjectName () )
                 .build ();
+    }
+
+    @Override
+    public List<Subject> getAllSubjectByClassIdAndUserId() {
+        List<UserClass> userClasses = userClassService.findClassByStudent(userLogin.userLogin().getId());
+        List<Subject> subjects = new ArrayList<>();
+        List<Classroom> classrooms = new ArrayList<>();
+        for (UserClass userClass:userClasses){
+            classrooms.add(userClass.getClassroom());
+        }
+        for (Classroom classroom:classrooms){
+            for (ClassSubject classSubject:classroom.getClassSubjects()){
+                subjects.add(classSubject.getSubject());
+            }
+        }
+        return subjects;
     }
 }

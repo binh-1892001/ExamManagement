@@ -14,4 +14,5 @@ public interface UserClassService {
     List<UserClass> findByClassId(Long classId);
     List<UserClass> findClassByStudent(Long studentId);
 
+
 }

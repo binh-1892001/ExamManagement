@@ -23,7 +23,6 @@ public interface SubjectService {
     ASubjectResponse getASubjectResponseById(Long subjectId) throws CustomException;
     Subject entityAMap(ASubjectRequest subjectRequest);
     ASubjectResponse entityAMap(Subject subject);
-
     //Lấy danh sách Subject với trạng thái Active
     List<Subject> getAllSubjectWithActiveStatus();
     List<TSubjectResponse> getAllSubjectResponsesToListRoleTeacher();
@@ -32,6 +31,6 @@ public interface SubjectService {
     Optional<TSubjectResponse> getSubjectResponsesByIdWithActiveStatus(Long subjectId);
     //Tìm kiếm subject theo tên
     List<TSubjectResponse> findBySubjectNameRoleTeacher(String className);
-
     TSubjectResponse entityMapRoleTeacher(Subject subject);
+    List<Subject> getAllSubjectByClassIdAndUserId();
 }
