@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.student.ListStudentChoice;
 import trainingmanagement.model.dto.request.student.StudentChoice;
-import trainingmanagement.model.entity.Option;
-import trainingmanagement.model.entity.Question;
-import trainingmanagement.model.entity.Result;
-import trainingmanagement.model.entity.Test;
+import trainingmanagement.model.entity.*;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EOptionStatus;
 import trainingmanagement.repository.ResultRepository;
@@ -27,7 +24,7 @@ public class ResultServiceImp implements ResultService {
     private final TestService testService;
     private final UserLogin userLogin;
 
-    //* học sinh gửi lên bài làm vaf chấm điểm
+    //* học sinh gửi lên bài làm và chấm điểm
     @Override
     public Result checkAndResultTest(ListStudentChoice listStudentChoice, Long testId) throws CustomException {
         Optional<Test> testOptional = testService.getTestById(testId);
@@ -53,7 +50,7 @@ public class ResultServiceImp implements ResultService {
                 }
             }
             Result result = Result.builder()
-                    .student(userLogin.userLogin())
+                    .user(userLogin.userLogin())
                     .test(testOptional.get())
                     .status(EActiveStatus.ACTIVE)
                     .mark(myMark)
@@ -63,6 +60,12 @@ public class ResultServiceImp implements ResultService {
         }
         throw new CustomException("Test is not exist!");
     }
+
+    @Override
+    public List<Result> getAllByStudent() {
+        return resultRepository.getAllByUser(userLogin.userLogin());
+    }
+
 
     public boolean compareLists(List<Long> list1, List<Long> list2) {
         // Nếu độ dài của hai danh sách khác nhau, chúng không giống nhau
@@ -81,4 +84,6 @@ public class ResultServiceImp implements ResultService {
         // Nếu tất cả các phần tử giống nhau, trả về true
         return true;
     }
+
+
 }

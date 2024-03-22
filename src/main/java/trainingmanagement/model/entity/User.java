@@ -35,12 +35,9 @@ public class User extends BaseModel {
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     @JsonIgnore
     private Set<Role> roles;
-    @OneToMany(mappedBy = "student")
+    @OneToMany(mappedBy = "user")
     @JsonIgnore
-    private List<Result> resultsStudent;
-    @OneToMany(mappedBy = "teacher")
-    @JsonIgnore
-    private List<Result> resultsTeacher;
+    private List<Result> results;
     @OneToMany(mappedBy = "user")
     @JsonIgnore
     private List<UserClass> userClasses;

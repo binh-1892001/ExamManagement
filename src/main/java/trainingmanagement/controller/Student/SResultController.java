@@ -11,13 +11,15 @@ import trainingmanagement.model.entity.Result;
 import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.service.ResultService;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/student/result")
+@RequestMapping("/v1/student")
 public class SResultController {
     private final ResultService resultService;
 
-    @PostMapping("/{testId}")
+    @PostMapping("/doTest/{testId}")
     public ResponseEntity<?> doTest(@RequestBody ListStudentChoice listStudentChoice, @PathVariable Long testId) throws CustomException {
         Result result = resultService.checkAndResultTest(listStudentChoice,testId);
         return new ResponseEntity<>(
@@ -26,6 +28,18 @@ public class SResultController {
                         HttpStatus.OK.value(),
                         HttpStatus.OK.name(),
                         result
+                ), HttpStatus.OK);
+    }
+
+    @GetMapping("/result/checkHistory")
+    public ResponseEntity<?> checkHistory(){
+        List<Result> results = resultService.getAllByStudent();
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        results
                 ), HttpStatus.OK);
     }
 

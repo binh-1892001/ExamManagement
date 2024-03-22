@@ -18,6 +18,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> getAllFromDateToDate(String dateStart,String dateEnd);
     List<Question> findAllByQuestionContentIsContainingIgnoreCase(String questionContent);
     List<Question> getAllByQuestionLevel(EQuestionLevel questionLevel);
+    List<Question> getQuestionsByTestId(Long testId);
 
     
 }
