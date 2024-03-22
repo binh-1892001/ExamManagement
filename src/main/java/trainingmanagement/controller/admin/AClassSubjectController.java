@@ -102,7 +102,7 @@ public class AClassSubjectController {
 
     // * add subjectClass
     @PostMapping("/addSubjectClass")
-    public ResponseEntity<?> addSubjectClass(@RequestBody @Valid AClassSubjectRequest aClassSubjectRequest){
+    public ResponseEntity<?> addSubjectClass(@RequestBody @Valid AClassSubjectRequest aClassSubjectRequest) throws CustomException {
         classSubjectService.add(aClassSubjectRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
@@ -117,7 +117,7 @@ public class AClassSubjectController {
     @PutMapping("/updateSubjectClass/{id}")
     public ResponseEntity<?> updateStudentClass(
             @RequestBody @Valid AClassSubjectRequest aClassSubjectRequest
-            ,@PathVariable Long id) {
+            ,@PathVariable Long id) throws CustomException {
         classSubjectService.update(aClassSubjectRequest,id);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
