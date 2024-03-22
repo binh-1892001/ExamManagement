@@ -34,4 +34,6 @@ public interface ExamService {
     List<AExamResponse> getAllExamFromDateToDate(String dateStart, String dateEnd);
     //* find by subjectId
     List<AExamResponse> getAllBySubjectId(Long subjectId);
+    //* find all By subject of student
+    List<Exam> getAllExamBySubjectOfStudent();
 }

@@ -42,6 +42,7 @@ public interface TestService {
     List<ATestResponse> getAllByCreatedDate(LocalDate createdDate);
     //* find by from date to date
     List<ATestResponse> getAllFromDateToDate(String dateStart, String dateEnd);
+    List<Test> getAllTestByExamOfStudent();
 
 
 }

@@ -71,4 +71,9 @@ public class ClassSubjectServiceImp implements ClassSubjectService {
     public List<ClassSubject> findClassBySubjectId(Long subjectId) {
         return classSubjectRepository.findClassBySubjectId(subjectId);
     }
+
+    @Override
+    public ClassSubject findByClassroom(Classroom classroom) {
+        return classSubjectRepository.findByClassroom(classroom);
+    }
 }

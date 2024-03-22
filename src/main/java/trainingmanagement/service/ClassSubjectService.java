@@ -2,6 +2,7 @@ package trainingmanagement.service;
 
 import trainingmanagement.model.dto.request.admin.AClassSubjectRequest;
 import trainingmanagement.model.entity.ClassSubject;
+import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.UserClass;
 
 import java.util.List;
@@ -15,5 +16,6 @@ public interface ClassSubjectService {
     Optional<ClassSubject> findById(Long id);
     List<ClassSubject> findSubjectByClassId(Long classId);
     List<ClassSubject> findClassBySubjectId(Long subjectId);
+    ClassSubject findByClassroom(Classroom classroom);
 
 }

@@ -145,11 +145,13 @@ public class QuestionServiceImp implements QuestionService {
     }
 
     @Override
+    public List<Question> getAllQuestionByTest(Test test) {
+        return questionRepository.getAllByTest(test);
+    }
     public List<TQuestionResponse> teacherGetAllByTest(Test test) {
         List<Question> questions = questionRepository.getAllByTest(test);
         return questions.stream().map(this::entityTMap).toList();
     }
-
     @Override
     public List<AQuestionResponse> getAllByCreatedDate(LocalDate date) {
         List<Question> questions = questionRepository.getAllByCreatedDate(date);
@@ -167,8 +169,6 @@ public class QuestionServiceImp implements QuestionService {
         List<Question> questions = questionRepository.getAllByQuestionLevel(questionLevel);
         return questions.stream().map(this::entityAMap).toList();
     }
-
-    //    *********************************************entityMap*********************************************
     @Override
     public Question entityAMap(AQuestionRequest questionRequest) {
         EQuestionLevel questionLevel = switch (questionRequest.getQuestionLevel()) {

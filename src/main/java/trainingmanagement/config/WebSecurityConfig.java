@@ -31,35 +31,41 @@ public class WebSecurityConfig {
     private final UserDetailService userDetailService;
 
     @Bean
-    SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
+    SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-            .csrf(AbstractHttpConfigurer::disable)
-            .authenticationProvider(authenticationProvider())
-            .authorizeHttpRequests(
-                (auth)->auth
-                    .requestMatchers("/v1/auth/**").permitAll()
-                    .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
-                    .requestMatchers("/v1/admin/**").hasAnyAuthority(String.valueOf(ERoleName.ROLE_ADMIN))
-                    .requestMatchers("/v1/teacher/**").hasAnyAuthority(String.valueOf(ERoleName.ROLE_TEACHER))
-                    .requestMatchers("/v1/student/**").hasAnyAuthority(String.valueOf(ERoleName.ROLE_STUDENT))
-                    .anyRequest().authenticated()
-            ).
-            exceptionHandling(
-                (auth)->auth.authenticationEntryPoint(jwtEntryPoint)
-                    .accessDeniedHandler(accessDenied)
-            ).
-            exceptionHandling(
-                (auth)->auth.authenticationEntryPoint(jwtEntryPoint)
-                    .accessDeniedHandler(accessDenied)
-            )
-            .sessionManagement((auth) -> auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class).
-            build();
+                .csrf(AbstractHttpConfigurer::disable)
+                .authenticationProvider(authenticationProvider())
+                .authorizeHttpRequests(
+                        (auth) -> auth
+                                .requestMatchers("/v1/auth/**").permitAll()
+                                .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
+                                .requestMatchers("/v1/account/**").hasAnyAuthority(
+                                        String.valueOf(ERoleName.ROLE_ADMIN),
+                                        String.valueOf(ERoleName.ROLE_STUDENT),
+                                        String.valueOf(ERoleName.ROLE_TEACHER)
+                                ).requestMatchers("/v1/admin/**").hasAnyAuthority(String.valueOf(ERoleName.ROLE_ADMIN))
+                                .requestMatchers("/v1/teacher/**").hasAnyAuthority(String.valueOf(ERoleName.ROLE_TEACHER))
+                                .requestMatchers("/v1/student/**").hasAnyAuthority(String.valueOf(ERoleName.ROLE_STUDENT))
+                                .anyRequest().authenticated()
+                ).
+                exceptionHandling(
+                        (auth) -> auth.authenticationEntryPoint(jwtEntryPoint)
+                                .accessDeniedHandler(accessDenied)
+                ).
+                exceptionHandling(
+                        (auth) -> auth.authenticationEntryPoint(jwtEntryPoint)
+                                .accessDeniedHandler(accessDenied)
+                )
+                .sessionManagement((auth) -> auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class).
+                build();
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();

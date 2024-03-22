@@ -17,7 +17,7 @@ import trainingmanagement.service.UserService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/auth/")
+@RequestMapping("/v1/auth")
 public class AuthController {
     private final UserService userService;
 

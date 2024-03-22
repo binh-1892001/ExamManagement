@@ -16,6 +16,7 @@ import trainingmanagement.repository.ExamRepository;
 import trainingmanagement.service.ExamService;
 import trainingmanagement.service.SubjectService;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -128,6 +129,17 @@ public class ExamServiceImpl implements ExamService {
         List<Exam> exams = examRepository.getAllBySubjectId(subjectId);
         return exams.stream().map(this::entityAMap).toList();
     }
+
+    @Override
+    public List<Exam> getAllExamBySubjectOfStudent() {
+        List<Subject> subjects = subjectService.getAllSubjectByClassIdAndUserId();
+        List<Exam> exams = new ArrayList<>();
+        for (Subject subject : subjects ){
+            exams.add(examRepository.findBySubject(subject));
+        }
+        return exams;
+    }
+
     @Override
     public Exam entityAMap(AExamRequest examRequest) {
         EActiveStatus activeStatus = switch (examRequest.getStatus().toUpperCase()) {

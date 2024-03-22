@@ -19,4 +19,8 @@ public interface ClassSubjectRepository extends JpaRepository<ClassSubject,Long>
 
     @Query("select us from ClassSubject us where us.subject.id = :subjectId")
     List<ClassSubject> findClassBySubjectId(Long subjectId);
+
+    ClassSubject findByClassroom(Classroom classroom);
+
+
 }
