@@ -21,8 +21,8 @@ public interface UserService {
     JwtResponse handleLogin(LoginRequest userLogin) throws CustomException;
     User save(User users);
     User updateAcc(RegisterRequest registerRequest,Long userId) throws CustomException;
-    User updatePassword(ChangePassword ChangePassword, Long userId) throws CustomException;
-    User handleRegister(RegisterRequest RegisterRequest) throws CustomException;
+    User updatePassword(ChangePassword newPassword, Long userId) throws CustomException;
+    User handleRegister(RegisterRequest registerRequest) throws CustomException;
     List<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword);
     User entityMap(RegisterRequest userRequest);
     InformationAccount entityMap(User user);

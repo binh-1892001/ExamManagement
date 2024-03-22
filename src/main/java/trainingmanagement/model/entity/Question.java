@@ -7,7 +7,6 @@ import trainingmanagement.model.base.BaseModel;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EQuestionLevel;
 import trainingmanagement.model.enums.EQuestionType;
-
 import java.util.List;
 
 @NoArgsConstructor

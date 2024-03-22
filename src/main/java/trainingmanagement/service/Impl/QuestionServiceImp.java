@@ -5,7 +5,11 @@ import org.springframework.stereotype.Repository;
 import trainingmanagement.model.dto.request.admin.AOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionRequest;
+import trainingmanagement.model.dto.request.teacher.TOptionRequest;
+import trainingmanagement.model.dto.request.teacher.TQuestionOptionRequest;
+import trainingmanagement.model.dto.request.teacher.TQuestionRequest;
 import trainingmanagement.model.dto.response.admin.AQuestionResponse;
+import trainingmanagement.model.dto.response.teacher.TQuestionResponse;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.model.entity.Test;
@@ -28,7 +32,6 @@ public class QuestionServiceImp implements QuestionService {
     private final OptionService optionService;
     private final TestService testService;
 
-
     @Override
     public List<Question> getAllToList() {
         return questionRepository.findAll();
@@ -37,6 +40,11 @@ public class QuestionServiceImp implements QuestionService {
     @Override
     public List<AQuestionResponse> getAllQuestionResponsesToList() {
         return getAllToList().stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<TQuestionResponse> teacherGetAllQuestionResponsesToList() {
+        return null;
     }
 
     @Override
@@ -55,6 +63,11 @@ public class QuestionServiceImp implements QuestionService {
     }
 
     @Override
+    public Question save(TQuestionRequest questionRequest) {
+        return questionRepository.save(entityTMap(questionRequest));
+    }
+
+    @Override
     public Question saveQuestionAndOption(AQuestionOptionRequest questionOptionRequest) {
         Question question = save(questionOptionRequest.getAQuestionRequest());
         List<AOptionRequest> aOptionRequests = questionOptionRequest.getAOptionRequests();
@@ -62,6 +75,20 @@ public class QuestionServiceImp implements QuestionService {
             aOptionRequest.setQuestionId(question.getId());
             aOptionRequest.setStatus("ACTIVE");
             optionService.save(aOptionRequest);
+        }
+        List<Option> options = optionService.getAllByQuestion(question);
+        question.setOptions(options);
+        return question;
+    }
+
+    @Override
+    public Question saveQuestionAndOption(TQuestionOptionRequest questionOptionRequest) {
+        Question question = save(questionOptionRequest.getTQuestionRequest());
+        List<TOptionRequest> tOptionRequests = questionOptionRequest.getTOptionRequests();
+        for (TOptionRequest tOptionRequest : tOptionRequests) {
+            tOptionRequest.setQuestionId(question.getId());
+            tOptionRequest.setStatus("ACTIVE");
+            optionService.save(tOptionRequest);
         }
         List<Option> options = optionService.getAllByQuestion(question);
         question.setOptions(options);
@@ -121,8 +148,10 @@ public class QuestionServiceImp implements QuestionService {
     public List<Question> getAllQuestionByTest(Test test) {
         return questionRepository.getAllByTest(test);
     }
-
-
+    public List<TQuestionResponse> teacherGetAllByTest(Test test) {
+        List<Question> questions = questionRepository.getAllByTest(test);
+        return questions.stream().map(this::entityTMap).toList();
+    }
     @Override
     public List<AQuestionResponse> getAllByCreatedDate(LocalDate date) {
         List<Question> questions = questionRepository.getAllByCreatedDate(date);
@@ -140,8 +169,6 @@ public class QuestionServiceImp implements QuestionService {
         List<Question> questions = questionRepository.getAllByQuestionLevel(questionLevel);
         return questions.stream().map(this::entityAMap).toList();
     }
-
-    //    *********************************************entityMap*********************************************
     @Override
     public Question entityAMap(AQuestionRequest questionRequest) {
         EQuestionLevel questionLevel = switch (questionRequest.getQuestionLevel()) {
@@ -164,6 +191,30 @@ public class QuestionServiceImp implements QuestionService {
                 .test(testService.getTestById(questionRequest.getTestId()).get())
                 .build();
     }
+
+    @Override
+    public Question entityTMap(TQuestionRequest questionRequest) {
+        EQuestionLevel questionLevel = switch (questionRequest.getLevelQuestion()) {
+            case "EASY" -> EQuestionLevel.EASY;
+            case "NORMAL" -> EQuestionLevel.NORMAL;
+            case "DIFFICULTY" -> EQuestionLevel.DIFFICULTY;
+            default -> null;
+        };
+        EQuestionType questionType = switch (questionRequest.getTypeQuestion()) {
+            case "SINGLE" -> EQuestionType.SINGLE;
+            case "MULTIPLE" -> EQuestionType.MULTIPLE;
+            default -> null;
+        };
+        return Question.builder()
+                .questionContent(questionRequest.getContentQuestion())
+                .questionLevel(questionLevel)
+                .questionType(questionType)
+                .image(questionRequest.getImage())
+                .status(EActiveStatus.ACTIVE)
+                .test(testService.getTestById(questionRequest.getTestId()).get())
+                .build();
+    }
+
     @Override
     public AQuestionResponse entityAMap(Question question) {
         return AQuestionResponse.builder()
@@ -176,6 +227,21 @@ public class QuestionServiceImp implements QuestionService {
                 .createdDate(question.getCreatedDate())
                 .test(question.getTest())
                 .options(question.getOptions().stream().map(optionService::entityAMap).toList())
+                .build();
+    }
+
+    @Override
+    public TQuestionResponse entityTMap(Question question) {
+        return TQuestionResponse.builder()
+                .questionId(question.getId())
+                .contentQuestion(question.getQuestionContent())
+                .levelQuestion(question.getQuestionLevel())
+                .typeQuestion(question.getQuestionType())
+                .image(question.getImage())
+                .status(question.getStatus())
+                .createdDate(question.getCreatedDate())
+                .test(question.getTest())
+                .options(question.getOptions().stream().map(optionService::entityTMap).toList())
                 .build();
     }
 

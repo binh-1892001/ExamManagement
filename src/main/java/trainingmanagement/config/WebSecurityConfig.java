@@ -39,7 +39,7 @@ public class WebSecurityConfig {
                         (auth) -> auth
                                 .requestMatchers("/v1/auth/**").permitAll()
                                 .requestMatchers("/swagger-ui/**", "/api-docs/**").permitAll()
-                                .requestMatchers("/v1/account/**/").hasAnyAuthority(
+                                .requestMatchers("/v1/account/**").hasAnyAuthority(
                                         String.valueOf(ERoleName.ROLE_ADMIN),
                                         String.valueOf(ERoleName.ROLE_STUDENT),
                                         String.valueOf(ERoleName.ROLE_TEACHER)

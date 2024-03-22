@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import trainingmanagement.model.base.BaseModel;
 import trainingmanagement.model.enums.EActiveStatus;
-import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor

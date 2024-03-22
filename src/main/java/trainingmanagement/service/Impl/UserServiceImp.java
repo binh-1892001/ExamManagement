@@ -100,12 +100,12 @@ public class UserServiceImp implements UserService {
 
     //* tạo tài khoản
     @Override
-    public User handleRegister(RegisterRequest RegisterRequest) throws CustomException {
-        if (userRepository.existsByUsername(RegisterRequest.getUsername()))
+    public User handleRegister(RegisterRequest registerRequest) throws CustomException {
+        if (userRepository.existsByUsername(registerRequest.getUsername()))
             throw new CustomException("Username is exists");
         EGender userGender = null;
-        if (RegisterRequest.getGender() != null)
-            userGender = switch (RegisterRequest.getGender().toUpperCase()) {
+        if (registerRequest.getGender() != null)
+            userGender = switch (registerRequest.getGender().toUpperCase()) {
                 case "MALE" -> EGender.MALE;
                 case "FEMALE" -> EGender.FEMALE;
                 default -> null;
@@ -113,13 +113,13 @@ public class UserServiceImp implements UserService {
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(roleService.findByRoleName(ERoleName.ROLE_STUDENT));
         User users = User.builder()
-                .fullName(RegisterRequest.getFullName())
-                .username(RegisterRequest.getUsername())
-                .password(passwordEncoder.encode(RegisterRequest.getPassword()))
-                .email(RegisterRequest.getEmail())
-                .avatar(RegisterRequest.getAvatar())
-                .phone(RegisterRequest.getPhone())
-                .dateOfBirth( LocalDate.parse ( RegisterRequest.getDateOfBirth() ) )
+                .fullName(registerRequest.getFullName())
+                .username(registerRequest.getUsername())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .email(registerRequest.getEmail())
+                .avatar(registerRequest.getAvatar())
+                .phone(registerRequest.getPhone())
+                .dateOfBirth( LocalDate.parse ( registerRequest.getDateOfBirth() ) )
                 .status(EActiveStatus.INACTIVE)
                 .gender(userGender)
                 .roles(userRoles)
@@ -165,17 +165,17 @@ public class UserServiceImp implements UserService {
 
     //* cập nhật mật khẩu
     @Override
-    public User updatePassword(ChangePassword changePassword, Long userId) throws CustomException {
+    public User updatePassword(ChangePassword newPassword, Long userId) throws CustomException {
         Optional<User> userOptional = getUserById(userId);
         User user = userOptional.get();
-        if (!changePassword.getOldPassword().equals(encoder.encode(user.getPassword()))){
+        if (!newPassword.getOldPassword().equals(encoder.encode(user.getPassword()))){
             throw new CustomException("Old password not true!");
-        }else if (changePassword.getOldPassword().equals(changePassword.getNewPassword())){
+        }else if (newPassword.getOldPassword().equals(newPassword.getNewPassword())){
             throw new CustomException("New password like old password!");
-        }else if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
+        }else if (!newPassword.getNewPassword().equals(newPassword.getConfirmPassword())){
             throw new CustomException("Confirm password not like new password");
         }
-        user.setPassword(changePassword.getConfirmPassword());
+        user.setPassword(newPassword.getConfirmPassword());
         return userRepository.save(user);
     }
 
