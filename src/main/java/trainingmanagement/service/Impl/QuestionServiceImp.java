@@ -118,6 +118,12 @@ public class QuestionServiceImp implements QuestionService {
     }
 
     @Override
+    public List<Question> getAllQuestionByTest(Test test) {
+        return questionRepository.getAllByTest(test);
+    }
+
+
+    @Override
     public List<AQuestionResponse> getAllByCreatedDate(LocalDate date) {
         List<Question> questions = questionRepository.getAllByCreatedDate(date);
         return questions.stream().map(this::entityAMap).toList();

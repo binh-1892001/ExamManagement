@@ -24,9 +24,10 @@ public interface QuestionService {
     Question entityAMap(AQuestionRequest questionRequest);
     AQuestionResponse entityAMap(Question question);
     List<AQuestionResponse> getAllByTest(Test test);
+    List<Question> getAllQuestionByTest(Test test);
     List<AQuestionResponse> getAllByCreatedDate(LocalDate date);
     List<AQuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd);
+    List<AQuestionResponse> getAllByQuestionLevel(EQuestionLevel questionLevel);
     //* Lay ds cau hoi random
     List<AQuestionResponse> getAllByTestRandom(Test test);
-    List<AQuestionResponse> getAllByQuestionLevel(EQuestionLevel questionLevel);
 }

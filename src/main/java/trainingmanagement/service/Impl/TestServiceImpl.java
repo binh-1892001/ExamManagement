@@ -16,14 +16,17 @@ import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
 import trainingmanagement.model.dto.response.admin.ASubjectResponse;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
+import trainingmanagement.model.entity.Exam;
 import trainingmanagement.model.entity.Subject;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.ETestType;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.repository.TestRepository;
+import trainingmanagement.service.ExamService;
 import trainingmanagement.service.TestService;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +34,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
+    private final ExamService examService;
 
     @Override
     public List<Test> getAllTestsToList() {
@@ -149,6 +153,16 @@ public class TestServiceImpl implements TestService {
     public List<ATestResponse> getAllFromDateToDate(String dateStart, String dateEnd) {
         List<Test> tests = testRepository.getAllFromDateToDate(dateStart,dateEnd);
         return tests.stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<Test> getAllTestByExamOfStudent() {
+        List<Exam> exams = examService.getAllExamBySubjectOfStudent();
+        List<Test> tests = new ArrayList<>();
+        for (Exam exam:exams){
+            tests.add(testRepository.findByExam(exam));
+        }
+        return tests;
     }
 
 

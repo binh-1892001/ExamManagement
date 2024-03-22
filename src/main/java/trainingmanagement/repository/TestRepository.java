@@ -20,7 +20,6 @@ import java.util.List;
 public interface TestRepository extends JpaRepository<Test,Long> {
     boolean existsByTestName(String testName);
     List<Test> findByTestNameContainingIgnoreCase(String testName);
-
     //Find All Test By ExamId
     @Query(value = "select * from Test t where t.exam_id=:examId", nativeQuery = true)
     List<Test> getAllByExamId(Long examId);
@@ -29,4 +28,5 @@ public interface TestRepository extends JpaRepository<Test,Long> {
     List<Test> getAllFromDateToDate(String dateStart, String dateEnd);
     List<Test> getAllByTestType(ETestType testType);
     List<Test> getAllByCreatedDate(LocalDate createdDate);
+    Test findByExam(Exam exam);
 }
