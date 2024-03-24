@@ -1,4 +1,4 @@
-package trainingmanagement.controller.Student;
+package trainingmanagement.controller.student;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

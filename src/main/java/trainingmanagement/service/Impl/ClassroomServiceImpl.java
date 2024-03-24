@@ -23,11 +23,12 @@ import trainingmanagement.model.enums.EClassStatus;
 import trainingmanagement.model.entity.Role;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.repository.ClassroomRepository;
-import trainingmanagement.repository.UserRepository;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.response.teacher.TClassResponse;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.service.ClassroomService;
+import trainingmanagement.service.UserService;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +36,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ClassroomServiceImpl implements ClassroomService {
     private final ClassroomRepository classroomRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     /**
      * ? Hàm dùng để lấy ra 1 List đối tượng Classroom trong Db.
      * @Param: None.
@@ -136,54 +137,72 @@ public class ClassroomServiceImpl implements ClassroomService {
      * @Return: Classroom trả về 1 đối tượng Class nếu đã lưu thành công vào Db.
      * */
     @Override
-    public Classroom save(AClassRequest classRequest) {
+    public Classroom save(AClassRequest classRequest) throws CustomException {
         return classroomRepository.save(entityAMap(classRequest));
     }
+    /**
+     * ? Service dùng để tạo mới và lưu 1 đối tượng Class vào Db dành cho Admin.
+     * @Param: AClassRequest dto của Admin dùng để lưu vào trong Db.
+     * @Return: Classroom trả về 1 đối tượng Class nếu đã lưu thành công vào Db.
+     * */
+    @Override
+    public Classroom createClass(AClassRequest classRequest) throws CustomException {
+        // * Không cần bắt Exception trùng Classsname,
+        // * vì trong quá trình học tập có thể có nhiều Classname trùng nhau,
+        // * miễn là khác Id là được.
+
+        // * ClassStatus, Status không cần bắt Exception,
+        // * Vì hai trường này có thể gán giá trị ban đầu bằng việc check Null trong entityMap.
+
+        // * TeacherId có thể bỏ trống.
+
+        // * CreatedDate, ModifyDate, CreatedBy, ModifyBy cần gán giá trị mặc định trong entityMap.
+        return save(classRequest);
+    }
+
     @Override
     public Classroom putUpdateClass(Long classId, AClassRequest classRequest) {
         return null;
     }
-    public User userRoleTeacher(AClassRequest classRequest){
-        Optional<User> userOptional = userRepository.findById(classRequest.getTeacherId());
-        if (userOptional.isPresent()){
-            User user = userOptional.get();
-            for(Role role: user.getRoles()){
-                if (role.getRoleName().equals(ERoleName.ROLE_TEACHER)){
-                    return user;
-                }
-            }
-        }
+    public User getUserIfIsTeacher(Long userId) throws CustomException {
+        if(isTeacher(userId))
+            return userService.getUserById(userId).orElse(null);
         return null;
     }
+    public boolean isTeacher(Long userId) throws CustomException{
+        Optional<User> user = userService.getUserById(userId);
+        if(user.isEmpty()) throw new CustomException("User (teacher) is not exists.");
+        if(!userService.getAllRolesByUser(user.get()).contains(new Role(ERoleName.ROLE_TEACHER)))
+            throw new CustomException("User is not teacher.");
+        return true;
+    }
     /**
-     * ? Hàm dùng để update 1 đối tượng Class trong Db bằng method Patch.
+     * ? Service dùng để update 1 đối tượng Class trong Db bằng method Patch.
      * @Param: Long classId nhận vào 1 giá trị Long là ClassId để lấy ra và cập nhật theo Id.
      * @Param: AClassRequest dto của Admin dùng để lưu vào trong Db.
      * @Return: Classroom trả về 1 đối tượng Class nếu đã lưu thành công vào Db.
      * */
     @Override
-    public Classroom patchUpdate(Long classId, AClassRequest classRequest) {
+    public Classroom patchUpdate(Long classId, AClassRequest classRequest) throws CustomException {
         Optional<Classroom> updateClassroom = getClassById(classId);
-        if (updateClassroom.isPresent()) {
-            Classroom classroom = updateClassroom.get();
-            if (classRequest.getClassName() != null)
-                classroom.setClassName(classRequest.getClassName());
-            if (classRequest.getClassStatus() != null) {
-                if (classRequest.getClassStatus().equalsIgnoreCase(EClassStatus.NEW.name()))
-                    classroom.setClassStatus(EClassStatus.NEW);
-                else if (classRequest.getClassStatus().equalsIgnoreCase(EClassStatus.OJT.name()))
-                    classroom.setClassStatus(EClassStatus.OJT);
-                else classroom.setClassStatus(EClassStatus.FINISH);
-            }
-            if (classRequest.getTeacherId() != null)
-                if (userRoleTeacher(classRequest) != null)
-                    classroom.setTeacher(userRoleTeacher(classRequest));
-            return save(classroom);
+        if(updateClassroom.isEmpty()) throw new CustomException("Class is not exists.");
+        Classroom classroom = updateClassroom.get();
+        if (classRequest.getClassName() != null)
+            classroom.setClassName(classRequest.getClassName());
+        if (classRequest.getClassStatus() != null) {
+            if (classRequest.getClassStatus().equalsIgnoreCase(EClassStatus.NEW.name()))
+                classroom.setClassStatus(EClassStatus.NEW);
+            else if (classRequest.getClassStatus().equalsIgnoreCase(EClassStatus.OJT.name()))
+                classroom.setClassStatus(EClassStatus.OJT);
+            else classroom.setClassStatus(EClassStatus.FINISH);
         }
-        return null;
+//        if (classRequest.getTeacherId() != null)
+//            if (userRoleTeacher(classRequest) != null)
+//                classroom.setTeacher(userRoleTeacher(classRequest));
+        return save(classroom);
     }
     /**
-     * ? Hàm dùng để xoá mềm 1 đối tượng Class trong Db bằng method Delete.
+     * ? Service dùng để xoá mềm 1 đối tượng Class trong Db bằng method Delete.
      * ! Đã bắt Exception nếu không tìm thấy Class dựa theo ClassId trong Db.
      * @Param: Long classId nhận vào 1 giá trị Long là ClassId để lấy ra và xoá mềm theo Id.
      * */
@@ -198,7 +217,7 @@ public class ClassroomServiceImpl implements ClassroomService {
         classroomRepository.save(classroom);
     }
     /**
-     * ? Hàm dùng để xoá cứng 1 đối tượng Class trong Db bằng method Delete (thường dùng cho Admin).
+     * ? Service dùng để xoá cứng 1 đối tượng Class trong Db bằng method Delete (thường dùng cho Admin).
      * ! Đã bắt Exception nếu không tìm thấy Class dựa theo ClassId trong Db.
      * @Param: Long classId nhận vào 1 giá trị Long là ClassId để lấy ra và xoá cứng theo Id.
      * */
@@ -255,21 +274,22 @@ public class ClassroomServiceImpl implements ClassroomService {
      * @Return Classroom chuyển đổi thành 1 đối tượng Classroom để đưa vào xử lý các Services khác.
      * */
     @Override
-    public Classroom entityAMap(AClassRequest classRequest) {
+    public Classroom entityAMap(AClassRequest classRequest) throws CustomException {
         EClassStatus classStatus = switch (classRequest.getClassStatus()) {
             case "NEW" -> EClassStatus.NEW;
             case "OJT" -> EClassStatus.OJT;
             case "FINISH" -> EClassStatus.FINISH;
             default -> null;
         };
-        if (userRoleTeacher(classRequest)!=null){
-            return Classroom.builder()
-                    .teacher(userRoleTeacher(classRequest))
-                    .className(classRequest.getClassName())
-                    .classStatus(classStatus)
-                    .build();
+        User teacher = null;
+        if(classRequest.getTeacherId() != null){
+            teacher = getUserIfIsTeacher(classRequest.getTeacherId());
         }
-        return null;
+        return Classroom.builder()
+            .className(classRequest.getClassName())
+            .classStatus(classStatus)
+            .teacher(teacher)
+            .build();
     }
     /**
      * ? Hàm dùng để chuyển đổi đối tượng Class dùng cho Admin.

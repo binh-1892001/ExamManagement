@@ -49,16 +49,19 @@ public class AClassController {
                 classroom
             ), HttpStatus.OK);
     }
-    // * Create new classroom.
+    /**
+     * ? Controller gọi đến Service tạo mới và lưu 1 đối tượng Class vào Db dành cho Admin.
+     * @Param: AClassRequest dto của Admin dùng để lưu vào trong Db.
+     * @Return: trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
+     * */
     @PostMapping
-    public ResponseEntity<?> createClass(@RequestBody @Valid AClassRequest classRequest) {
-        Classroom classroom = classroomService.save(classRequest);
+    public ResponseEntity<?> createClass(@RequestBody @Valid AClassRequest classRequest) throws CustomException {
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
                 HttpStatus.CREATED.value(),
                 HttpStatus.CREATED.name(),
-                classroom
+                classroomService.createClass(classRequest)
         ), HttpStatus.CREATED);
     }
     // * patchUpdate an exists classroom.
@@ -66,14 +69,13 @@ public class AClassController {
     public ResponseEntity<?> patchUpdateClass(
             @PathVariable("classId") Long updateClassroomId,
             @RequestBody @Valid AClassRequest classRequest
-    ) {
-        Classroom classroom = classroomService.patchUpdate(updateClassroomId, classRequest);
+    ) throws CustomException {
         return new ResponseEntity<>(
             new ResponseWrapper<>(
                 EHttpStatus.SUCCESS,
                 HttpStatus.OK.value(),
                 HttpStatus.OK.name(),
-                classroom
+                classroomService.patchUpdate(updateClassroomId, classRequest)
             ), HttpStatus.OK);
     }
     // * softDelete an exists classroom.

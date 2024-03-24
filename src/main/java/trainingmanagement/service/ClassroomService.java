@@ -41,9 +41,10 @@ public interface ClassroomService {
     AClassResponse getAClassById(Long classId) throws CustomException;
     // ? CRUD Functions.
     Classroom save(Classroom classroom);
-    Classroom save(AClassRequest classRequest);
-    Classroom putUpdateClass(Long classId, AClassRequest classRequest);
-    Classroom patchUpdate(Long classId, AClassRequest classRequest);
+    Classroom save(AClassRequest classRequest) throws CustomException;
+    Classroom createClass(AClassRequest classRequest) throws CustomException;
+    Classroom putUpdateClass(Long classId, AClassRequest classRequest) throws CustomException;
+    Classroom patchUpdate(Long classId, AClassRequest classRequest) throws CustomException;
     void softDeleteByClassId(Long classId) throws CustomException;
     void hardDeleteByClassId(Long classId) throws CustomException;
     // ? Functional dành cho Teacher.
@@ -52,7 +53,7 @@ public interface ClassroomService {
     List<TClassResponse> findTClassByClassName(String className);
     // ? EntityMap dùng để ép kiểu dành cho Admin.
     AClassResponse entityAMap(Classroom classroom);
-    Classroom entityAMap(AClassRequest classRequest);
+    Classroom entityAMap(AClassRequest classRequest) throws CustomException;
     // ? EntityMap dùng để ép kiểu dành cho Teacher.
     TClassResponse entityTMap(Classroom classroom);
 }
