@@ -20,4 +20,9 @@ public interface TestRepository extends JpaRepository<Test,Long> {
     //Find All Test By ExamId
     @Query(value = "select * from Test t where t.exam_id=:examId", nativeQuery = true)
     List<Test> getAllByExamId(Long examId);
+    @Query(value = "select t from Test t where t.exam.id=:examId and t.createBy =:name")
+    List<Test> getAllByExamIdAndTeacherName(Long examId, String name);
+    @Query(value = "select t from Test t where t.testName LIKE CONCAT('%', :testName, '%') and t.createBy =:name")
+    List<Test> getAllByTestNameAndTestName(String testName, String name);
+
 }

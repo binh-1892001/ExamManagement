@@ -31,7 +31,9 @@ public interface TestService {
     void hardDeleteByTestId(Long testId) throws CustomException;
     Test entityAMap(ATestRequest testRequest);
     ATestResponse entityAMap(Test test);
-
     //find by subjectId
     List<ATestResponse> getAllByExamId(Long examId);
+    List<ATestResponse> getAllByExamIdAndTeacher(Long examId, String name);
+    List<ATestResponse> getAllByTestNameAndTeacherName(String testName, String name);
+
 }

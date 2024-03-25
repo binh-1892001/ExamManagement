@@ -21,6 +21,7 @@ import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.ETestType;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.repository.TestRepository;
+import trainingmanagement.security.UserDetail.UserLogin;
 import trainingmanagement.service.TestService;
 
 import java.util.List;
@@ -30,7 +31,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
-
+    private final UserLogin userLogin;
     @Override
     public List<Test> getAllTestsToList() {
         return testRepository.findAll();
@@ -56,12 +57,13 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public Test save(Test test) {
+        test.setCreateBy(userLogin.userLogin().getUsername());
         return testRepository.save(test);
     }
 
     @Override
     public ATestResponse save(ATestRequest ATestRequest) {
-        return entityAMap(testRepository.save(entityAMap(ATestRequest)));
+        return entityAMap(save(entityAMap(ATestRequest)));
     }
 
     @Override
@@ -171,6 +173,18 @@ public class TestServiceImpl implements TestService {
     @Override
     public List<ATestResponse> getAllByExamId(Long examId) {
         List<Test> tests = testRepository.getAllByExamId (examId);
+        return tests.stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<ATestResponse> getAllByExamIdAndTeacher(Long examId, String name) {
+        List<Test> tests = testRepository.getAllByExamIdAndTeacherName (examId, name);
+        return tests.stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<ATestResponse> getAllByTestNameAndTeacherName(String testName, String name) {
+        List<Test> tests = testRepository.getAllByTestNameAndTestName(testName, name);
         return tests.stream().map(this::entityAMap).toList();
     }
 }
