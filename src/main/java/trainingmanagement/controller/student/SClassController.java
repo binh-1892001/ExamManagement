@@ -14,7 +14,7 @@ import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.entity.UserClass;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EHttpStatus;
-import trainingmanagement.security.UserDetail.UserLogin;
+import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.ClassroomService;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.UserClassService;
@@ -29,7 +29,7 @@ import java.util.Objects;
 @RequestMapping("/v1/student")
 public class SClassController {
     private final ClassroomService classroomService;
-    private final UserLogin userLogin;
+    private final UserLoggedIn userLogin;
     private final UserClassService userClassService;
     private final UserService userService;
     private final CommonService commonService;
@@ -44,7 +44,7 @@ public class SClassController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<UserClass> userClasses = userClassService.findClassByStudent(userLogin.userLogin().getId());
+            List<UserClass> userClasses = userClassService.findClassByStudent(userLogin.getUserLoggedIn().getId());
             List<AClassResponse> classes = new ArrayList<>();
             for (UserClass userClass : userClasses) {
                 EActiveStatus isActive = Objects.requireNonNull(userService.getUserById(userClass.getUser().getId()).orElse(null)).getStatus();

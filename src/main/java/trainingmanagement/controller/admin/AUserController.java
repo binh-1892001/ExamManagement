@@ -16,7 +16,7 @@ import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.model.enums.ERoleName;
-import trainingmanagement.security.UserDetail.UserLogin;
+import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.RoleService;
 import trainingmanagement.service.UserService;
@@ -32,7 +32,7 @@ import java.util.Set;
 public class AUserController {
     private final UserService userService;
     private final CommonService commonService;
-    private final UserLogin userLogin;
+    private final UserLoggedIn userLogin;
     private final RoleService roleService;
     // * Get all users to pages.
     @GetMapping
@@ -86,7 +86,7 @@ public class AUserController {
     public ResponseEntity<?> deleteAccount(@PathVariable("userId") Long userId) throws CustomException{
         Optional<User> deleteUser = userService.getUserById(userId);
         if(deleteUser.isPresent()){
-            if (deleteUser.get().getId().equals(userLogin.userLogin().getId())){
+            if (deleteUser.get().getId().equals(userLogin.getUserLoggedIn().getId())){
                 throw new CustomException("Cant delete this account");
             }
             userService.deleteById(userId);
@@ -108,7 +108,7 @@ public class AUserController {
         Optional<User> updateUser = userService.getUserById(userId);
         if(updateUser.isPresent()) {
             User user = updateUser.get();
-            if (user.getId().equals(userLogin.userLogin().getId())){
+            if (user.getId().equals(userLogin.getUserLoggedIn().getId())){
                 throw new CustomException("Cant switch this account status");
             }
             user.setStatus(user.getStatus() == EActiveStatus.ACTIVE ? EActiveStatus.INACTIVE : EActiveStatus.ACTIVE);
@@ -131,7 +131,7 @@ public class AUserController {
         Optional<User> updateUser = userService.getUserById(userId);
         if(updateUser.isPresent()) {
             User user = updateUser.get();
-            if (user.getId().equals(userLogin.userLogin().getId())){
+            if (user.getId().equals(userLogin.getUserLoggedIn().getId())){
                 throw new CustomException("Cant switch this account permission");
             }
             Set<Role> roles = user.getRoles();

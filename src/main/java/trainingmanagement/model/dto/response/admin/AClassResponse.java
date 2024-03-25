@@ -42,4 +42,5 @@ public class AClassResponse {
     private LocalDate modifyDate;
     private String createdBy;
     private String modifyBy;
+    private AUserResponse teacher;
 }

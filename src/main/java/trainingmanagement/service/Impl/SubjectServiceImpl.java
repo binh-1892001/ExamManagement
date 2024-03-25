@@ -13,9 +13,7 @@ import trainingmanagement.model.entity.UserClass;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.entity.Subject;
 import trainingmanagement.repository.SubjectRepository;
-import trainingmanagement.security.UserDetail.UserLogin;
-import trainingmanagement.service.ClassSubjectService;
-import trainingmanagement.service.ClassroomService;
+import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.SubjectService;
 import trainingmanagement.service.UserClassService;
 
@@ -28,7 +26,7 @@ import java.util.Optional;
 public class SubjectServiceImpl implements SubjectService {
     private final SubjectRepository subjectRepository;
     private final UserClassService userClassService;
-    private final UserLogin userLogin;
+    private final UserLoggedIn userLogin;
     @Override
     public List<Subject> getAllToList() {
         return subjectRepository.findAll();
@@ -161,7 +159,7 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public List<Subject> getAllSubjectByClassIdAndUserId() {
-        List<UserClass> userClasses = userClassService.findClassByStudent(userLogin.userLogin().getId());
+        List<UserClass> userClasses = userClassService.findClassByStudent(userLogin.getUserLoggedIn().getId());
         List<Subject> subjects = new ArrayList<>();
         List<Classroom> classrooms = new ArrayList<>();
         for (UserClass userClass:userClasses){
