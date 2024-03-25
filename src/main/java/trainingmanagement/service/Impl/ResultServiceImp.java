@@ -9,7 +9,7 @@ import trainingmanagement.model.entity.*;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EOptionStatus;
 import trainingmanagement.repository.ResultRepository;
-import trainingmanagement.security.UserDetail.UserLogin;
+import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.QuestionService;
 import trainingmanagement.service.ResultService;
 import trainingmanagement.service.TestService;
@@ -22,7 +22,7 @@ public class ResultServiceImp implements ResultService {
     private final ResultRepository resultRepository;
     private final QuestionService questionService;
     private final TestService testService;
-    private final UserLogin userLogin;
+    private final UserLoggedIn userLogin;
 
     //* học sinh gửi lên bài làm và chấm điểm
     @Override
@@ -50,7 +50,7 @@ public class ResultServiceImp implements ResultService {
                 }
             }
             Result result = Result.builder()
-                    .user(userLogin.userLogin())
+                    .user(userLogin.getUserLoggedIn())
                     .test(testOptional.get())
                     .status(EActiveStatus.ACTIVE)
                     .mark(myMark)
@@ -63,7 +63,7 @@ public class ResultServiceImp implements ResultService {
 
     @Override
     public List<Result> getAllByStudent() {
-        return resultRepository.getAllByUser(userLogin.userLogin());
+        return resultRepository.getAllByUser(userLogin.getUserLoggedIn());
     }
 
 

@@ -12,7 +12,7 @@ import trainingmanagement.model.dto.auth.RegisterRequest;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.entity.User;
 import trainingmanagement.model.enums.EHttpStatus;
-import trainingmanagement.security.UserDetail.UserLogin;
+import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.UserService;
 
 @RestController
@@ -20,11 +20,11 @@ import trainingmanagement.service.UserService;
 @RequiredArgsConstructor
 public class AccountController {
     private final UserService userService;
-    private final UserLogin userLogin;
+    private final UserLoggedIn userLogin;
 
     @GetMapping("/informationAccount")
     public ResponseEntity<?> informationAccount(){
-        User user = userLogin.userLogin();
+        User user = userLogin.getUserLoggedIn();
         InformationAccount informationPersonal = userService.entityMap(user);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
@@ -37,7 +37,7 @@ public class AccountController {
 
     @PostMapping("/updateAccount")
     public ResponseEntity<?> updateAccount(@RequestBody @Valid RegisterRequest registerRequest) throws CustomException {
-        User user = userService.updateAcc(registerRequest,userLogin.userLogin().getId());
+        User user = userService.updateAcc(registerRequest,userLogin.getUserLoggedIn().getId());
         InformationAccount informationPersonal = userService.entityMap(user);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
@@ -50,7 +50,7 @@ public class AccountController {
 
     @PostMapping("/updatePassword")
     public ResponseEntity<?> updatePassword(@RequestBody @Valid ChangePassword changePassword) throws CustomException {
-        User user = userService.updatePassword(changePassword,userLogin.userLogin().getId());
+        User user = userService.updatePassword(changePassword,userLogin.getUserLoggedIn().getId());
         InformationAccount informationPersonal = userService.entityMap(user);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(

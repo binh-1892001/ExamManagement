@@ -1,4 +1,4 @@
-package trainingmanagement.controller.Student;
+package trainingmanagement.controller.student;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -9,13 +9,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.response.admin.AUserResponse;
 import trainingmanagement.model.entity.UserClass;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EHttpStatus;
-import trainingmanagement.model.entity.User;
-import trainingmanagement.security.UserDetail.UserLogin;
+import trainingmanagement.security.UserDetail.UserLoggedIn;
+import trainingmanagement.service.ClassroomService;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.UserClassService;
 import trainingmanagement.service.UserService;
@@ -27,46 +27,44 @@ import java.util.Objects;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/student")
-public class SUserController {
-    private final UserService userService;
+public class SClassController {
+    private final ClassroomService classroomService;
+    private final UserLoggedIn userLogin;
     private final UserClassService userClassService;
+    private final UserService userService;
     private final CommonService commonService;
 
-    // * Get all students to pages.
-    @GetMapping("/allStudentInClass/{classId}")
-    public ResponseEntity<?> getAllClassesToPages(
+    @GetMapping("/class")
+    public ResponseEntity<?> getInformationClass(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "id", name = "sort") String sort,
-            @RequestParam(defaultValue = "asc", name = "order") String order,
-            @PathVariable Long classId
-    ) throws CustomException {
+            @RequestParam(defaultValue = "asc", name = "order") String order) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<UserClass> userClasses = userClassService.findByClassId(classId);
-            List<AUserResponse> users = new ArrayList<>();
+            List<UserClass> userClasses = userClassService.findClassByStudent(userLogin.getUserLoggedIn().getId());
+            List<AClassResponse> classes = new ArrayList<>();
             for (UserClass userClass : userClasses) {
                 EActiveStatus isActive = Objects.requireNonNull(userService.getUserById(userClass.getUser().getId()).orElse(null)).getStatus();
                 if (isActive == EActiveStatus.ACTIVE) {
-                    users.add(userService.getAUserResponseById(userClass.getUser().getId()).orElse(null));
+                    classes.add(classroomService.getAClassById(userClass.getClassroom().getId()));
                 }
             }
-            Page<?> usersDisplay = commonService.convertListToPages(pageable, users);
-            if (!users.isEmpty()) {
+            Page<?> classrooms = commonService.convertListToPages(pageable, classes);
+            if (!classrooms.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
                                 EHttpStatus.SUCCESS,
                                 HttpStatus.OK.value(),
                                 HttpStatus.OK.name(),
-                                usersDisplay.getContent()
+                                classrooms.getContent()
                         ), HttpStatus.OK);
             }
-            throw new CustomException("Users page is empty.");
+            throw new CustomException("Classes page is empty.");
         } catch (IllegalArgumentException e) {
-            throw new CustomException("Users page is out of range.");
+            throw new CustomException("Classes page is out of range.");
         }
     }
-
 }

@@ -7,9 +7,11 @@ import trainingmanagement.model.dto.auth.LoginRequest;
 import trainingmanagement.model.dto.auth.RegisterRequest;
 import trainingmanagement.model.dto.auth.JwtResponse;
 import trainingmanagement.model.dto.response.admin.AUserResponse;
+import trainingmanagement.model.entity.Role;
 import trainingmanagement.model.entity.User;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface UserService {
     List<User> getAllToList();
@@ -23,6 +25,7 @@ public interface UserService {
     User updateAcc(RegisterRequest registerRequest,Long userId) throws CustomException;
     User updatePassword(ChangePassword newPassword, Long userId) throws CustomException;
     User handleRegister(RegisterRequest registerRequest) throws CustomException;
+    Set<Role> getAllRolesByUser(User user);
     List<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword);
     User entityMap(RegisterRequest userRequest);
     InformationAccount entityMap(User user);

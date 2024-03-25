@@ -164,9 +164,6 @@ public class TestServiceImpl implements TestService {
         }
         return tests;
     }
-
-
-    //    *********************************************entityMap*********************************************
     @Override
     public Test entityAMap(ATestRequest testRequest) {
         ETestType testType = null;

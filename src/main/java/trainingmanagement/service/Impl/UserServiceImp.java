@@ -38,8 +38,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder encoder;
     private final AuthenticationProvider authenticationProvider;
@@ -86,8 +86,7 @@ public class UserServiceImp implements UserService {
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        if (userPrincipal.getUser().getStatus() == null
-                || userPrincipal.getUser().getStatus() == EActiveStatus.INACTIVE)
+        if (!(userPrincipal.getUser().getStatus() == EActiveStatus.ACTIVE))
             throw new CustomException("This account is inactive.");
         return JwtResponse.builder()
                 .accessToken(jwtProvider.generateToken(userPrincipal))
@@ -177,6 +176,11 @@ public class UserServiceImp implements UserService {
         }
         user.setPassword(newPassword.getConfirmPassword());
         return userRepository.save(user);
+    }
+
+    @Override
+    public Set<Role> getAllRolesByUser(User user) {
+        return user.getRoles();
     }
 
     //* tìm kiếm theo username or fullname
