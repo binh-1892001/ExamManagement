@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.ChangeInformation;
 import trainingmanagement.model.dto.ChangePassword;
 import trainingmanagement.model.dto.InformationAccount;
 import trainingmanagement.model.dto.auth.RegisterRequest;
@@ -35,9 +36,9 @@ public class AccountController {
                 ), HttpStatus.OK);
     }
 
-    @PostMapping("/updateAccount")
-    public ResponseEntity<?> updateAccount(@RequestBody @Valid RegisterRequest registerRequest) throws CustomException {
-        User user = userService.updateAcc(registerRequest,userLogin.getUserLoggedIn().getId());
+    @PutMapping("/updateAccount")
+    public ResponseEntity<?> updateAccount(@RequestBody @Valid ChangeInformation changeInformation) throws CustomException {
+        User user = userService.updateAcc(changeInformation,userLogin.getUserLoggedIn().getId());
         InformationAccount informationPersonal = userService.entityMap(user);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
@@ -48,10 +49,10 @@ public class AccountController {
                 ), HttpStatus.OK);
     }
 
-    @PostMapping("/updatePassword")
+    @PutMapping("/updatePassword")
     public ResponseEntity<?> updatePassword(@RequestBody @Valid ChangePassword changePassword) throws CustomException {
         User user = userService.updatePassword(changePassword,userLogin.getUserLoggedIn().getId());
-        InformationAccount informationPersonal = userService.entityMap(user);
+        userService.entityMap(user);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,

@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.ChangeInformation;
 import trainingmanagement.model.dto.ChangePassword;
 import trainingmanagement.model.dto.InformationAccount;
 import trainingmanagement.model.dto.auth.JwtResponse;
@@ -41,7 +42,6 @@ public class UserServiceImp implements UserService {
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
-    private final PasswordEncoder encoder;
     private final AuthenticationProvider authenticationProvider;
 
     @Override
@@ -138,43 +138,42 @@ public class UserServiceImp implements UserService {
 
     //* cập nhật tài khoản
     @Override
-    public User updateAcc(RegisterRequest RegisterRequest,Long userId) throws CustomException{
-        if (userRepository.existsByUsername(RegisterRequest.getUsername()))
-            throw new CustomException("username is exists");
+    public User updateAcc(ChangeInformation changeInformation, Long userId) throws CustomException{
         Optional<User> userOldOptional = getUserById(userId);
         User userOld = userOldOptional.get();
         Set<Role> roles = userOld.getRoles();
         User user = User.builder()
-                .fullName(RegisterRequest.getFullName())
-                .username(RegisterRequest.getUsername())
+                .fullName(changeInformation.getFullName())
                 .password(userOld.getPassword())
-                .email(RegisterRequest.getEmail())
-                .avatar(RegisterRequest.getAvatar())
-                .phone(RegisterRequest.getPhone())
-                .dateOfBirth( LocalDate.parse ( RegisterRequest.getDateOfBirth() ) )
+                .email(changeInformation.getEmail())
+                .avatar(changeInformation.getAvatar())
+                .phone(changeInformation.getPhone())
+                .dateOfBirth( LocalDate.parse ( changeInformation.getDateOfBirth() ) )
                 .status(EActiveStatus.ACTIVE)
-                .gender(RegisterRequest.getGender().equalsIgnoreCase(EGender.MALE.name())
+                .gender(changeInformation.getGender().equalsIgnoreCase(EGender.MALE.name())
                         ? EGender.MALE : EGender.FEMALE)
                 .roles(roles)
                 .build();
         user.setId(userOld.getId());
+        user.setUsername(userOld.getUsername());
         user.setCreateBy(userOld.getCreateBy());
+        user.setCreatedDate(userOld.getCreatedDate());
         return userRepository.save(user);
     }
 
     //* cập nhật mật khẩu
     @Override
-    public User updatePassword(ChangePassword newPassword, Long userId) throws CustomException {
+    public User updatePassword(ChangePassword changePassword, Long userId) throws CustomException {
         Optional<User> userOptional = getUserById(userId);
         User user = userOptional.get();
-        if (!newPassword.getOldPassword().equals(encoder.encode(user.getPassword()))){
+        if (!passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
             throw new CustomException("Old password not true!");
-        }else if (newPassword.getOldPassword().equals(newPassword.getNewPassword())){
+        }else if (changePassword.getOldPassword().equals(changePassword.getNewPassword())){
             throw new CustomException("New password like old password!");
-        }else if (!newPassword.getNewPassword().equals(newPassword.getConfirmPassword())){
+        }else if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
             throw new CustomException("Confirm password not like new password");
         }
-        user.setPassword(newPassword.getConfirmPassword());
+        user.setPassword(passwordEncoder.encode(changePassword.getConfirmPassword()));
         return userRepository.save(user);
     }
 

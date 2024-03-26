@@ -19,8 +19,12 @@ import trainingmanagement.model.enums.ETestType;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.TestService;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.Collections;
 import java.util.List;
+import java.util.regex.PatternSyntaxException;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,6 +32,7 @@ import java.util.List;
 public class ATestController {
     private final TestService testService;
     private final CommonService commonService;
+
     // * Get all tests to pages.
     @GetMapping
     public ResponseEntity<?> getAllATestsResponsesToPages(
@@ -44,87 +49,113 @@ public class ATestController {
             Page<?> tests = commonService.convertListToPages(pageable, testResponses);
             if (!tests.isEmpty()) {
                 return new ResponseEntity<>(
-                    new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        tests.getContent()
-                    ), HttpStatus.OK);
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                tests.getContent()
+                        ), HttpStatus.OK);
             }
             throw new CustomException("Tests page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Tests page is out of range.");
         }
     }
+
     // * Get test by test id.
     @GetMapping("/{testId}")
-    public ResponseEntity<?> getTestById(@PathVariable("testId") Long testId) throws CustomException {
-        return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.OK.value(),
-                HttpStatus.OK.name(),
-                testService.getATestResponseById(testId)
-            ), HttpStatus.OK);
+    public ResponseEntity<?> getTestById(@PathVariable("testId") String testId) throws CustomException {
+        try {
+            Long id = Long.parseLong(testId);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            testService.getATestResponseById(id)
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     // * Create a new test.
     @PostMapping
     public ResponseEntity<?> createTest(@RequestBody @Valid ATestRequest testRequest) {
         ATestResponse testCreate = testService.save(testRequest);
         return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.CREATED.value(),
-                HttpStatus.CREATED.name(),
-                testCreate
-            ), HttpStatus.CREATED);
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.CREATED.value(),
+                        HttpStatus.CREATED.name(),
+                        testCreate
+                ), HttpStatus.CREATED);
     }
+
     // * patchUpdate an exists test.
     @PatchMapping("/{testId}")
     public ResponseEntity<?> patchUpdateTest(
-            @PathVariable("testId") Long testId,
-            @RequestBody @Valid ATestRequest ATestRequest) throws CustomException{
-        ATestResponse testUpdate = testService.patchUpdateATest(testId, ATestRequest);
-        return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.OK.value(),
-                HttpStatus.OK.name(),
-                testUpdate
-            ), HttpStatus.OK);
+            @PathVariable("testId") String testId,
+            @RequestBody @Valid ATestRequest ATestRequest) throws CustomException {
+        try {
+            Long id = Long.parseLong(testId);
+            ATestResponse testUpdate = testService.patchUpdateATest(id, ATestRequest);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            testUpdate
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     // * softDelete an exists test.
     @DeleteMapping("/{testId}")
-    public ResponseEntity<?> softDeleteTestById(@PathVariable("testId") Long testId) throws CustomException{
-        testService.softDeleteByTestId(testId);
-        return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.OK.value(),
-                HttpStatus.OK.name(),
-                "Delete test successfully."
-            ), HttpStatus.OK);
+    public ResponseEntity<?> softDeleteTestById(@PathVariable("testId") String testId) throws CustomException {
+        try {
+            Long id = Long.parseLong(testId);
+            testService.softDeleteByTestId(id);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            "Delete test successfully."
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     // * hardDelete an exists test.
     @DeleteMapping("delete/{testId}")
-    public ResponseEntity<?> hardDeleteTestById(@PathVariable("testId") Long testId) throws CustomException{
-        testService.hardDeleteByTestId(testId);
-        return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.OK.value(),
-                HttpStatus.OK.name(),
-                "Delete test successfully."
-            ), HttpStatus.OK);
+    public ResponseEntity<?> hardDeleteTestById(@PathVariable("testId") String testId) throws CustomException {
+        try {
+            Long id = Long.parseLong(testId);
+            testService.hardDeleteByTestId(id);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            "Delete test successfully."
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     // * Find test by testName.
     @GetMapping("/search")
     public ResponseEntity<?> findByTestName(
-        @RequestParam(name = "testName") String keyword,
-        @RequestParam(defaultValue = "5", name = "limit") int limit,
-        @RequestParam(defaultValue = "0", name = "page") int page,
-        @RequestParam(defaultValue = "testName", name = "sort") String sort,
-        @RequestParam(defaultValue = "asc", name = "sortBy") String sortBy
+            @RequestParam(name = "testName") String keyword,
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "testName", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "sortBy") String sortBy
     ) throws CustomException {
         Pageable pageable;
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
@@ -154,47 +185,54 @@ public class ATestController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "testName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @PathVariable Long examId
-    ) throws CustomException{
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            @PathVariable String examId
+    ) throws CustomException {
         try {
-            List<ATestResponse> testResponses = testService.getAllByExamId (examId);
-            Page<?> tests = commonService.convertListToPages(pageable, testResponses);
-            if (!tests.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                tests.getContent()
-                        ), HttpStatus.OK);
+            Long idExam = Long.parseLong(examId);
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            try {
+                List<ATestResponse> testResponses = testService.getAllByExamId(idExam);
+                Page<?> tests = commonService.convertListToPages(pageable, testResponses);
+                if (!tests.isEmpty()) {
+                    return new ResponseEntity<>(
+                            new ResponseWrapper<>(
+                                    EHttpStatus.SUCCESS,
+                                    HttpStatus.OK.value(),
+                                    HttpStatus.OK.name(),
+                                    tests.getContent()
+                            ), HttpStatus.OK);
+                }
+                throw new CustomException("Tests page is empty.");
+            } catch (IllegalArgumentException e) {
+                throw new CustomException("Tests page is out of range.");
             }
-            throw new CustomException("Tests page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Tests page is out of range.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
         }
     }
 
     //* lấy danh sách test kiểu bài test
-    @GetMapping("/{typeTest}")
+    @GetMapping("/typeTest")
     public ResponseEntity<?> getAllTestByTypeTest(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "testName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @PathVariable String typeTest
-    ) throws CustomException{
+            @RequestParam(defaultValue = "QUIZTEST", name = "typeTest") String typeTest
+    ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
             List<ATestResponse> testResponses = null;
-            if (typeTest.equalsIgnoreCase(String.valueOf(ETestType.QUIZTEST))){
+            if (typeTest.equalsIgnoreCase(String.valueOf(ETestType.QUIZTEST))) {
                 testResponses = testService.getAllByTestType(ETestType.QUIZTEST);
-            }else if(typeTest.equalsIgnoreCase(String.valueOf(ETestType.WRITENTEST))){
+            } else if (typeTest.equalsIgnoreCase(String.valueOf(ETestType.WRITENTEST))) {
                 testResponses = testService.getAllByTestType(ETestType.WRITENTEST);
+            }else{
+                testResponses = Collections.emptyList();
             }
             Page<?> tests = commonService.convertListToPages(pageable, testResponses);
             if (!tests.isEmpty()) {
@@ -220,7 +258,7 @@ public class ATestController {
             @RequestParam(defaultValue = "testName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
             @RequestBody DateSearch dateSearch
-    ) throws CustomException{
+    ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -240,6 +278,10 @@ public class ATestController {
             throw new CustomException("Tests page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Tests page is out of range.");
+        } catch (DateTimeParseException e){
+            throw new CustomException("Incorrect date format! Please write 'yyyy-mm-dd'");
+        } catch (NullPointerException e){
+            throw new CustomException("Data input must not be null or empty");
         }
     }
 
@@ -251,7 +293,7 @@ public class ATestController {
             @RequestParam(defaultValue = "testName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
             @RequestBody DateSearch dateSearch
-    ) throws CustomException{
+    ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -270,6 +312,8 @@ public class ATestController {
             throw new CustomException("Tests page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Tests page is out of range.");
+        } catch (NullPointerException e){
+            throw new CustomException("Data input must not be null or empty");
         }
     }
 }

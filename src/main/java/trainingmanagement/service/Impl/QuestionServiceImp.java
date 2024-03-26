@@ -2,6 +2,7 @@ package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.AOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionRequest;
@@ -159,7 +160,13 @@ public class QuestionServiceImp implements QuestionService {
     }
 
     @Override
-    public List<AQuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd) {
+    public List<AQuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd) throws CustomException {
+        if (dateStart==null && dateEnd==null){
+            throw new CustomException("All of Input data must not be null");
+        }
+        if (dateStart != null && dateStart.isEmpty() && dateEnd.isEmpty()) {
+            throw new CustomException("All of input data must not be empty");
+        }
         List<Question> questions = questionRepository.getAllFromDateToDate(dateStart, dateEnd);
         return questions.stream().map(this::entityAMap).toList();
     }

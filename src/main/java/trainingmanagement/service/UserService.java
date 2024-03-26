@@ -1,6 +1,7 @@
 package trainingmanagement.service;
 
 import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.ChangeInformation;
 import trainingmanagement.model.dto.ChangePassword;
 import trainingmanagement.model.dto.InformationAccount;
 import trainingmanagement.model.dto.auth.LoginRequest;
@@ -22,7 +23,7 @@ public interface UserService {
     void deleteById(Long userId);
     JwtResponse handleLogin(LoginRequest userLogin) throws CustomException;
     User save(User users);
-    User updateAcc(RegisterRequest registerRequest,Long userId) throws CustomException;
+    User updateAcc(ChangeInformation changeInformation, Long userId) throws CustomException;
     User updatePassword(ChangePassword newPassword, Long userId) throws CustomException;
     User handleRegister(RegisterRequest registerRequest) throws CustomException;
     Set<Role> getAllRolesByUser(User user);

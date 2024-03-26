@@ -4,11 +4,12 @@
  * * - Add both softDelete and hardDelete to delete Class entity.
  * * - Sửa lại để có thể lấy cả theo List, Page và ép kiểu theo từng role.
  * * - Sắp xếp lại các Method và Comment để có thể dễ đọc hơn.
+ *
  * @ModifyBy: Nguyễn Hồng Quân.
  * @ModifyDate: 25/03/2025.
  * @CreatedBy: Nguyễn Minh Hoàng.
  * @CreatedDate: 13/3/2024.
- * */
+ */
 
 package trainingmanagement.controller.admin;
 
@@ -31,15 +32,17 @@ import trainingmanagement.service.ClassroomService;
 @RequiredArgsConstructor
 public class AClassController {
     private final ClassroomService classroomService;
+
     /**
      * ? Controller lấy ra 1 Page đối tượng Class từ Db dành cho Admin.
+     *
      * @Param: keyword là từ khoá cần tìm kiếm (không phân biệt hoa thường).
      * @Param: limit là giới hạn bao nhiêu bản ghi mỗi trang hiển thị.
      * @Param: page là trang hiển thị tương ứng.
      * @Param: sort là tên trường dùng để lọc và sắp xếp.
      * @Param: order là asc/desc thể hiện việc sắp xếp ngược hay xuôi.
      * @Return: trả về 1 ResponseEntity đại diện cho Page Class lấy ra được từ Db.
-     * */
+     */
     @GetMapping
     public ResponseEntity<?> getAllClassesToPages(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
@@ -50,123 +53,162 @@ public class AClassController {
         Page<Classroom> classes = classroomService.getAllClassToPages(limit, page, sort, order);
         Page<AClassResponse> classResponses = classroomService.entityAMap(classes);
         return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                    HttpStatus.OK.value(),
-                    HttpStatus.OK.name(),
-                    classResponses.getContent()
-            ), HttpStatus.OK);
-    }
-    /**
-     * ? Controller lấy ra 1 đối tượng Class từ Db dành cho Admin.
-     * @Param: Long classId của đối tượng Class cần lấy ra.
-     * @Return: trả về 1 ResponseEntity đại diện cho Class lấy ra thành côngs.
-     * */
-    @GetMapping("/{classId}")
-    public ResponseEntity<?> getClassById(@PathVariable("classId") Long classId) throws CustomException{
-        AClassResponse classroom = classroomService.getAClassById(classId);
-        return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.OK.value(),
-                HttpStatus.OK.name(),
-                classroom
-            ), HttpStatus.OK);
-    }
-    /**
-     * ? Controller tạo mới và lưu 1 đối tượng Class vào Db dành cho Admin.
-     * @Param: AClassRequest dto của Admin dùng để lưu vào trong Db.
-     * @Return: trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
-     * */
-    @PostMapping
-    public ResponseEntity<?> createClass(@RequestBody @Valid AClassRequest classRequest) throws CustomException {
-        return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.CREATED.value(),
-                HttpStatus.CREATED.name(),
-                classroomService.createClass(classRequest)
-        ), HttpStatus.CREATED);
-    }
-    /**
-     * ? Controller sửa đổi thông tin của 1 đối tượng Class trong Db (nếu có) dành cho Admin, nếu không thì thêm mới.
-     * @Param: Long classId của đối tượng Class cần lấy ra.
-     * @Param: AClassRequest dto của Admin dùng để lưu vào trong Db.
-     * @Return: trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
-     * */
-    @PutMapping("/{classId}")
-    public ResponseEntity<?> putUpdateClass(
-            @PathVariable("classId") Long updateClassId,
-            @RequestBody @Valid AClassRequest classRequest
-    ) throws CustomException {
-        return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
                         HttpStatus.OK.value(),
                         HttpStatus.OK.name(),
-                        classroomService.putUpdateClass(updateClassId, classRequest)
+                        classResponses.getContent()
                 ), HttpStatus.OK);
     }
+
     /**
-     * ? Controller sửa đổi thông tin của 1 đối tượng Class trong Db (nếu có) dành cho Admin.
+     * ? Controller lấy ra 1 đối tượng Class từ Db dành cho Admin.
+     *
+     * @Param: Long classId của đối tượng Class cần lấy ra.
+     * @Return: trả về 1 ResponseEntity đại diện cho Class lấy ra thành công.
+     */
+    @GetMapping("/{classId}")
+    public ResponseEntity<?> getClassById(@PathVariable("classId") String classId) throws CustomException {
+        try {
+            Long id = Long.parseLong(classId);
+            AClassResponse classroom = classroomService.getAClassById(id);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            classroom
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
+    }
+
+    /**
+     * ? Controller tạo mới và lưu 1 đối tượng Class vào Db dành cho Admin.
+     *
+     * @Param: AClassRequest dto của Admin dùng để lưu vào trong Db.
+     * @Return: trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
+     */
+    @PostMapping
+    public ResponseEntity<?> createClass(@RequestBody @Valid AClassRequest classRequest) throws CustomException {
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.CREATED.value(),
+                        HttpStatus.CREATED.name(),
+                        classroomService.createClass(classRequest)
+                ), HttpStatus.CREATED);
+    }
+
+    /**
+     * ? Controller sửa đổi thông tin của 1 đối tượng Class trong Db (nếu có) dành cho Admin, nếu không thì thêm mới.
+     *
      * @Param: Long classId của đối tượng Class cần lấy ra.
      * @Param: AClassRequest dto của Admin dùng để lưu vào trong Db.
      * @Return: trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
-     * */
-    @PatchMapping("/{classId}")
-    public ResponseEntity<?> patchUpdateClass(
-            @PathVariable("classId") Long updateClassId,
+     */
+    @PutMapping("/{classId}")
+    public ResponseEntity<?> putUpdateClass(
+            @PathVariable("classId") String updateClassId,
             @RequestBody @Valid AClassRequest classRequest
     ) throws CustomException {
-        return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.OK.value(),
-                HttpStatus.OK.name(),
-                classroomService.patchUpdateClass(updateClassId, classRequest)
-            ), HttpStatus.OK);
+        try {
+            Long id = Long.parseLong(updateClassId);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            classroomService.putUpdateClass(id, classRequest)
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
+    /**
+     * ? Controller sửa đổi thông tin của 1 đối tượng Class trong Db (nếu có) dành cho Admin.
+     *
+     * @Param: Long classId của đối tượng Class cần lấy ra.
+     * @Param: AClassRequest dto của Admin dùng để lưu vào trong Db.
+     * @Return: trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
+     */
+    @PatchMapping("/{classId}")
+    public ResponseEntity<?> patchUpdateClass(
+            @PathVariable("classId") String updateClassId,
+            @RequestBody @Valid AClassRequest classRequest
+    ) throws CustomException {
+        try {
+            Long id = Long.parseLong(updateClassId);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            classroomService.patchUpdateClass(id, classRequest)
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
+    }
+
     /**
      * ? Controller xoá mềm 1 đối tượng Class trong Db (nếu có) dành cho Admin.
+     *
      * @Param: Long classId của đối tượng Class cần lấy ra.
      * @Return: trả về 1 ResponseEntity thông báo đã xoá thành công.
-     * */
+     */
     @DeleteMapping("{classId}")
-    public ResponseEntity<?> softDeleteClassById(@PathVariable("classId") Long classId) throws CustomException {
-        classroomService.softDeleteByClassId(classId);
-        return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.OK.value(),
-                HttpStatus.OK.name(),
-                "Delete class successfully."
-            ), HttpStatus.OK);
+    public ResponseEntity<?> softDeleteClassById(@PathVariable("classId") String classId) throws CustomException {
+        try {
+            Long id = Long.parseLong(classId);
+            classroomService.softDeleteByClassId(id);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            "Delete class successfully."
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     /**
      * ? Controller xoá cứng 1 đối tượng Class trong Db (nếu có) dành cho Admin.
+     *
      * @Param: Long classId của đối tượng Class cần lấy ra.
      * @Return: trả về 1 ResponseEntity thông báo đã xoá thành công.
-     * */
+     */
     @DeleteMapping("/delete/{classId}")
-    public ResponseEntity<?> hardDeleteClassById(@PathVariable("classId") Long classId) throws CustomException {
-        classroomService.hardDeleteByClassId(classId);
-        return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.OK.value(),
-                HttpStatus.OK.name(),
-                "Delete class successfully."
-            ), HttpStatus.OK);
+    public ResponseEntity<?> hardDeleteClassById(@PathVariable("classId") String classId) throws CustomException {
+        try {
+            Long id = Long.parseLong(classId);
+            classroomService.hardDeleteByClassId(id);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            "Delete class successfully."
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     /**
      * ? Controller tìm kiếm và lấy ra 1 Page đối tượng Class từ Db dành cho Admin.
+     *
      * @Param: keyword là từ khoá cần tìm kiếm (không phân biệt hoa thường).
      * @Param: limit là giới hạn bao nhiêu bản ghi mỗi trang hiển thị.
      * @Param: page là trang hiển thị tương ứng.
      * @Param: sort là tên trường dùng để lọc và sắp xếp.
      * @Param: order là asc/desc thể hiện việc sắp xếp ngược hay xuôi.
      * @Return: trả về 1 ResponseEntity đại diện cho Page Class lấy ra được từ Db.
-     * */
+     */
     @GetMapping("/search")
     public ResponseEntity<?> searchProduct(
             @RequestParam(name = "keyword") String keyword,
@@ -178,11 +220,11 @@ public class AClassController {
         Page<Classroom> classes = classroomService.searchAllClassByClassNameToPages(keyword, limit, page, sort, order);
         Page<AClassResponse> classResponses = classroomService.entityAMap(classes);
         return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.OK.value(),
-                HttpStatus.OK.name(),
-                classResponses.getContent()
-            ), HttpStatus.OK);
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        classResponses.getContent()
+                ), HttpStatus.OK);
     }
 }

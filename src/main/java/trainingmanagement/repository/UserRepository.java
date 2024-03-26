@@ -21,6 +21,6 @@ public interface UserRepository extends JpaRepository<User,Long> {
     List<User> getAllTeacher();
     //* Admin xem tất cả thông tin user trừ chính admin
     @Query(value = "select u.* from user u join user_role ur on u.id=ur.user_id " +
-            "join role r on ur.role_id=r.id where role_name !='ROLE_ADMIN'",nativeQuery = true)
+            "join role r on ur.role_id=r.id where r.role_name not like 'ROLE_ADMIN'",nativeQuery = true)
     List<User> getAllUserExceptAdmin();
 }

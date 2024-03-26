@@ -19,6 +19,7 @@ import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.Subject;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.SubjectService;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -28,7 +29,7 @@ import java.util.Optional;
 public class ASubjectController {
     private final CommonService commonService;
     private final SubjectService subjectService;
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     // * Get all subjects to pages.
     @GetMapping
     public ResponseEntity<?> getAllSubjectToPages(
@@ -36,7 +37,7 @@ public class ASubjectController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "subjectName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
-    ) throws CustomException{
+    ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -57,20 +58,27 @@ public class ASubjectController {
             throw new CustomException("Subjects page is out of range.");
         }
     }
+
     // * Get subject by id.
     @GetMapping("/{subjectId}")
-    public ResponseEntity<?> getSubjectById(@PathVariable("subjectId") Long subjectId) throws CustomException{
-        Optional<Subject> subject = subjectService.getById(subjectId);
-        if(subject.isEmpty())
-            throw new CustomException("Subject is not exists.");
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        subject.get()
-                ), HttpStatus.OK);
+    public ResponseEntity<?> getSubjectById(@PathVariable("subjectId") String subjectId) throws CustomException {
+        try {
+            Long id = Long.parseLong(subjectId);
+            Optional<Subject> subject = subjectService.getById(id);
+            if (subject.isEmpty())
+                throw new CustomException("Subject is not exists.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            subject.get()
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     // * Create new subject.
     @PostMapping
     public ResponseEntity<?> createSubject(@RequestBody @Valid ASubjectRequest subjectRequest) {
@@ -83,54 +91,73 @@ public class ASubjectController {
                         subject
                 ), HttpStatus.CREATED);
     }
+
     // * Update an existed subject.
     @PatchMapping("/{subjectId}")
     public ResponseEntity<?> pathUpdateSubject(
-            @PathVariable("subjectId") Long updateSubjectId,
+            @PathVariable("subjectId") String updateSubjectId,
             @RequestBody @Valid ASubjectRequest subjectRequest
-    ) {
-        Subject subject = subjectService.patchUpdate(updateSubjectId, subjectRequest);
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        subject
-                ), HttpStatus.OK);
+    ) throws CustomException {
+        try {
+            Long id = Long.parseLong(updateSubjectId);
+            Subject subject = subjectService.patchUpdate(id, subjectRequest);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            subject
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     // * softDelete an existed subject.
     @DeleteMapping("/{subjectId}")
-    public ResponseEntity<?> softDeleteSubjectById(@PathVariable("subjectId") Long subjectId) throws CustomException {
-        subjectService.softDeleteById(subjectId);
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        "Delete Subject successfully."
-                ), HttpStatus.OK);
+    public ResponseEntity<?> softDeleteSubjectById(@PathVariable("subjectId") String subjectId) throws CustomException {
+        try {
+            Long id = Long.parseLong(subjectId);
+            subjectService.softDeleteById(id);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            "Delete Subject successfully."
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     // * hardDelete an existed subject.
     @DeleteMapping("/delete/{subjectId}")
-    public ResponseEntity<?> hardDeleteSubjectById(@PathVariable("subjectId") Long subjectId) throws CustomException {
-        subjectService.hardDeleteById(subjectId);
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        "Delete Subject successfully."
-                ), HttpStatus.OK);
+    public ResponseEntity<?> hardDeleteSubjectById(@PathVariable("subjectId") String subjectId) throws CustomException {
+        try {
+            Long id = Long.parseLong(subjectId);
+            subjectService.hardDeleteById(id);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            "Delete Subject successfully."
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     // * Find subject by subjectName.
     @GetMapping("/search")
     public ResponseEntity<?> searchAllSubjectToPages(
-        @RequestParam(name = "keyword") String keyword,
-        @RequestParam(defaultValue = "5", name = "limit") int limit,
-        @RequestParam(defaultValue = "0", name = "page") int page,
-        @RequestParam(defaultValue = "subjectName", name = "sort") String sort,
-        @RequestParam(defaultValue = "asc", name = "order") String order
-    ) throws CustomException{
+            @RequestParam(name = "keyword") String keyword,
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "subjectName", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order
+    ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());

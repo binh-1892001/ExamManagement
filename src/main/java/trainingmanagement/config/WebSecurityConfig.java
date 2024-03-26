@@ -51,10 +51,6 @@ public class WebSecurityConfig {
                 exceptionHandling(
                         (auth) -> auth.authenticationEntryPoint(jwtEntryPoint)
                                 .accessDeniedHandler(accessDenied)
-                ).
-                exceptionHandling(
-                        (auth) -> auth.authenticationEntryPoint(jwtEntryPoint)
-                                .accessDeniedHandler(accessDenied)
                 )
                 .sessionManagement((auth) -> auth.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class).
