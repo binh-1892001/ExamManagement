@@ -36,7 +36,7 @@ public interface QuestionService {
     List<Question> getAllQuestionByTest(Test test);
     List<TQuestionResponse> teacherGetAllByTest(Test test);
     List<AQuestionResponse> getAllByCreatedDate(LocalDate date);
-    List<AQuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd) throws CustomException;
+    List<AQuestionResponse> getAllFromDayToDay(LocalDate dateStart, LocalDate dateEnd);
     List<AQuestionResponse> getAllByQuestionLevel(EQuestionLevel questionLevel);
     //* Lay ds cau hoi random
     List<AQuestionResponse> getAllByTestRandom(Test test);

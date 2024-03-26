@@ -113,7 +113,9 @@ public class TQuestionOptionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AQuestionResponse> questionResponses = questionService.getAllFromDayToDay(dateSearch.getStartDate(), dateSearch.getEndDate());
+            LocalDate dateStart = LocalDate.parse(dateSearch.getStartDate());
+            LocalDate dateEnd = LocalDate.parse(dateSearch.getEndDate());
+            List<AQuestionResponse> questionResponses = questionService.getAllFromDayToDay(dateStart,dateEnd);
             Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(

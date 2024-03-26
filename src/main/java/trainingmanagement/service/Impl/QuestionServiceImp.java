@@ -160,13 +160,7 @@ public class QuestionServiceImp implements QuestionService {
     }
 
     @Override
-    public List<AQuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd) throws CustomException {
-        if (dateStart==null && dateEnd==null){
-            throw new CustomException("All of Input data must not be null");
-        }
-        if (dateStart != null && dateStart.isEmpty() && dateEnd.isEmpty()) {
-            throw new CustomException("All of input data must not be empty");
-        }
+    public List<AQuestionResponse> getAllFromDayToDay(LocalDate dateStart, LocalDate dateEnd){
         List<Question> questions = questionRepository.getAllFromDateToDate(dateStart, dateEnd);
         return questions.stream().map(this::entityAMap).toList();
     }

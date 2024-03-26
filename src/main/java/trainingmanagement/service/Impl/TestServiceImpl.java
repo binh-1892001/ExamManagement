@@ -150,13 +150,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<ATestResponse> getAllFromDateToDate(String dateStart, String dateEnd) throws CustomException {
-        if (dateStart==null && dateEnd==null){
-            throw new CustomException("All of Input data must not be null");
-        }
-        if (dateStart != null && dateStart.isEmpty() && dateEnd.isEmpty()) {
-            throw new CustomException("All of input data must not be empty");
-        }
+    public List<ATestResponse> getAllFromDateToDate(LocalDate dateStart, LocalDate dateEnd){
         List<Test> tests = testRepository.getAllFromDateToDate(dateStart,dateEnd);
         return tests.stream().map(this::entityAMap).toList();
     }

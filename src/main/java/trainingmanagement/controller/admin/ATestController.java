@@ -298,7 +298,9 @@ public class ATestController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ATestResponse> testResponses = testService.getAllFromDateToDate(dateSearch.getStartDate(), dateSearch.getEndDate());
+            LocalDate dateStart = LocalDate.parse(dateSearch.getStartDate());
+            LocalDate dateEnd = LocalDate.parse(dateSearch.getEndDate());
+            List<ATestResponse> testResponses = testService.getAllFromDateToDate(dateStart,dateEnd);
             Page<?> tests = commonService.convertListToPages(pageable, testResponses);
             if (!tests.isEmpty()) {
                 return new ResponseEntity<>(
@@ -312,6 +314,8 @@ public class ATestController {
             throw new CustomException("Tests page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Tests page is out of range.");
+        } catch (DateTimeParseException e){
+            throw new CustomException("Incorrect date format! Please write 'yyyy-mm-dd'");
         } catch (NullPointerException e){
             throw new CustomException("Data input must not be null or empty");
         }

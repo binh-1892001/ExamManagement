@@ -25,7 +25,7 @@ public interface TestRepository extends JpaRepository<Test,Long> {
     List<Test> getAllByExamId(Long examId);
     //* find all test from date to date
     @Query(value = "select * from test where created_date between :dateStart and :dateEnd",nativeQuery = true)
-    List<Test> getAllFromDateToDate(String dateStart, String dateEnd);
+    List<Test> getAllFromDateToDate(LocalDate dateStart, LocalDate dateEnd);
     List<Test> getAllByTestType(ETestType testType);
     List<Test> getAllByCreatedDate(LocalDate createdDate);
     Test findByExam(Exam exam);

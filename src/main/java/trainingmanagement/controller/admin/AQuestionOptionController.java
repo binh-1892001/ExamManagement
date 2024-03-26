@@ -123,7 +123,9 @@ public class AQuestionOptionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AQuestionResponse> questionResponses = questionService.getAllFromDayToDay(dateSearch.getStartDate(), dateSearch.getEndDate());
+            LocalDate dateStart = LocalDate.parse(dateSearch.getStartDate());
+            LocalDate dateEnd = LocalDate.parse(dateSearch.getEndDate());
+            List<AQuestionResponse> questionResponses = questionService.getAllFromDayToDay(dateStart,dateEnd);
             Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
@@ -137,6 +139,8 @@ public class AQuestionOptionController {
             throw new CustomException("Questions page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
+        } catch (DateTimeParseException e) {
+            throw new CustomException("Incorrect date format! Please write 'yyyy-mm-dd'");
         } catch (NullPointerException e) {
             throw new CustomException("Data input must not be null or empty");
         }
