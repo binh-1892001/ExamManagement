@@ -182,8 +182,8 @@ public class AQuestionOptionController {
     @GetMapping("/{questionId}")
     public ResponseEntity<?> getQuestionById(@PathVariable("questionId") String questionId) throws CustomException {
         try {
-            Long id = Long.parseLong(questionId);
-            Optional<Question> question = questionService.getById(id);
+            Long idQuestion = Long.parseLong(questionId);
+            Optional<Question> question = questionService.getById(idQuestion);
             if (question.isEmpty())
                 throw new CustomException("Question is not exists.");
             return new ResponseEntity<>(
@@ -224,8 +224,8 @@ public class AQuestionOptionController {
             @PathVariable("questionId") String questionId,
             @RequestBody @Valid AQuestionOptionRequest aQuestionOptionRequest) throws CustomException {
         try {
-            Long id = Long.parseLong(questionId);
-            Question question = questionService.patchUpdateQuestion(id, aQuestionOptionRequest.getAQuestionRequest());
+            Long idQuestion = Long.parseLong(questionId);
+            Question question = questionService.patchUpdateQuestion(idQuestion, aQuestionOptionRequest.getAQuestionRequest());
             optionService.deleteByQuestion(question);
             List<AOptionRequest> aOptionRequests = aQuestionOptionRequest.getAOptionRequests();
             for (AOptionRequest aOptionRequest : aOptionRequests) {
@@ -255,11 +255,11 @@ public class AQuestionOptionController {
     public ResponseEntity<?> deleteQuestionAndOption(
             @PathVariable("questionId") String questionId) throws CustomException {
         try {
-            Long id = Long.parseLong(questionId);
-            Optional<Question> question = questionService.getById(id);
+            Long idQuestion = Long.parseLong(questionId);
+            Optional<Question> question = questionService.getById(idQuestion);
             if (question.isPresent()) {
                 optionService.deleteByQuestion(question.get());
-                questionService.deleteById(id);
+                questionService.deleteById(idQuestion);
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
                                 EHttpStatus.SUCCESS,
