@@ -16,6 +16,9 @@ public class Result extends BaseModel {
     @JoinColumn(name = "user_id",referencedColumnName = "id")
     private User user;
     @ManyToOne
+    @JoinColumn(name = "teacher_id",referencedColumnName = "id")
+    private User teacher;
+    @ManyToOne
     @JoinColumn(name = "test_id",referencedColumnName = "id")
     private Test test;
     @Enumerated(EnumType.STRING)
