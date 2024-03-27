@@ -2,6 +2,7 @@ package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.AOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionRequest;
@@ -69,8 +70,8 @@ public class QuestionServiceImp implements QuestionService {
 
     @Override
     public Question saveQuestionAndOption(AQuestionOptionRequest questionOptionRequest) {
-        Question question = save(questionOptionRequest.getAQuestionRequest());
-        List<AOptionRequest> aOptionRequests = questionOptionRequest.getAOptionRequests();
+        Question question = save(questionOptionRequest.getQuestionRequest());
+        List<AOptionRequest> aOptionRequests = questionOptionRequest.getOptionRequests();
         for (AOptionRequest aOptionRequest : aOptionRequests) {
             aOptionRequest.setQuestionId(question.getId());
             aOptionRequest.setStatus("ACTIVE");
@@ -159,7 +160,7 @@ public class QuestionServiceImp implements QuestionService {
     }
 
     @Override
-    public List<AQuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd) {
+    public List<AQuestionResponse> getAllFromDayToDay(LocalDate dateStart, LocalDate dateEnd){
         List<Question> questions = questionRepository.getAllFromDateToDate(dateStart, dateEnd);
         return questions.stream().map(this::entityAMap).toList();
     }

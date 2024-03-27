@@ -113,7 +113,9 @@ public class TQuestionOptionController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AQuestionResponse> questionResponses = questionService.getAllFromDayToDay(dateSearch.getStartDate(), dateSearch.getEndDate());
+            LocalDate dateStart = LocalDate.parse(dateSearch.getStartDate());
+            LocalDate dateEnd = LocalDate.parse(dateSearch.getEndDate());
+            List<AQuestionResponse> questionResponses = questionService.getAllFromDayToDay(dateStart,dateEnd);
             Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
@@ -202,9 +204,9 @@ public class TQuestionOptionController {
     public ResponseEntity<?> patchUpdateQuestionAndOption(
             @PathVariable("questionId") Long questionId,
             @RequestBody @Valid AQuestionOptionRequest AQuestionOptionRequest) {
-        Question question = questionService.patchUpdateQuestion(questionId, AQuestionOptionRequest.getAQuestionRequest());
+        Question question = questionService.patchUpdateQuestion(questionId, AQuestionOptionRequest.getQuestionRequest());
         optionService.deleteByQuestion(question);
-        List<AOptionRequest> AOptionRequests = AQuestionOptionRequest.getAOptionRequests();
+        List<AOptionRequest> AOptionRequests = AQuestionOptionRequest.getOptionRequests();
         for (AOptionRequest AOptionRequest : AOptionRequests) {
             AOptionRequest.setQuestionId(question.getId());
             optionService.save(AOptionRequest);

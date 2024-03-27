@@ -1,5 +1,6 @@
 package trainingmanagement.service;
 
+import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.AQuestionOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionRequest;
 import trainingmanagement.model.dto.request.teacher.TQuestionOptionRequest;
@@ -35,7 +36,7 @@ public interface QuestionService {
     List<Question> getAllQuestionByTest(Test test);
     List<TQuestionResponse> teacherGetAllByTest(Test test);
     List<AQuestionResponse> getAllByCreatedDate(LocalDate date);
-    List<AQuestionResponse> getAllFromDayToDay(String dateStart, String dateEnd);
+    List<AQuestionResponse> getAllFromDayToDay(LocalDate dateStart, LocalDate dateEnd);
     List<AQuestionResponse> getAllByQuestionLevel(EQuestionLevel questionLevel);
     //* Lay ds cau hoi random
     List<AQuestionResponse> getAllByTestRandom(Test test);

@@ -16,6 +16,7 @@ import trainingmanagement.model.dto.request.admin.AOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionOptionRequest;
 import trainingmanagement.model.dto.response.admin.AQuestionResponse;
 import trainingmanagement.model.dto.time.DateSearch;
+import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
@@ -27,6 +28,7 @@ import trainingmanagement.service.QuestionService;
 import trainingmanagement.service.TestService;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,13 +48,14 @@ public class AQuestionOptionController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @PathVariable Long testId) throws CustomException {
+            @PathVariable String testId) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            Optional<Test> test = testService.getTestById(testId);
-            if (test.isEmpty()){
+            Long idTest = Long.parseLong(testId);
+            Optional<Test> test = testService.getTestById(idTest);
+            if (test.isEmpty()) {
                 throw new CustomException("Test is not exists.");
             }
             List<AQuestionResponse> questionResponses = questionService.getAllByTest(test.get());
@@ -67,6 +70,8 @@ public class AQuestionOptionController {
                         ), HttpStatus.OK);
             }
             throw new CustomException("Questions page is empty.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
         }
@@ -79,7 +84,7 @@ public class AQuestionOptionController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @RequestBody DateSearch dateSearch) throws CustomException {
+            @RequestBody @Valid DateSearch dateSearch) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -109,12 +114,14 @@ public class AQuestionOptionController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @RequestBody DateSearch dateSearch) throws CustomException {
+            @RequestBody @Valid DateSearch dateSearch) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AQuestionResponse> questionResponses = questionService.getAllFromDayToDay(dateSearch.getStartDate(), dateSearch.getEndDate());
+            LocalDate dateStart = LocalDate.parse(dateSearch.getStartDate());
+            LocalDate dateEnd = LocalDate.parse(dateSearch.getEndDate());
+            List<AQuestionResponse> questionResponses = questionService.getAllFromDayToDay(dateStart,dateEnd);
             Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
@@ -128,27 +135,29 @@ public class AQuestionOptionController {
             throw new CustomException("Questions page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
+        } catch (NullPointerException e) {
+            throw new CustomException("Data input must not be null or empty");
         }
     }
 
     //* Hien thi danh sach question va option theo level question
-    @PostMapping("/{levelQuestion}")
+    @PostMapping("/levelQuestion")
     public ResponseEntity<?> getAllQuestionAndOptionByLevelQuestion(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @PathVariable String levelQuestion) throws CustomException {
+            @RequestParam(defaultValue = "EASY", name = "levelQuestion") String levelQuestion) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AQuestionResponse> questionResponses= null;
-            if (levelQuestion.equalsIgnoreCase(String.valueOf(EQuestionLevel.EASY))){
+            List<AQuestionResponse> questionResponses = null;
+            if (levelQuestion.equalsIgnoreCase(String.valueOf(EQuestionLevel.EASY))) {
                 questionResponses = questionService.getAllByQuestionLevel(EQuestionLevel.EASY);
-            }else if (levelQuestion.equalsIgnoreCase(String.valueOf(EQuestionLevel.NORMAL))){
+            } else if (levelQuestion.equalsIgnoreCase(String.valueOf(EQuestionLevel.NORMAL))) {
                 questionResponses = questionService.getAllByQuestionLevel(EQuestionLevel.NORMAL);
-            }else if (levelQuestion.equalsIgnoreCase(String.valueOf(EQuestionLevel.DIFFICULTY))){
+            } else if (levelQuestion.equalsIgnoreCase(String.valueOf(EQuestionLevel.DIFFICULTY))) {
                 questionResponses = questionService.getAllByQuestionLevel(EQuestionLevel.DIFFICULTY);
             }
             Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
@@ -169,75 +178,97 @@ public class AQuestionOptionController {
 
     // * Get question by id.
     @GetMapping("/{questionId}")
-    public ResponseEntity<?> getQuestionById(@PathVariable("questionId") Long questionId) throws CustomException {
-        Optional<Question> question = questionService.getById(questionId);
-        if (question.isEmpty())
-            throw new CustomException("Class is not exists.");
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        question.stream().map(questionService::entityAMap)
-                ), HttpStatus.OK);
+    public ResponseEntity<?> getQuestionById(@PathVariable("questionId") String questionId) throws CustomException {
+        try {
+            Long idQuestion = Long.parseLong(questionId);
+            Optional<Question> question = questionService.getById(idQuestion);
+            if (question.isEmpty())
+                throw new CustomException("Question is not exists.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            question.stream().map(questionService::entityAMap)
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
 
     //* Them question va cac option
     @PostMapping("/addQuestion")
     public ResponseEntity<?> addQuestionAndOption(
-            @RequestBody @Valid AQuestionOptionRequest questionOptionRequest) {
-        Question question = questionService.saveQuestionAndOption(questionOptionRequest);
-        AQuestionResponse questionResponse = questionService.entityAMap(question);
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.CREATED.value(),
-                        HttpStatus.CREATED.name(),
-                        questionResponse
-                ), HttpStatus.CREATED);
+            @RequestBody @Valid AQuestionOptionRequest questionOptionRequest) throws CustomException {
+        try {
+            Question question = questionService.saveQuestionAndOption(questionOptionRequest);
+            AQuestionResponse questionResponse = questionService.entityAMap(question);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.CREATED.value(),
+                            HttpStatus.CREATED.name(),
+                            questionResponse
+                    ), HttpStatus.CREATED);
+        }catch (NullPointerException e){
+            throw new CustomException("All of input data must not be null");
+        }
     }
 
     //* Update question and Option
     @Transactional
     @PostMapping("/{questionId}")
     public ResponseEntity<?> patchUpdateQuestionAndOption(
-            @PathVariable("questionId") Long questionId,
-            @RequestBody @Valid AQuestionOptionRequest AQuestionOptionRequest) {
-        Question question = questionService.patchUpdateQuestion(questionId, AQuestionOptionRequest.getAQuestionRequest());
-        optionService.deleteByQuestion(question);
-        List<AOptionRequest> AOptionRequests = AQuestionOptionRequest.getAOptionRequests();
-        for (AOptionRequest AOptionRequest : AOptionRequests) {
-            AOptionRequest.setQuestionId(question.getId());
-            optionService.save(AOptionRequest);
+            @PathVariable("questionId") String questionId,
+            @RequestBody @Valid AQuestionOptionRequest aQuestionOptionRequest) throws CustomException {
+        try {
+            Long idQuestion = Long.parseLong(questionId);
+            Question question = questionService.patchUpdateQuestion(idQuestion, aQuestionOptionRequest.getQuestionRequest());
+            optionService.deleteByQuestion(question);
+            List<AOptionRequest> aOptionRequests = aQuestionOptionRequest.getOptionRequests();
+            for (AOptionRequest aOptionRequest : aOptionRequests) {
+                aOptionRequest.setQuestionId(question.getId());
+                aOptionRequest.setStatus("ACTIVE");
+                optionService.save(aOptionRequest);
+            }
+            List<Option> options = optionService.getAllByQuestion(question);
+            question.setOptions(options);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            questionService.entityAMap(question)
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }catch (NullPointerException e){
+            throw new CustomException("All of input data must not be null");
         }
-        List<Option> options = optionService.getAllByQuestion(question);
-        question.setOptions(options);
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        questionService.entityAMap(question)
-                ), HttpStatus.OK);
     }
 
     //* delete question and option
     @Transactional
     @DeleteMapping("/{questionId}")
     public ResponseEntity<?> deleteQuestionAndOption(
-            @PathVariable("questionId") Long questionId) throws CustomException {
-        Optional<Question> question = questionService.getById(questionId);
-        if (question.isPresent()) {
-            optionService.deleteByQuestion(question.get());
-            questionService.deleteById(questionId);
-            return new ResponseEntity<>(
-                    new ResponseWrapper<>(
-                            EHttpStatus.SUCCESS,
-                            HttpStatus.OK.value(),
-                            HttpStatus.OK.name(),
-                            "Delete Success"
-                    ), HttpStatus.OK);
+            @PathVariable("questionId") String questionId) throws CustomException {
+        try {
+            Long idQuestion = Long.parseLong(questionId);
+            Optional<Question> question = questionService.getById(idQuestion);
+            if (question.isPresent()) {
+                optionService.deleteByQuestion(question.get());
+                questionService.deleteById(idQuestion);
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                "Delete Success"
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Questions is empty.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
         }
-        throw new CustomException("Questions is empty.");
     }
 }

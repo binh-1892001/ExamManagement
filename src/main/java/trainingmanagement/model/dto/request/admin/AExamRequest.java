@@ -24,10 +24,10 @@ import lombok.*;
 @Data
 @Builder
 public class AExamRequest {
-    @NotEmpty(message = "Không được bỏ trống chỗ này nha!!")
+    @NotEmpty(message = "Not empty!!")
     private String examName;
-    @Pattern(regexp = "^(?i)(ACTIVE|INACTIVE)$", message = "Chuỗi phải là 'ACTIVE' hoặc 'INACTIVE'")
+    @Pattern(regexp = "^(?i)(ACTIVE|INACTIVE)$", message = "Status must be 'ACTIVE' or 'INACTIVE'")
     private String status;
-    @NotNull(message = "Không được bỏ trống chỗ này nha!!")
+    @NotNull(message = "Not null!!")
     private Long subjectId;
 }

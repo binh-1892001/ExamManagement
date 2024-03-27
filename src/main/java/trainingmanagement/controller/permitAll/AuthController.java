@@ -31,14 +31,5 @@ public class AuthController {
                 userService.handleLogin(loginRequest)
             ), HttpStatus.OK);
     }
-    @PostMapping("/sign-up")
-    public ResponseEntity<?> handleRegister(@RequestBody @Valid RegisterRequest RegisterRequest) throws CustomException {
-        return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.CREATED.value(),
-                HttpStatus.CREATED.name(),
-                userService.handleRegister(RegisterRequest)
-            ), HttpStatus.CREATED);
-    }
+
 }

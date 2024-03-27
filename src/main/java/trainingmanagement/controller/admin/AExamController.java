@@ -18,6 +18,7 @@ import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.entity.Exam;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.ExamService;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +29,7 @@ import java.util.Optional;
 public class AExamController {
     private final ExamService examService;
     private final CommonService commonService;
+
     // * Get all exams to pages.
     @GetMapping
     public ResponseEntity<?> getAllExamsToPages(
@@ -56,75 +58,101 @@ public class AExamController {
             throw new CustomException("Exams page is out of range.");
         }
     }
+
     // * Get Exam by id.
     @GetMapping("/{examId}")
-    public ResponseEntity<?> getExamById(@PathVariable("examId") Long examId) throws CustomException {
-        Optional<Exam> exam = examService.getById(examId);
-        if(exam.isPresent())
-            return new ResponseEntity<>(
-                    new ResponseWrapper<>(
-                            EHttpStatus.SUCCESS,
-                            HttpStatus.OK.value(),
-                            HttpStatus.OK.name(),
-                            exam.get()
-                    ), HttpStatus.OK);
-        throw new CustomException("Exam is not exists.");
+    public ResponseEntity<?> getExamById(@PathVariable("examId") String examId) throws CustomException {
+        try {
+            Long id = Long.parseLong(examId);
+            Optional<Exam> exam = examService.getById(id);
+            if (exam.isPresent())
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                exam.get()
+                        ), HttpStatus.OK);
+            throw new CustomException("Exam is not exists.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     // * Create new Exam.
     @PostMapping
     public ResponseEntity<?> createNewExam(@RequestBody @Valid AExamRequest examRequest) {
         Exam exam = examService.save(examRequest);
         return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.CREATED.value(),
-                HttpStatus.CREATED.name(),
-                exam
-            ), HttpStatus.CREATED);
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.CREATED.value(),
+                        HttpStatus.CREATED.name(),
+                        exam
+                ), HttpStatus.CREATED);
     }
+
     // * Patch update Exam.
     @PatchMapping("/{examId}")
     public ResponseEntity<?> patchUpdateExam(
-            @PathVariable("examId") Long examId,
+            @PathVariable("examId") String examId,
             @RequestBody @Valid AExamRequest examRequest) throws CustomException {
-        Exam exam = examService.patchUpdateExam (examId, examRequest);
-        return new ResponseEntity<>(
-            new ResponseWrapper<>(
-                EHttpStatus.SUCCESS,
-                HttpStatus.OK.value(),
-                HttpStatus.OK.name(),
-                exam
-            ), HttpStatus.OK);
+        try {
+            Long id = Long.parseLong(examId);
+            Exam exam = examService.patchUpdateExam(id, examRequest);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            exam
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     // * softDelete Exam by id.
     @DeleteMapping("{examId}")
-    public ResponseEntity<?> softDeleteExamById(@PathVariable("examId") Long examId) throws CustomException {
-        examService.softDeleteById(examId);
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        "Delete exam successfully."
-                ), HttpStatus.OK);
+    public ResponseEntity<?> softDeleteExamById(@PathVariable("examId") String examId) throws CustomException {
+        try {
+            Long id = Long.parseLong(examId);
+            examService.softDeleteById(id);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            "Delete exam successfully."
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     // * hardDelete Exam by id.
     @DeleteMapping("delete/{examId}")
-    public ResponseEntity<?> hardDeleteExamById(@PathVariable("examId") Long examId) throws CustomException {
-        Optional<Exam> deleteExam = examService.getById(examId);
-        if(deleteExam.isPresent()){
-            examService.hardDeleteById(examId);
-            return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                    EHttpStatus.SUCCESS,
-                    HttpStatus.OK.value(),
-                    HttpStatus.OK.name(),
-                    "Delete exam successfully."
-                ), HttpStatus.OK);
+    public ResponseEntity<?> hardDeleteExamById(@PathVariable("examId") String examId) throws CustomException {
+        try {
+            Long id = Long.parseLong(examId);
+            Optional<Exam> deleteExam = examService.getById(id);
+            if (deleteExam.isPresent()) {
+                examService.hardDeleteById(id);
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                "Delete exam successfully."
+                        ), HttpStatus.OK);
+            }
+            // ? Xử lý Exception cần tìm được Exam theo id trước khi xoá trong Controller.
+            throw new CustomException("Exam is not exists.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
         }
-        // ? Xử lý Exception cần tìm được Exam theo id trước khi xoá trong Controller.
-        throw new CustomException("Exam is not exists.");
     }
+
     // * Search all Exams By examName to pages.
     @GetMapping("/search")
     public ResponseEntity<?> findByExamName(
@@ -133,7 +161,7 @@ public class AExamController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "className", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String sortBy
-        ) throws CustomException {
+    ) throws CustomException {
         Pageable pageable;
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -142,18 +170,19 @@ public class AExamController {
             Page<?> exams = commonService.convertListToPages(pageable, examResponses);
             if (!exams.isEmpty()) {
                 return new ResponseEntity<>(
-                    new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        exams.getContent()
-                    ), HttpStatus.OK);
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                exams.getContent()
+                        ), HttpStatus.OK);
             }
             throw new CustomException("Exams page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Exams page is out of range.");
         }
     }
+
     //* Tìm kiếm theo ngày tạo Exam
     @PostMapping("/createdDateExam")
     public ResponseEntity<?> findByCreatedDate(
@@ -161,7 +190,7 @@ public class AExamController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @RequestBody DateSearch dateSearch) throws CustomException {
+            @RequestBody @Valid DateSearch dateSearch) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -190,7 +219,7 @@ public class AExamController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @RequestBody DateSearch dateSearch) throws CustomException {
+            @RequestBody @Valid DateSearch dateSearch) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -219,13 +248,14 @@ public class AExamController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "examName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @PathVariable Long subjectId
-    ) throws CustomException{
+            @PathVariable String subjectId
+    ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AExamResponse> examResponses = examService.getAllBySubjectId(subjectId);
+            Long idSubject = Long.parseLong(subjectId);
+            List<AExamResponse> examResponses = examService.getAllBySubjectId(idSubject);
             Page<?> exams = commonService.convertListToPages(pageable, examResponses);
             if (!exams.isEmpty()) {
                 return new ResponseEntity<>(
@@ -237,6 +267,8 @@ public class AExamController {
                         ), HttpStatus.OK);
             }
             throw new CustomException("Exams page is empty.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Exams page is out of range.");
         }

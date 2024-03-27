@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class AUserClassRequest {
-    @NotNull(message = "Không được bỏ trống chỗ này nha!!")
+    @NotNull(message = "Not null!!")
     private Long classId;
-    @NotNull(message = "Không được bỏ trống chỗ này nha!!")
+    @NotNull(message = "Not null!!")
     private Long userId;
 }

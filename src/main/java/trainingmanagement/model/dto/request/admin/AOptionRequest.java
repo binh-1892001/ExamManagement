@@ -25,12 +25,12 @@ import lombok.*;
 @Data
 @Builder
 public class AOptionRequest {
-    @NotEmpty(message = "Không được bỏ trống chỗ này nha!!")
+    @NotEmpty(message = "Not empty!!")
     private String optionContent;
-    @Pattern(regexp = "^(?i)(CORRECT|INCORRECT)$", message = "Chuỗi phải là 'CORRECT' hoặc 'INCORRECT'")
+    @Pattern(regexp = "^(?i)(CORRECT|INCORRECT)$", message = "String must be 'CORRECT' or 'INCORRECT'")
     private String isCorrect;
-    @Pattern(regexp = "^(?i)(ACTIVE|INACTIVE)$", message = "Chuỗi phải là 'ACTIVE' hoặc 'INACTIVE'")
+    @Pattern(regexp = "^(?i)(ACTIVE|INACTIVE)$", message = "String must be 'ACTIVE' or 'INACTIVE'")
     private String status;
-    @NotNull(message = "Không được bỏ trống chỗ này nha!!")
+    @NotNull(message = "Not null!!")
     private Long questionId;
 }
