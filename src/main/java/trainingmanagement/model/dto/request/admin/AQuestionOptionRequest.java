@@ -9,6 +9,6 @@ import java.util.List;
 @Setter
 @Builder
 public class AQuestionOptionRequest {
-    AQuestionRequest AQuestionRequest;
-    List<AOptionRequest> AOptionRequests;
+    AQuestionRequest questionRequest;
+    List<AOptionRequest> optionRequests;
 }

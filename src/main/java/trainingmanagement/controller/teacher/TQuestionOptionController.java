@@ -204,9 +204,9 @@ public class TQuestionOptionController {
     public ResponseEntity<?> patchUpdateQuestionAndOption(
             @PathVariable("questionId") Long questionId,
             @RequestBody @Valid AQuestionOptionRequest AQuestionOptionRequest) {
-        Question question = questionService.patchUpdateQuestion(questionId, AQuestionOptionRequest.getAQuestionRequest());
+        Question question = questionService.patchUpdateQuestion(questionId, AQuestionOptionRequest.getQuestionRequest());
         optionService.deleteByQuestion(question);
-        List<AOptionRequest> AOptionRequests = AQuestionOptionRequest.getAOptionRequests();
+        List<AOptionRequest> AOptionRequests = AQuestionOptionRequest.getOptionRequests();
         for (AOptionRequest AOptionRequest : AOptionRequests) {
             AOptionRequest.setQuestionId(question.getId());
             optionService.save(AOptionRequest);

@@ -1,5 +1,6 @@
 package trainingmanagement.model.dto.time;
 
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,10 +12,13 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class DateSearch {
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "không đúng định dạng! Ghi là 'yyyy-mm-dd'")
+    @NotNull(message = "Not null")
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Not correct format date! Date must be 'yyyy-mm-dd'")
     private String createDate;
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "không đúng định dạng! Ghi là 'yyyy-mm-dd'")
+    @NotNull(message = "msg")
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Not correct format date! Date must be 'yyyy-mm-dd'")
     private String startDate;
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "không đúng định dạng! Ghi là 'yyyy-mm-dd'")
+    @NotNull(message = "msg")
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Not correct format date! Date must be 'yyyy-mm-dd'")
     private String endDate;
 }

@@ -257,7 +257,7 @@ public class ATestController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "testName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @RequestBody DateSearch dateSearch
+            @RequestBody @Valid DateSearch dateSearch
     ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
@@ -278,10 +278,6 @@ public class ATestController {
             throw new CustomException("Tests page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Tests page is out of range.");
-        } catch (DateTimeParseException e){
-            throw new CustomException("Incorrect date format! Please write 'yyyy-mm-dd'");
-        } catch (NullPointerException e){
-            throw new CustomException("Data input must not be null or empty");
         }
     }
 
@@ -292,7 +288,7 @@ public class ATestController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "testName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @RequestBody DateSearch dateSearch
+            @RequestBody @Valid DateSearch dateSearch
     ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
@@ -314,10 +310,6 @@ public class ATestController {
             throw new CustomException("Tests page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Tests page is out of range.");
-        } catch (DateTimeParseException e){
-            throw new CustomException("Incorrect date format! Please write 'yyyy-mm-dd'");
-        } catch (NullPointerException e){
-            throw new CustomException("Data input must not be null or empty");
         }
     }
 }
