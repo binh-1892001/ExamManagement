@@ -27,7 +27,7 @@ import java.util.Optional;
 public class TSubjectController {
     private final CommonService commonService;
     private final SubjectService subjectService;
-    private final Logger logger = LoggerFactory.getLogger ( this.getClass () );
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     // * Get all subjects to pages.
     @GetMapping
@@ -53,18 +53,24 @@ public class TSubjectController {
 
     // * Get Subject by id.
     @GetMapping("/{subjectId}")
-    public ResponseEntity<?> getSubjectById(@PathVariable("subjectId") Long subjectId) throws CustomException {
-        Optional<TSubjectResponse> subject = subjectService.getSubjectResponsesByIdWithActiveStatus (subjectId);
-        if(subject.isPresent())
-            return new ResponseEntity<>(
-                    new ResponseWrapper<>(
-                            EHttpStatus.SUCCESS,
-                            HttpStatus.OK.value(),
-                            HttpStatus.OK.name(),
-                            subject.get()
-                    ), HttpStatus.OK);
-        throw new CustomException("Subject is not exists.");
+    public ResponseEntity<?> getSubjectById(@PathVariable("subjectId") String subjectId) throws CustomException {
+        try {
+            Long id = Long.parseLong(subjectId);
+            Optional<TSubjectResponse> subject = subjectService.getSubjectResponsesByIdWithActiveStatus(id);
+            if (subject.isPresent())
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                subject.get()
+                        ), HttpStatus.OK);
+            throw new CustomException("Subject is not exists.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     // * Find subject by subjectName.
     @GetMapping("/search")
     public ResponseEntity<?> searchAllSubjectToPages(

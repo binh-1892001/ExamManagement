@@ -1,6 +1,7 @@
 package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.student.ListStudentChoice;
@@ -13,10 +14,7 @@ import trainingmanagement.model.enums.EOptionStatus;
 import trainingmanagement.model.enums.ERoleName;
 import trainingmanagement.repository.ResultRepository;
 import trainingmanagement.security.UserDetail.UserLoggedIn;
-import trainingmanagement.service.QuestionService;
-import trainingmanagement.service.ResultService;
-import trainingmanagement.service.TestService;
-import trainingmanagement.service.UserService;
+import trainingmanagement.service.*;
 
 import java.util.*;
 
@@ -26,8 +24,9 @@ public class ResultServiceImp implements ResultService {
     private final ResultRepository resultRepository;
     private final QuestionService questionService;
     private final TestService testService;
-    private final UserLoggedIn userLogin;
+    private final UserLoggedIn userLoggedIn;
     private final UserService userService;
+    private final ClassroomService classroomService;
 
     //* học sinh gửi lên bài làm và chấm điểm
     @Override
@@ -55,7 +54,7 @@ public class ResultServiceImp implements ResultService {
                 }
             }
             Result result = Result.builder()
-                    .user(userLogin.getUserLoggedIn())
+                    .user(userLoggedIn.getUserLoggedIn())
                     .test(testOptional.get())
                     .status(EActiveStatus.ACTIVE)
                     .mark(myMark)
@@ -68,22 +67,28 @@ public class ResultServiceImp implements ResultService {
 
     @Override
     public List<Result> getAllByStudent() {
-        return resultRepository.getAllByUser(userLogin.getUserLoggedIn());
+        return resultRepository.getAllByUser(userLoggedIn.getUserLoggedIn());
     }
 
     @Override
-    public List<Result> getAllToList(User teacher) {
-        return resultRepository.findAllByTeacher(teacher);
+    public List<Result> getAllToListByClassIdAndTeacher(Long classId) throws CustomException {
+        List<Classroom> classrooms = classroomService.getAllByTeacher(userLoggedIn.getUserLoggedIn());
+        for (Classroom classroom:classrooms){
+            if (classId.equals(classroom.getId())) {
+                return resultRepository.findAllByClassId(classId);
+            }
+        }
+        throw new CustomException("Class is not exists or not in class of you");
     }
 
     @Override
-    public List<TResultResponse> getAllResultResponsesToList(User teacher) {
-        return getAllToList(teacher).stream().map(this::entityTMap).toList();
+    public List<TResultResponse> getAllResultResponsesToList(Long classId) throws CustomException {
+        return getAllToListByClassIdAndTeacher(classId).stream().map(this::entityTMap).toList();
     }
 
     @Override
     public Optional<Result> getById(Long id) {
-        return resultRepository.findByIdAndTeacher(id, userLogin.getUserLoggedIn());
+        return resultRepository.findByIdAndTeacher(id, userLoggedIn.getUserLoggedIn());
     }
 
     @Override
@@ -97,7 +102,6 @@ public class ResultServiceImp implements ResultService {
         if (student.isPresent()) {
             boolean isStudentRole = student.get().getRoles().stream()
                     .anyMatch(r -> ERoleName.ROLE_STUDENT.equals(r.getRoleName()));
-
             if (isStudentRole) {
                 return resultRepository.save(entityTMap(resultRequest));
             }
@@ -141,7 +145,7 @@ public class ResultServiceImp implements ResultService {
 
     @Override
     public void hardDeleteById(Long id) {
-        resultRepository.deleteByIdAndTeacher(id,userLogin.getUserLoggedIn());
+        resultRepository.deleteByIdAndTeacher(id,userLoggedIn.getUserLoggedIn());
     }
 
     @Override
@@ -156,8 +160,15 @@ public class ResultServiceImp implements ResultService {
     }
 
     @Override
-    public List<TResultResponse> searchByStudentFullName(String fullName) {
-        return resultRepository.findByStudentFullName(fullName, userLogin.getUserLoggedIn()).stream().map(this::entityTMap).toList();
+    public List<TResultResponse> searchByStudentFullName(String fullName,Long classId) throws CustomException {
+        List<TResultResponse> resultResponses = getAllResultResponsesToList(classId);
+        List<TResultResponse> tResultResponses = new ArrayList<>();
+        for (TResultResponse tResultResponse:resultResponses){
+            if (StringUtils.containsIgnoreCase(tResultResponse.getStudent().getFullName(), fullName)){
+                tResultResponses.add(tResultResponse);
+            }
+        }
+        return tResultResponses;
     }
 
     @Override
@@ -179,7 +190,7 @@ public class ResultServiceImp implements ResultService {
 
         return Result.builder()
                 .user(userService.getUserById(tResultRequest.getStudentId()).orElse(null))
-                .teacher(userLogin.getUserLoggedIn())
+                .teacher(userLoggedIn.getUserLoggedIn())
                 .test(testService.getTestById(tResultRequest.getTestId()).orElse(null))
                 .status(activeStatus)
                 .mark(tResultRequest.getMark())
