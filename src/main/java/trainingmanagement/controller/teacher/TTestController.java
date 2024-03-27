@@ -13,7 +13,7 @@ import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
 import trainingmanagement.model.enums.EHttpStatus;
-import trainingmanagement.security.UserDetail.UserLogin;
+import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.TestService;
 import java.util.List;
@@ -24,7 +24,7 @@ import java.util.List;
 public class TTestController {
     private final TestService testService;
     private final CommonService commonService;
-    private final UserLogin userLogin;
+    private final UserLoggedIn userLogin;
     //* lấy danh sách test theo examId
     @GetMapping("/exam/{examId}")
     public ResponseEntity<?> getAllTestByExamIdToPages(
@@ -38,7 +38,7 @@ public class TTestController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ATestResponse> testResponses = testService.getAllByExamIdAndTeacher (examId,userLogin.userLogin().getUsername());
+            List<ATestResponse> testResponses = testService.getAllByExamIdAndTeacher (examId,userLogin.getUserLoggedIn().getUsername());
             Page<?> tests = commonService.convertListToPages(pageable, testResponses);
             if (!tests.isEmpty()) {
                 return new ResponseEntity<>(
@@ -128,7 +128,7 @@ public class TTestController {
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ATestResponse> testResponses = testService.getAllByTestNameAndTeacherName(testName, userLogin.userLogin().getUsername());
+            List<ATestResponse> testResponses = testService.getAllByTestNameAndTeacherName(testName, userLogin.getUserLoggedIn().getUsername());
             Page<?> tests = commonService.convertListToPages(pageable, testResponses);
             if (!tests.isEmpty()) {
                 return new ResponseEntity<>(

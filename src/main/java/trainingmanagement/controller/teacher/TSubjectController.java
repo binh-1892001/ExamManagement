@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.response.admin.ASubjectResponse;
 import trainingmanagement.model.dto.response.teacher.TSubjectResponse;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.enums.EHttpStatus;
@@ -39,22 +40,15 @@ public class TSubjectController {
         Pageable pageable;
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<TSubjectResponse> tSubjectResponses = subjectService.getAllSubjectResponsesToListRoleTeacher ();
-            Page<?> subject = commonService.convertListToPages(pageable, tSubjectResponses);
-            if (!subject.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<> (
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                subject.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Subject page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Subject page is out of range.");
-        }
+        Page<TSubjectResponse> examResponses = subjectService.getAllSubjectResponsesToListRoleTeacher(pageable);
+        if (examResponses.getContent().isEmpty()) throw new CustomException("Classes page is empty.");
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        examResponses.getContent()
+                ), HttpStatus.OK);
     }
 
     // * Get Subject by id.
@@ -83,21 +77,8 @@ public class TSubjectController {
         Pageable pageable;
         if (order.equals ( "asc" )) pageable = PageRequest.of ( page, limit, Sort.by ( sort ).ascending () );
         else pageable = PageRequest.of ( page, limit, Sort.by ( sort ).descending () );
-        try {
-            List<TSubjectResponse> tSubjectResponses = subjectService.findBySubjectNameRoleTeacher ( keyword );
-            Page<?> subjects = commonService.convertListToPages ( pageable, tSubjectResponses );
-            if (!subjects.isEmpty ()) {
-                return new ResponseEntity<> (
-                        new ResponseWrapper<> (
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value (),
-                                HttpStatus.OK.name (),
-                                subjects.getContent ()
-                        ), HttpStatus.OK );
-            }
-            throw new CustomException ( "Subjects page is empty." );
-        } catch (IllegalArgumentException e) {
-            throw new CustomException ( "Subjects page is out of range." );
-        }
+        Page<TSubjectResponse> subjectResponses = subjectService.findBySubjectNameRoleTeacher(keyword,pageable);
+        if (subjectResponses.getContent().isEmpty()) throw new CustomException("Classes page is empty.");
+        return new ResponseEntity<>(new ResponseWrapper<>(EHttpStatus.SUCCESS, HttpStatus.OK.value(), HttpStatus.OK.name(), subjectResponses.getContent()),HttpStatus.OK);
     }
 }
