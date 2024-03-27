@@ -1,4 +1,4 @@
-package trainingmanagement.controller.admin;
+package trainingmanagement.controller.teacher;
 
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -11,15 +11,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
-import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.AOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionOptionRequest;
+import trainingmanagement.model.dto.request.teacher.TQuestionOptionRequest;
 import trainingmanagement.model.dto.response.admin.AQuestionResponse;
+import trainingmanagement.model.dto.response.teacher.TQuestionResponse;
 import trainingmanagement.model.dto.time.DateSearch;
-import trainingmanagement.model.enums.EHttpStatus;
+import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
 import trainingmanagement.model.entity.Test;
+import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.model.enums.EQuestionLevel;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.OptionService;
@@ -32,8 +34,8 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/admin/question")
-public class AQuestionOptionController {
+@RequestMapping("/v1/teacher/question")
+public class TQuestionOptionController {
     private final QuestionService questionService;
     private final CommonService commonService;
     private final TestService testService;
@@ -52,10 +54,7 @@ public class AQuestionOptionController {
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
             Optional<Test> test = testService.getTestById(testId);
-            if (test.isEmpty()){
-                throw new CustomException("Test is not exists.");
-            }
-            List<AQuestionResponse> questionResponses = questionService.getAllByTest(test.get());
+            List<TQuestionResponse> questionResponses = questionService.teacherGetAllByTest(test.get());
             Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
@@ -185,9 +184,9 @@ public class AQuestionOptionController {
     //* Them question va cac option
     @PostMapping("/addQuestion")
     public ResponseEntity<?> addQuestionAndOption(
-            @RequestBody @Valid AQuestionOptionRequest questionOptionRequest) {
+            @RequestBody @Valid TQuestionOptionRequest questionOptionRequest) {
         Question question = questionService.saveQuestionAndOption(questionOptionRequest);
-        AQuestionResponse questionResponse = questionService.entityAMap(question);
+        TQuestionResponse questionResponse = questionService.entityTMap(question);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -239,5 +238,35 @@ public class AQuestionOptionController {
                     ), HttpStatus.OK);
         }
         throw new CustomException("Questions is empty.");
+    }
+
+    // * lay danh sach question va option theo test
+    @GetMapping("/tests/{testId}")
+    public ResponseEntity<?> getAllQuestionAndOptionByTestRandom(
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @PathVariable Long testId) throws CustomException {
+        Pageable pageable;
+        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+        try {
+            Optional<Test> test = testService.getTestById(testId);
+            List<AQuestionResponse> questionResponses = questionService.getAllByTestRandom (test.get());
+            Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
+            if (!questions.isEmpty()) {
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                questions.getContent()
+                        ), HttpStatus.OK);
+            }
+            throw new CustomException("Questions page is empty.");
+        } catch (IllegalArgumentException e) {
+            throw new CustomException("Questions page is out of range.");
+        }
     }
 }

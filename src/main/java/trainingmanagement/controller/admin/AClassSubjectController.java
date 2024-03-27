@@ -1,5 +1,6 @@
 package trainingmanagement.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,13 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.AClassSubjectRequest;
-import trainingmanagement.model.dto.request.admin.AUserClassRequest;
 import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.dto.response.admin.ASubjectResponse;
-import trainingmanagement.model.dto.response.admin.AUserResponse;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.entity.ClassSubject;
-import trainingmanagement.model.entity.UserClass;
 import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.service.ClassSubjectService;
 import trainingmanagement.service.ClassroomService;
@@ -84,7 +82,7 @@ public class AClassSubjectController {
             List<ClassSubject> classSubjects = classSubjectService.findClassBySubjectId(id);
             List<AClassResponse> classes = new ArrayList<>();
             for (ClassSubject classSubject : classSubjects) {
-                classes.add(classroomService.getAClassResponseById(classSubject.getClassroom().getId()));
+                classes.add(classroomService.getAClassById(classSubject.getClassroom().getId()));
             }
             Page<?> classDisplay = commonService.convertListToPages(pageable, classes);
             if (!classDisplay.isEmpty()) {
@@ -104,7 +102,7 @@ public class AClassSubjectController {
 
     // * add subjectClass
     @PostMapping("/addSubjectClass")
-    public ResponseEntity<?> addSubjectClass(@RequestBody AClassSubjectRequest aClassSubjectRequest){
+    public ResponseEntity<?> addSubjectClass(@RequestBody @Valid AClassSubjectRequest aClassSubjectRequest) throws CustomException {
         classSubjectService.add(aClassSubjectRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
@@ -118,8 +116,8 @@ public class AClassSubjectController {
     // * update subjectClass
     @PutMapping("/updateSubjectClass/{id}")
     public ResponseEntity<?> updateStudentClass(
-            @RequestBody AClassSubjectRequest aClassSubjectRequest
-            ,@PathVariable Long id) {
+            @RequestBody @Valid AClassSubjectRequest aClassSubjectRequest
+            ,@PathVariable Long id) throws CustomException {
         classSubjectService.update(aClassSubjectRequest,id);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(

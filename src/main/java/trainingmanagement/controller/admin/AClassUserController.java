@@ -1,5 +1,6 @@
 package trainingmanagement.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -82,7 +83,7 @@ public class AClassUserController {
             List<UserClass> userClasses = userClassService.findClassByStudent(id);
             List<AClassResponse> classes = new ArrayList<>();
             for (UserClass userClass : userClasses) {
-                classes.add(classroomService.getAClassResponseById(userClass.getClassroom().getId()));
+                classes.add(classroomService.getAClassById(userClass.getClassroom().getId()));
             }
             Page<?> classDisplay = commonService.convertListToPages(pageable, classes);
             if (!classDisplay.isEmpty()) {
@@ -102,7 +103,8 @@ public class AClassUserController {
 
     // * add studentClass
     @PostMapping("/addStudentClass")
-    public ResponseEntity<?> addStudentClass(@RequestBody AUserClassRequest userClassRequest) {
+    public ResponseEntity<?> addStudentClass(@RequestBody @Valid AUserClassRequest userClassRequest)
+            throws CustomException {
         userClassService.add(userClassRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
@@ -116,8 +118,8 @@ public class AClassUserController {
     // * update studentClass
     @PutMapping("/updateStudentClass/{id}")
     public ResponseEntity<?> updateStudentClass(
-            @RequestBody AUserClassRequest userClassRequest
-            ,@PathVariable Long id) {
+            @RequestBody @Valid AUserClassRequest userClassRequest
+            ,@PathVariable Long id) throws CustomException {
         userClassService.update(userClassRequest, id);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(

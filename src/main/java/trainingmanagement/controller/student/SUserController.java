@@ -1,4 +1,4 @@
-package trainingmanagement.controller.Student;
+package trainingmanagement.controller.student;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,8 +14,6 @@ import trainingmanagement.model.dto.response.admin.AUserResponse;
 import trainingmanagement.model.entity.UserClass;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EHttpStatus;
-import trainingmanagement.model.entity.User;
-import trainingmanagement.security.UserDetail.UserLogin;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.UserClassService;
 import trainingmanagement.service.UserService;

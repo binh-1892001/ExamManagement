@@ -14,16 +14,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
-import trainingmanagement.model.dto.response.admin.ASubjectResponse;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
-import trainingmanagement.model.entity.Subject;
+import trainingmanagement.model.entity.Exam;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.ETestType;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.repository.TestRepository;
-import trainingmanagement.security.UserDetail.UserLogin;
+import trainingmanagement.security.UserDetail.UserLoggedIn;
+import trainingmanagement.service.ExamService;
 import trainingmanagement.service.TestService;
-
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
-    private final UserLogin userLogin;
+    private final UserLoggedIn userLoggedIn;
+    private final ExamService examService;
     @Override
     public List<Test> getAllTestsToList() {
         return testRepository.findAll();
@@ -57,7 +59,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public Test save(Test test) {
-        test.setCreateBy(userLogin.userLogin().getUsername());
+        test.setCreateBy(userLoggedIn.getUserLoggedIn().getUsername());
         return testRepository.save(test);
     }
 
@@ -127,7 +129,40 @@ public class TestServiceImpl implements TestService {
         return testRepository.findByTestNameContainingIgnoreCase(testName)
                 .stream().map(this::entityAMap).toList();
     }
-    //    *********************************************entityMap*********************************************
+    //find by examId
+    @Override
+    public List<ATestResponse> getAllByExamId(Long examId) {
+        List<Test> tests = testRepository.getAllByExamId (examId);
+        return tests.stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<ATestResponse> getAllByTestType(ETestType testType) {
+        List<Test> tests = testRepository.getAllByTestType(testType);
+        return tests.stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<ATestResponse> getAllByCreatedDate(LocalDate createdDate) {
+        List<Test> tests = testRepository.getAllByCreatedDate(createdDate);
+        return tests.stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<ATestResponse> getAllFromDateToDate(String dateStart, String dateEnd) {
+        List<Test> tests = testRepository.getAllFromDateToDate(dateStart,dateEnd);
+        return tests.stream().map(this::entityAMap).toList();
+    }
+
+    @Override
+    public List<Test> getAllTestByExamOfStudent() {
+        List<Exam> exams = examService.getAllExamBySubjectOfStudent();
+        List<Test> tests = new ArrayList<>();
+        for (Exam exam:exams){
+            tests.add(testRepository.findByExam(exam));
+        }
+        return tests;
+    }
     @Override
     public Test entityAMap(ATestRequest testRequest) {
         ETestType testType = null;
@@ -170,12 +205,6 @@ public class TestServiceImpl implements TestService {
     }
 
     //find by examId
-    @Override
-    public List<ATestResponse> getAllByExamId(Long examId) {
-        List<Test> tests = testRepository.getAllByExamId (examId);
-        return tests.stream().map(this::entityAMap).toList();
-    }
-
     @Override
     public List<ATestResponse> getAllByExamIdAndTeacher(Long examId, String name) {
         List<Test> tests = testRepository.getAllByExamIdAndTeacherName (examId, name);

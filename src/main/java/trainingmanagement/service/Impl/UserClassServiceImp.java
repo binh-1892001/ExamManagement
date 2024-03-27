@@ -2,6 +2,7 @@ package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.AUserClassRequest;
 import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.enums.ERoleName;
@@ -23,7 +24,7 @@ public class UserClassServiceImp implements UserClassService {
     private final UserRepository userRepository;
     private final ClassroomRepository classroomRepository;
     @Override
-    public UserClass add(AUserClassRequest aUserClassRequest) {
+    public UserClass add(AUserClassRequest aUserClassRequest) throws CustomException {
         Optional<User> userOptional = userRepository.findById(aUserClassRequest.getUserId());
         Optional<Classroom> classroomOptional = classroomRepository.findById(aUserClassRequest.getClassId());
         UserClass userClass = new UserClass();
@@ -32,19 +33,20 @@ public class UserClassServiceImp implements UserClassService {
             Classroom classroom = classroomOptional.get();
             for (Role role:user.getRoles()){
                 if (role.getRoleName().equals(ERoleName.ROLE_STUDENT)){
-                    if (userClassRepository.findByUserAndClassroom(user,classroom)==null){
+                    if (userClassRepository.findByUserAndClassroom(user,classroom) == null){
                         userClass.setUser(user);
                         userClass.setClassroom(classroom);
                         return userClassRepository.save(userClass);
                     }
+                    throw new CustomException("Student and class existed!");
                 }
             }
         }
-        return null;
+        throw new CustomException("Student or class are exist!");
     }
 
     @Override
-    public UserClass update(AUserClassRequest userClassRequest,Long id) {
+    public UserClass update(AUserClassRequest userClassRequest,Long id) throws CustomException {
         Optional<UserClass> userClassOptional = findById(id);
         Optional<User> userOptional = userRepository.findById(userClassRequest.getUserId());
         Optional<Classroom> classroomOptional = classroomRepository.findById(userClassRequest.getClassId());
@@ -55,16 +57,18 @@ public class UserClassServiceImp implements UserClassService {
                 Classroom classroom = classroomOptional.get();
                 for (Role role:user.getRoles()){
                     if (role.getRoleName().equals(ERoleName.ROLE_STUDENT)){
-                        if (userClassRepository.findByUserAndClassroom(user,classroom)==null){
+                        if (userClassRepository.findByUserAndClassroom(user,classroom) == null){
                             userClass.setUser(user);
                             userClass.setClassroom(classroom);
                             return userClassRepository.save(userClass);
                         }
+                        throw new CustomException("Student and class existed!");
                     }
                 }
             }
+            throw new CustomException("Student and class not exist!");
         }
-        return null;
+        throw new CustomException("Student or class are exist!");
     }
 
     @Override

@@ -1,5 +1,6 @@
 package trainingmanagement.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +28,7 @@ import java.util.Optional;
 public class ASubjectController {
     private final CommonService commonService;
     private final SubjectService subjectService;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     // * Get all subjects to pages.
     @GetMapping
     public ResponseEntity<?> getAllSubjectToPages(
@@ -72,7 +73,7 @@ public class ASubjectController {
     }
     // * Create new subject.
     @PostMapping
-    public ResponseEntity<?> createSubject(@RequestBody ASubjectRequest subjectRequest) {
+    public ResponseEntity<?> createSubject(@RequestBody @Valid ASubjectRequest subjectRequest) {
         Subject subject = subjectService.save(subjectRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
@@ -86,7 +87,7 @@ public class ASubjectController {
     @PatchMapping("/{subjectId}")
     public ResponseEntity<?> pathUpdateSubject(
             @PathVariable("subjectId") Long updateSubjectId,
-            @RequestBody ASubjectRequest subjectRequest
+            @RequestBody @Valid ASubjectRequest subjectRequest
     ) {
         Subject subject = subjectService.patchUpdate(updateSubjectId, subjectRequest);
         return new ResponseEntity<>(
@@ -97,10 +98,22 @@ public class ASubjectController {
                         subject
                 ), HttpStatus.OK);
     }
-    // * Delete an existed subject.
+    // * softDelete an existed subject.
     @DeleteMapping("/{subjectId}")
-    public ResponseEntity<?> deleteSubjectById(@PathVariable("subjectId") Long subjectId) {
-        subjectService.deleteById(subjectId);
+    public ResponseEntity<?> softDeleteSubjectById(@PathVariable("subjectId") Long subjectId) throws CustomException {
+        subjectService.softDeleteById(subjectId);
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        "Delete Subject successfully."
+                ), HttpStatus.OK);
+    }
+    // * hardDelete an existed subject.
+    @DeleteMapping("/delete/{subjectId}")
+    public ResponseEntity<?> hardDeleteSubjectById(@PathVariable("subjectId") Long subjectId) throws CustomException {
+        subjectService.hardDeleteById(subjectId);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
@@ -123,36 +136,6 @@ public class ASubjectController {
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
             List<ASubjectResponse> subjectResponses = subjectService.findBySubjectName(keyword);
-            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
-            if (!subjects.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                subjects.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Subjects page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Subjects page is out of range.");
-        }
-    }
-
-    //* lấy danh sách môn học theo classId
-    @GetMapping("/class/{classId}")
-    public ResponseEntity<?> getAllSubjectByClassIdToPages(
-            @RequestParam(defaultValue = "5", name = "limit") int limit,
-            @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "subjectName", name = "sort") String sort,
-            @RequestParam(defaultValue = "asc", name = "order") String order,
-            @PathVariable Long classId
-    ) throws CustomException{
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<ASubjectResponse> subjectResponses = subjectService.getAllByClassId(classId);
             Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
             if (!subjects.isEmpty()) {
                 return new ResponseEntity<>(

@@ -38,7 +38,7 @@ public class TClassController {
             pageable = PageRequest.of(page,limit,Sort.by(sort).descending());
         }
         try {
-            List<TClassResponse> classResponses = classroomService.teacherGetListClassrooms();
+            List<TClassResponse> classResponses = classroomService.getTAllToList();
             Page<?> classroom = commonService.convertListToPages(pageable, classResponses);
             if (!classroom.isEmpty()) {
                 return new ResponseEntity<>(
@@ -56,7 +56,7 @@ public class TClassController {
     }
     @GetMapping("/{classId}")
     public ResponseEntity<?> getClassById(@PathVariable("classId") Long classId) throws CustomException{
-        Optional<TClassResponse> classroom = classroomService.teacherGetClassById(classId);
+        Optional<TClassResponse> classroom = classroomService.getTClassById(classId);
         if(classroom.isPresent())
             return new ResponseEntity<>(
                     new ResponseWrapper<>(
@@ -79,7 +79,7 @@ public class TClassController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<TClassResponse> classResponses = classroomService.teacherFindClassByName(keyword);
+            List<TClassResponse> classResponses = classroomService.findTClassByClassName(keyword);
             Page<?> classrooms = commonService.convertListToPages(pageable, classResponses);
             if (!classrooms.isEmpty()) {
                 return new ResponseEntity<>(

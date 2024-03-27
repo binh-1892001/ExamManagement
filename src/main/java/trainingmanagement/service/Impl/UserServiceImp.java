@@ -9,6 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.ChangePassword;
+import trainingmanagement.model.dto.InformationAccount;
 import trainingmanagement.model.dto.auth.JwtResponse;
 import trainingmanagement.model.dto.auth.LoginRequest;
 import trainingmanagement.model.dto.auth.RegisterRequest;
@@ -35,50 +38,56 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImp implements UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
     private final RoleService roleService;
+    private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
+    private final PasswordEncoder encoder;
     private final AuthenticationProvider authenticationProvider;
 
     @Override
     public List<User> getAllToList() {
-        return userRepository.findAll();
+        return userRepository.getAllUserExceptAdmin();
     }
 
+    // *lấy danh sách người dùng ngoại trừ admin
     @Override
     public List<AUserResponse> getAllUserResponsesToList() {
         return getAllToList().stream().map(this::entityAMap).toList();
     }
+
     @Override
     public Optional<User> getUserById(Long userId) {
         return userRepository.findById(userId);
     }
 
+    // * tìm kiếm người dùng theo id
     @Override
     public Optional<AUserResponse> getAUserResponseById(Long userId) {
         Optional<User> optionalUser = getUserById(userId);
         return optionalUser.map(this::entityAMap);
     }
+
+    // * tìm kiếm người dùng theo userName
     @Override
     public Optional<User> getUserByUsername(String username) {
         return userRepository.getUserByUsername(username);
     }
 
+    // * đăng nhập
     @Override
-    public JwtResponse handleLogin(LoginRequest loginRequest) {
+    public JwtResponse handleLogin(LoginRequest loginRequest) throws CustomException {
         Authentication authentication;
         try {
             authentication = authenticationProvider.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
             );
         } catch (AuthenticationException e) {
-            throw new RuntimeException("Username or password is wrong.");
+            throw new CustomException("Username or password is wrong.");
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-        if (userPrincipal.getUser().getStatus() == null
-                || userPrincipal.getUser().getStatus() == EActiveStatus.INACTIVE)
-            throw new RuntimeException("This account is inactive.");
+        if (!(userPrincipal.getUser().getStatus() == EActiveStatus.ACTIVE))
+            throw new CustomException("This account is inactive.");
         return JwtResponse.builder()
                 .accessToken(jwtProvider.generateToken(userPrincipal))
                 .fullName(userPrincipal.getUser().getFullName())
@@ -88,13 +97,14 @@ public class UserServiceImp implements UserService {
                 .build();
     }
 
+    //* tạo tài khoản
     @Override
-    public User handleRegister(RegisterRequest RegisterRequest) {
-        if (userRepository.existsByUsername(RegisterRequest.getUsername()))
-            throw new RuntimeException("Username is exists");
+    public User handleRegister(RegisterRequest registerRequest) throws CustomException {
+        if (userRepository.existsByUsername(registerRequest.getUsername()))
+            throw new CustomException("Username is exists");
         EGender userGender = null;
-        if (RegisterRequest.getGender() != null)
-            userGender = switch (RegisterRequest.getGender().toUpperCase()) {
+        if (registerRequest.getGender() != null)
+            userGender = switch (registerRequest.getGender().toUpperCase()) {
                 case "MALE" -> EGender.MALE;
                 case "FEMALE" -> EGender.FEMALE;
                 default -> null;
@@ -102,19 +112,20 @@ public class UserServiceImp implements UserService {
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(roleService.findByRoleName(ERoleName.ROLE_STUDENT));
         User users = User.builder()
-                .fullName(RegisterRequest.getFullName())
-                .username(RegisterRequest.getUsername())
-                .password(passwordEncoder.encode(RegisterRequest.getPassword()))
-                .email(RegisterRequest.getEmail())
-                .avatar(RegisterRequest.getAvatar())
-                .phone(RegisterRequest.getPhone())
-                .dateOfBirth( LocalDate.parse ( RegisterRequest.getDateOfBirth() ) )
+                .fullName(registerRequest.getFullName())
+                .username(registerRequest.getUsername())
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
+                .email(registerRequest.getEmail())
+                .avatar(registerRequest.getAvatar())
+                .phone(registerRequest.getPhone())
+                .dateOfBirth( LocalDate.parse ( registerRequest.getDateOfBirth() ) )
                 .status(EActiveStatus.INACTIVE)
                 .gender(userGender)
                 .roles(userRoles)
                 .build();
         return userRepository.save(users);
     }
+    // * xóa tài khoản
     @Override
     public void deleteById(Long userId) {
         userRepository.deleteById(userId);
@@ -125,13 +136,15 @@ public class UserServiceImp implements UserService {
         return userRepository.save(users);
     }
 
+    //* cập nhật tài khoản
     @Override
-    public User updateAcc(RegisterRequest RegisterRequest, Long id) {
+    public User updateAcc(RegisterRequest RegisterRequest,Long userId) throws CustomException{
         if (userRepository.existsByUsername(RegisterRequest.getUsername()))
-            throw new RuntimeException("username is exists");
-        User userOld = getUserById(id).get();
+            throw new CustomException("username is exists");
+        Optional<User> userOldOptional = getUserById(userId);
+        User userOld = userOldOptional.get();
         Set<Role> roles = userOld.getRoles();
-        User users = User.builder()
+        User user = User.builder()
                 .fullName(RegisterRequest.getFullName())
                 .username(RegisterRequest.getUsername())
                 .password(userOld.getPassword())
@@ -144,13 +157,33 @@ public class UserServiceImp implements UserService {
                         ? EGender.MALE : EGender.FEMALE)
                 .roles(roles)
                 .build();
-        users.setId(id);
-        users.setCreateBy(userOld.getCreateBy());
-        return userRepository.save(users);
+        user.setId(userOld.getId());
+        user.setCreateBy(userOld.getCreateBy());
+        return userRepository.save(user);
     }
 
+    //* cập nhật mật khẩu
+    @Override
+    public User updatePassword(ChangePassword newPassword, Long userId) throws CustomException {
+        Optional<User> userOptional = getUserById(userId);
+        User user = userOptional.get();
+        if (!newPassword.getOldPassword().equals(encoder.encode(user.getPassword()))){
+            throw new CustomException("Old password not true!");
+        }else if (newPassword.getOldPassword().equals(newPassword.getNewPassword())){
+            throw new CustomException("New password like old password!");
+        }else if (!newPassword.getNewPassword().equals(newPassword.getConfirmPassword())){
+            throw new CustomException("Confirm password not like new password");
+        }
+        user.setPassword(newPassword.getConfirmPassword());
+        return userRepository.save(user);
+    }
 
+    @Override
+    public Set<Role> getAllRolesByUser(User user) {
+        return user.getRoles();
+    }
 
+    //* tìm kiếm theo username or fullname
     @Override
     public List<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword) {
         return userRepository.findByUsernameOrFullNameContainingIgnoreCase(keyword)
@@ -171,12 +204,21 @@ public class UserServiceImp implements UserService {
                 .build();
     }
 
-//    @Override
-//    public List<UserResponse> getAllStudentInClassroom(Long userId) {
-//        List<User> users = userRepository.getAllStudentByClassId(userId);
-//        return users.stream().map(this::entityMap).toList();
-//    }
+    @Override
+    public InformationAccount entityMap(User user) {
+        return InformationAccount.builder()
+                .userId(user.getId())
+                .fullName(user.getFullName())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .avatar(user.getAvatar())
+                .dateOfBirth(user.getDateOfBirth())
+                .gender(user.getGender())
+                .build();
+    }
 
+    //* lấy tất cả danh sách giáo viên
     @Override
     public List<AUserResponse> getAllTeacher() {
         List<User> users = userRepository.getAllTeacher();

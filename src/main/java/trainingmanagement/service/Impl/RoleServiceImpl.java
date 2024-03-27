@@ -9,6 +9,7 @@ import trainingmanagement.repository.RoleRepository;
 import trainingmanagement.service.RoleService;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -21,23 +22,19 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public List<ARoleResponse> getAllRoleResponsesToList() {
-        return getAllToList().stream().map(this::entityMap).toList();
+        return getAllToList().stream().map(this::entityAMap).toList();
     }
 
     @Override
     public Role findByRoleName(ERoleName roleName) {
         return roleRepository.findByRoleName(roleName);
     }
-
     @Override
     public List<ARoleResponse> findAllByRoleNameContainingIgnoreCase(String roleName) {
-        return roleRepository.findAllByRoleNameContainingIgnoreCase(roleName).stream().map(this::entityMap).toList();
+        return roleRepository.findAllByRoleNameContainingIgnoreCase(roleName).stream().map(this::entityAMap).toList();
     }
-
-    //    *********************************************entityMap*********************************************
-
     @Override
-    public ARoleResponse entityMap(Role role) {
+    public ARoleResponse entityAMap(Role role) {
         return ARoleResponse.builder()
             .roleName(role.getRoleName())
             .build();

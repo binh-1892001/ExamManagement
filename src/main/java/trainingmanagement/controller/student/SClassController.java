@@ -1,4 +1,4 @@
-package trainingmanagement.controller.Student;
+package trainingmanagement.controller.student;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,12 +11,10 @@ import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
-import trainingmanagement.model.entity.Classroom;
 import trainingmanagement.model.entity.UserClass;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EHttpStatus;
-import trainingmanagement.model.entity.User;
-import trainingmanagement.security.UserDetail.UserLogin;
+import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.ClassroomService;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.UserClassService;
@@ -25,14 +23,13 @@ import trainingmanagement.service.UserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/v1/student")
 public class SClassController {
     private final ClassroomService classroomService;
-    private final UserLogin userLogin;
+    private final UserLoggedIn userLogin;
     private final UserClassService userClassService;
     private final UserService userService;
     private final CommonService commonService;
@@ -47,12 +44,12 @@ public class SClassController {
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<UserClass> userClasses = userClassService.findClassByStudent(userLogin.userLogin().getId());
+            List<UserClass> userClasses = userClassService.findClassByStudent(userLogin.getUserLoggedIn().getId());
             List<AClassResponse> classes = new ArrayList<>();
             for (UserClass userClass : userClasses) {
                 EActiveStatus isActive = Objects.requireNonNull(userService.getUserById(userClass.getUser().getId()).orElse(null)).getStatus();
                 if (isActive == EActiveStatus.ACTIVE) {
-                    classes.add(classroomService.getAClassResponseById(userClass.getClassroom().getId()));
+                    classes.add(classroomService.getAClassById(userClass.getClassroom().getId()));
                 }
             }
             Page<?> classrooms = commonService.convertListToPages(pageable, classes);

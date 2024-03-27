@@ -17,20 +17,23 @@ public interface ExamService {
     Exam save(Exam exam);
     Exam save(AExamRequest examRequest);
     Exam patchUpdateExam(Long examId, AExamRequest examRequest) throws CustomException;
-    void deleteById(Long examId);
+    void hardDeleteById(Long examId);
+    void softDeleteById(Long examId) throws CustomException;
     List<AExamResponse> searchByExamName(String examName);
     Exam entityAMap(AExamRequest examRequest);
     AExamResponse entityAMap(Exam exam);
     TExamResponse entityTMap(Exam exam);
-    //Lấy danh sách Exam với trạng thái Active (Teacher)
+    //*Lấy danh sách Exam với trạng thái Active (Teacher)
     List<Exam> getAllExamsToListWithActiveStatus();
     List<TExamResponse> getAllExamResponsesToListWithActiveStatus();
-    // Lấy ra Exam theo id với trạng thái Active (Teacher)
+    //* Lấy ra Exam theo id với trạng thái Active (Teacher)
     Optional<Exam> getExamByIdWithActiveStatus(Long examId);
     Optional<TExamResponse> getExamResponsesByIdWithActiveStatus(Long examId);
-    //Lấy danh sách Exam theo thời gian tạo(createdDate)
+    //* Lấy danh sách Exam theo thời gian tạo(createdDate)
     List<AExamResponse> getAllExamByCreatedDate(LocalDate date);
-
-    //find by subjectId
+    List<AExamResponse> getAllExamFromDateToDate(String dateStart, String dateEnd);
+    //* find by subjectId
     List<AExamResponse> getAllBySubjectId(Long subjectId);
+    //* find all By subject of student
+    List<Exam> getAllExamBySubjectOfStudent();
 }
