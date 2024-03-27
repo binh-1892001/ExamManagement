@@ -1,6 +1,8 @@
 package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.base.AuditableEntity;
@@ -28,13 +30,13 @@ public class SubjectServiceImpl implements SubjectService {
     private final UserClassService userClassService;
     private final UserLoggedIn userLogin;
     @Override
-    public List<Subject> getAllToList() {
-        return subjectRepository.findAll();
+    public Page<Subject> getAllToList(Pageable pageable) {
+        return subjectRepository.findAll(pageable);
     }
 
     @Override
-    public List<ASubjectResponse> getAllSubjectResponsesToList() {
-        return getAllToList().stream().map(this::entityAMap).toList();
+    public Page<ASubjectResponse> getAllSubjectResponsesToList(Pageable pageable) {
+        return getAllToList(pageable).map(this::entityAMap);
     }
 
     @Override
@@ -70,9 +72,8 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public List<ASubjectResponse> findBySubjectName(String subjectName) {
-        return subjectRepository.findBySubjectNameContainingIgnoreCase(subjectName)
-                .stream().map(this::entityAMap).toList();
+    public Page<ASubjectResponse> findBySubjectName(String subjectName,Pageable pageable) {
+        return subjectRepository.findBySubjectNameContainingIgnoreCase(subjectName,pageable).map(this::entityAMap);
     }
 
     @Override
@@ -123,12 +124,12 @@ public class SubjectServiceImpl implements SubjectService {
 
     //Lấy danh sách Subject với trạng thái Active
     @Override
-    public List<Subject> getAllSubjectWithActiveStatus(){
-        return subjectRepository.getAllByStatus (EActiveStatus.ACTIVE);
+    public Page<Subject> getAllSubjectWithActiveStatus(Pageable pageable){
+        return subjectRepository.getAllByStatus(EActiveStatus.ACTIVE,pageable);
     }
     @Override
-    public List<TSubjectResponse> getAllSubjectResponsesToListRoleTeacher() {
-        return getAllSubjectWithActiveStatus ().stream ().map ( this::entityMapRoleTeacher ).toList ();
+    public Page<TSubjectResponse> getAllSubjectResponsesToListRoleTeacher(Pageable pageable) {
+        return getAllSubjectWithActiveStatus(pageable).map( this::entityMapRoleTeacher);
     }
     // Lấy ra Subject theo id với trạng thái Active
     @Override
@@ -146,9 +147,8 @@ public class SubjectServiceImpl implements SubjectService {
         return Optional.empty();
     }
     @Override
-    public List<TSubjectResponse> findBySubjectNameRoleTeacher(String subjectName) {
-        return subjectRepository.findBySubjectNameContainingIgnoreCase ( subjectName )
-                .stream ().map ( this::entityMapRoleTeacher ).toList ();
+    public Page<TSubjectResponse> findBySubjectNameRoleTeacher(String subjectName,Pageable pageable) {
+        return subjectRepository.findBySubjectNameContainingIgnoreCase(subjectName,pageable).map(this::entityMapRoleTeacher);
     }
     @Override
     public TSubjectResponse entityMapRoleTeacher(Subject subject) {

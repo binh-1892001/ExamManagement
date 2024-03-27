@@ -27,7 +27,6 @@ public class TTestController {
     private final TestService testService;
     private final CommonService commonService;
     private final UserLoggedIn userLoggedIn;
-
     //* lấy danh sách test theo examId
     @GetMapping("/exam/{examId}")
     public ResponseEntity<?> getAllTestByExamIdToPages(

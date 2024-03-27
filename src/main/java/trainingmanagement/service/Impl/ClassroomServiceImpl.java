@@ -43,8 +43,7 @@ public class ClassroomServiceImpl implements ClassroomService {
     private final RoleService roleService;
     /**
      * ? Service dùng để lấy ra 1 List đối tượng Classroom trong Db.
-     * @Param: None.
-     * @Return: List<Classroom>.
+     * @return List<Classroom>.
      * */
     @Override
     public List<Classroom> getAllToList() {
@@ -54,11 +53,11 @@ public class ClassroomServiceImpl implements ClassroomService {
      * ? Service dùng để lấy ra 1 Page chứa đối tượng Classroom trong Db.
      * * - Mặc dù truyền nhiều tham số nhưng việc phân trang sẽ được JPA đưa cho Db xử lý,
      * * nên BE sẽ không bị nặng vấn đề xử lý dữ liệu, tránh việc dữ liệu bị quá nhiều, nặng cho BE.
-     * @Param: Integer limit: giới hạn 1 Page có bao nhiêu bản ghi
-     * @Param: Integer page: phân trang hiện tại, trang bắt đầu từ số 0.
-     * @Param: String sort: tên của trường (dựa theo Class) dùng để sắp xếp dựa theo trường đó.
-     * @Param: String order: "asc/desc" cho phép sắp xếp xuôi hoặc ngược.
-     * @Return: Page<Classroom> trả về 1 Page đối tượng Classroom.
+     * @param limit: giới hạn 1 Page có bao nhiêu bản ghi
+     * @param page: phân trang hiện tại, trang bắt đầu từ số 0.
+     * @param sort: tên của trường (dựa theo Class) dùng để sắp xếp dựa theo trường đó.
+     * @param order: "asc/desc" cho phép sắp xếp xuôi hoặc ngược.
+     * @return Page<Classroom> trả về 1 Page đối tượng Classroom.
      * */
     @Override
     public Page<Classroom> getAllClassToPages(Integer limit, Integer page, String sort, String order)
@@ -74,12 +73,12 @@ public class ClassroomServiceImpl implements ClassroomService {
      * ? Service dùng để tìm kiếm và lấy ra 1 Page chứa đối tượng Classroom trong Db.
      * * - Mặc dù truyền nhiều tham số nhưng việc phân trang sẽ được JPA đưa cho Db xử lý,
      * * nên BE sẽ không bị nặng vấn đề xử lý dữ liệu, tránh việc dữ liệu bị quá nhiều, nặng cho BE.
-     * @Param: keyword: từ khoá dùng để tìm kiếm theo, cụ thể theo className của Class.
-     * @Param: Integer limit: giới hạn 1 Page có bao nhiêu bản ghi
-     * @Param: Integer page: phân trang hiện tại, trang bắt đầu từ số 0.
-     * @Param: String sort: tên của trường (dựa theo Class) dùng để sắp xếp dựa theo trường đó.
-     * @Param: String order: "asc/desc" cho phép sắp xếp xuôi hoặc ngược.
-     * @Return: Page<Classroom> trả về 1 Page đối tượng Classroom.
+     * @param className: từ khoá dùng để tìm kiếm theo, cụ thể theo className của Class.
+     * @param limit: giới hạn 1 Page có bao nhiêu bản ghi
+     * @param page: phân trang hiện tại, trang bắt đầu từ số 0.
+     * @param sort: tên của trường (dựa theo Class) dùng để sắp xếp dựa theo trường đó.
+     * @param order: "asc/desc" cho phép sắp xếp xuôi hoặc ngược.
+     * @return Page<Classroom> trả về 1 Page đối tượng Classroom.
      * */
     @Override
     public Page<Classroom> searchAllClassByClassNameToPages(String className,
@@ -94,8 +93,8 @@ public class ClassroomServiceImpl implements ClassroomService {
     /**
      * ? Service dùng để chuyển đổi 1 Page từ Classroom sang AClassResponse.
      * * - AClassResponse: là dto Class dùng cho Admin Role.
-     * @Param: Page<Classroom> nhận vào 1 Page kiểu Classroom.
-     * @Return: Page<AClassResponse> trả về 1 Page đối tượng Classroom dùng cho Admin.
+     * @param classPage nhận vào 1 Page kiểu Classroom.
+     * @return Page<AClassResponse> trả về 1 Page đối tượng Classroom dùng cho Admin.
      * */
     @Override
     public Page<AClassResponse> entityAMap(Page<Classroom> classPage){
@@ -105,8 +104,8 @@ public class ClassroomServiceImpl implements ClassroomService {
     /**
      * ? Service dùng để lấy ra Class theo Id.
      * * - AClassResponse: là dto Class dùng cho Admin Role.
-     * @Param: Long ClassId nhận vào 1 giá trị Long là ClassId.
-     * @Return: Optional<Classroom> trả về 1 Optional dùng để kiểm tra và bắt Exception khi không tìm thấy Class.
+     * @param classId nhận vào 1 giá trị Long là ClassId.
+     * @return Optional<Classroom> trả về 1 Optional dùng để kiểm tra và bắt Exception khi không tìm thấy Class.
      * */
     @Override
     public Optional<Classroom> getClassById(Long classId) {
@@ -115,8 +114,8 @@ public class ClassroomServiceImpl implements ClassroomService {
     /**
      * ? Service dùng để lấy ra Class theo classId rồi chuyển đổi về AClassResponse.
      * * - AClassResponse: là dto Class dùng cho Admin Role.
-     * @Param: Long ClassId nhận vào 1 giá trị Long là ClassId.
-     * @Return: Optional<AClassResponse> trả về 1 Optional dùng để kiểm tra và bắt Exception khi không tìm thấy Class.
+     * @param classId nhận vào 1 giá trị Long là ClassId.
+     * @return Optional<AClassResponse> trả về 1 Optional dùng để kiểm tra và bắt Exception khi không tìm thấy Class.
      * */
     @Override
     public AClassResponse getAClassById(Long classId) throws CustomException{
@@ -128,8 +127,8 @@ public class ClassroomServiceImpl implements ClassroomService {
     }
     /**
      * ? Service dùng để lưu 1 đối tượng Class vào Db.
-     * @Param: Classroom classroom đối tượng Class để lưu vào trong Db.
-     * @Return: Classroom trả về 1 đối tượng Class nếu đã lưu thành công vào Db.
+     * @param classroom đối tượng Class để lưu vào trong Db.
+     * @return Classroom trả về 1 đối tượng Class nếu đã lưu thành công vào Db.
      * */
     @Override
     public Classroom save(Classroom classroom) {
@@ -137,8 +136,8 @@ public class ClassroomServiceImpl implements ClassroomService {
     }
     /**
      * ? Service dùng để tạo mới và lưu 1 đối tượng Class vào Db dành cho Admin.
-     * @Param: AClassRequest dto của Admin dùng để lưu vào trong Db.
-     * @Return: Classroom trả về 1 đối tượng Class nếu đã lưu thành công vào Db.
+     * @param classRequest: dto của Admin dùng để lưu vào trong Db.
+     * @return Classroom trả về 1 đối tượng Class nếu đã lưu thành công vào Db.
      * ! Đã thêm CreateDate, CreatedBy, ModifyDate, ModifyBy.
      * */
     @Override
@@ -163,8 +162,8 @@ public class ClassroomServiceImpl implements ClassroomService {
      * ? Service dùng để kiểm tra 1 đối tượng User có phải là teacher hay không.
      * ! Đã bắt Exception không tìm thấy User.
      * ! Đã bắt Exception User đó không phải là Teacher.
-     * @Param: Long userId nhận vào 1 giá trị Long là UserId để kiểm tra.
-     * @Return: boolean trả về 1 giá trị true/false để kiểm tra User có phải teacher hay không.
+     * @param userId nhận vào 1 giá trị Long là UserId để kiểm tra.
+     * @return boolean trả về 1 giá trị true/false để kiểm tra User có phải teacher hay không.
      * */
     public boolean isTeacher(Long userId) throws CustomException{
         Optional<User> user = userService.getUserById(userId);
@@ -177,8 +176,8 @@ public class ClassroomServiceImpl implements ClassroomService {
      * ? Service dùng để kiểm tra 1 đối tượng User có phải là teacher hay không.
      * ! Đã bắt Exception không tìm thấy User.
      * ! Đã bắt Exception User đó không phải là Teacher.
-     * @Param: Long userId nhận vào 1 giá trị Long là UserId để kiểm tra.
-     * @Return: User trả về 1 đối tượng User nếu User đó là teacher.
+     * @param userId nhận vào 1 giá trị Long là UserId để kiểm tra.
+     * @return User trả về 1 đối tượng User nếu User đó là teacher.
      * */
     public User getUserIfIsTeacher(Long userId) throws CustomException {
         if(isTeacher(userId))
@@ -197,9 +196,9 @@ public class ClassroomServiceImpl implements ClassroomService {
     }
     /**
      * ? Service dùng để update 1 đối tượng Class trong Db bằng method Patch.
-     * @Param: Long classId nhận vào 1 giá trị Long là ClassId để lấy ra và cập nhật theo Id.
-     * @Param: AClassRequest dto của Admin dùng để lưu vào trong Db.
-     * @Return: AClassResponse trả về 1 đối tượng Class nếu đã lưu thành công vào Db.
+     * @param classId nhận vào 1 giá trị Long là ClassId để lấy ra và cập nhật theo Id.
+     * @param classRequest: dto của Admin dùng để lưu vào trong Db.
+     * @return AClassResponse trả về 1 đối tượng Class nếu đã lưu thành công vào Db.
      * */
     @Override
     public AClassResponse patchUpdateClass(Long classId, AClassRequest classRequest) throws CustomException {
@@ -236,7 +235,7 @@ public class ClassroomServiceImpl implements ClassroomService {
     /**
      * ? Service dùng để xoá mềm 1 đối tượng Class trong Db bằng method Delete.
      * ! Đã bắt Exception nếu không tìm thấy Class dựa theo ClassId trong Db.
-     * @Param: Long classId nhận vào 1 giá trị Long là ClassId để lấy ra và xoá mềm theo Id.
+     * @param classId nhận vào 1 giá trị Long là ClassId để lấy ra và xoá mềm theo Id.
      * */
     @Override
     public void softDeleteByClassId(Long classId) throws CustomException{
@@ -251,7 +250,7 @@ public class ClassroomServiceImpl implements ClassroomService {
     /**
      * ? Service dùng để xoá cứng 1 đối tượng Class trong Db bằng method Delete (thường dùng cho Admin).
      * ! Đã bắt Exception nếu không tìm thấy Class dựa theo ClassId trong Db.
-     * @Param: Long classId nhận vào 1 giá trị Long là ClassId để lấy ra và xoá cứng theo Id.
+     * @param classId nhận vào 1 giá trị Long là ClassId để lấy ra và xoá cứng theo Id.
      * */
     @Override
     public void hardDeleteByClassId(Long classId) throws CustomException {
@@ -267,7 +266,7 @@ public class ClassroomServiceImpl implements ClassroomService {
      * * - TClassResponse: là dto Class dùng cho Teacher Role.
      * ! Cần sửa thành dạng Pages để tránh trường hợp trong Db có quá nhiều bản ghi,
      * ! nếu lấy hết thành List rồi mới xử lý trong Java BE thì không tối ưu cho BE.
-     * @Return: List<TClassResponse> trả về 1 List đối tượng Class dùng cho Teacher.
+     * @return List<TClassResponse> trả về 1 List đối tượng Class dùng cho Teacher.
      * */
     @Override
     public List<TClassResponse> getTAllToList() {
@@ -278,8 +277,8 @@ public class ClassroomServiceImpl implements ClassroomService {
      * * Teacher sẽ không nhìn thầy và tương tác được với trường status của Class,
      * * nên cần lấy List Class với status là ACTIVE.
      * * - TClassResponse: là dto Class dùng cho Teacher Role.
-     * @Param: Long ClassId nhận vào 1 giá trị Long là ClassId.
-     * @Return: Optional<TClassResponse> trả về 1 Optional dùng để kiểm tra và bắt Exception khi không tìm thấy Class.
+     * @param classId nhận vào 1 giá trị Long là ClassId.
+     * @return Optional<TClassResponse> trả về 1 Optional dùng để kiểm tra và bắt Exception khi không tìm thấy Class.
      * */
     @Override
     public Optional<TClassResponse> getTClassById(Long classId) {
@@ -291,8 +290,8 @@ public class ClassroomServiceImpl implements ClassroomService {
      * * nên cần lấy List Class với status là ACTIVE.
      * ! Cần sửa thành dạng Pages để tránh trường hợp trong Db có quá nhiều bản ghi,
      * ! nếu lấy hết thành List rồi mới xử lý trong Java BE thì không tối ưu cho BE.
-     * @Param: String className dùng để tìm kiếm và lấy ra trong Db theo trường className.
-     * @Return List<TClassResponse> trả về 1 List đối tượng Classroom dùng cho Teacher.
+     * @param className dùng để tìm kiếm và lấy ra trong Db theo trường className.
+     * @return List<TClassResponse> trả về 1 List đối tượng Classroom dùng cho Teacher.
      * */
     @Override
     public List<TClassResponse> findTClassByClassName(String className) {
@@ -302,8 +301,8 @@ public class ClassroomServiceImpl implements ClassroomService {
     /**
      * ? Service dùng để chuyển đổi đối tượng Class dùng cho Admin.
      * * - AClassRequest: là dto Class dùng cho Admin Role.
-     * @Param: AClassRequest classRequest dùng để đưa vào dto request dùng cho Admin.
-     * @Return Classroom chuyển đổi thành 1 đối tượng Classroom để đưa vào xử lý các Services khác.
+     * @param classRequest dùng để đưa vào dto request dùng cho Admin.
+     * @return Classroom chuyển đổi thành 1 đối tượng Classroom để đưa vào xử lý các Services khác.
      * */
     @Override
     public Classroom entityAMap(AClassRequest classRequest) throws CustomException {
@@ -337,8 +336,8 @@ public class ClassroomServiceImpl implements ClassroomService {
     /**
      * ? Service dùng để chuyển đổi đối tượng Class dùng cho Admin.
      * * - AClassResponse: là dto Class dùng cho Admin Role.
-     * @Param: Classroom classroom dùng để đưa vào đối tượng Class.
-     * @Return Classroom chuyển đổi thành 1 đối tượng Classroom theo Admin để đưa vào xử lý các Services khác.
+     * @param classroom dùng để đưa vào đối tượng Class.
+     * @return  Classroom chuyển đổi thành 1 đối tượng Classroom theo Admin để đưa vào xử lý các Services khác.
      * */
     @Override
     public AClassResponse entityAMap(Classroom classroom) {
@@ -360,8 +359,8 @@ public class ClassroomServiceImpl implements ClassroomService {
     /**
      * ? Service dùng để chuyển đổi đối tượng Class dùng cho Teacher.
      * * - TClassResponse: là dto Class dùng cho Teacher Role.
-     * @Param: Classroom classroom dùng để đưa vào đối tượng Class.
-     * @Return Classroom chuyển đổi thành 1 đối tượng Classroom theo Teacher để đưa vào xử lý các Services khác.
+     * @param classroom dùng để đưa vào đối tượng Class.
+     * @return  Classroom chuyển đổi thành 1 đối tượng Classroom theo Teacher để đưa vào xử lý các Services khác.
      * */
     @Override
     public TClassResponse entityTMap(Classroom classroom) {
