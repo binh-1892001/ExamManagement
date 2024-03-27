@@ -24,6 +24,7 @@ import java.util.Optional;
 public class TExamController {
     private final ExamService examService;
     private final CommonService commonService;
+
     //Lấy danh sách Exam đã Active
     @GetMapping
     public ResponseEntity<?> getAllExamsToPages(
@@ -56,17 +57,22 @@ public class TExamController {
     // * Get Exam by id.
     //Tìm kiếm theo id các Exam đã Active
     @GetMapping("/{examId}")
-    public ResponseEntity<?> getExamById(@PathVariable("examId") Long examId) throws CustomException {
-        Optional<TExamResponse> exam = examService.getExamResponsesByIdWithActiveStatus(examId);
-        if(exam.isPresent())
-            return new ResponseEntity<>(
-                    new ResponseWrapper<>(
-                            EHttpStatus.SUCCESS,
-                            HttpStatus.OK.value(),
-                            HttpStatus.OK.name(),
-                            exam.get()
-                    ), HttpStatus.OK);
-        throw new CustomException("Exam is not exists.");
+    public ResponseEntity<?> getExamById(@PathVariable("examId") String examId) throws CustomException {
+        try {
+            Long id = Long.parseLong(examId);
+            Optional<TExamResponse> exam = examService.getExamResponsesByIdWithActiveStatus(id);
+            if (exam.isPresent())
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                exam.get()
+                        ), HttpStatus.OK);
+            throw new CustomException("Exam is not exists.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
 
     // * Search all Exams By CreatedDate
