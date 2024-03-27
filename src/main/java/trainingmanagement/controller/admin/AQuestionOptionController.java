@@ -224,7 +224,7 @@ public class AQuestionOptionController {
     //* delete question and option
     @Transactional
     @DeleteMapping("/{questionId}")
-    public ResponseEntity<?> deleteQuestionAndOption(
+    public ResponseEntity<?>    deleteQuestionAndOption(
             @PathVariable("questionId") Long questionId) throws CustomException {
         Optional<Question> question = questionService.getById(questionId);
         if (question.isPresent()) {
