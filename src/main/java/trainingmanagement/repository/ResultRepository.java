@@ -13,10 +13,13 @@ import java.util.Optional;
 public interface ResultRepository extends JpaRepository<Result,Long> {
     List<Result> getAllByUser(User user);
     // Lấy ra danh sách kết quả của teacher quản lý
-    List<Result> findAllByTeacher(User teacher);
+    @Query(value = "SELECT r.* FROM result r join user u on r.user_id=u.id " +
+            "join user_class uc on u.id=uc.user_id where uc.class_id =:classId ",nativeQuery = true)
+    List<Result> findAllByClassId(Long classId);
     // tìm kiếm kết quả sinh viên theo fullName
-    @Query("SELECT r FROM Result r where r.user.fullName LIKE CONCAT('%', :keyword, '%') and r.teacher = :teacher")
-    List<Result> findByStudentFullName(String keyword, User teacher);
+//    @Query(value = "SELECT r.* FROM result r join user u on r.user_id=u.id " +
+//            "join user_class uc on u.id=uc.user_id where uc.class_id =:classId r.user.fullName LIKE CONCAT('%', :keyword, '%') and r.teacher = :teacher",nativeQuery = true)
+//    List<Result> findByStudentFullName(String keyword, User teacher);
     Optional<Result> findByIdAndTeacher(Long id,User teacher);
     void deleteByIdAndTeacher(Long id,User teacher);
 }

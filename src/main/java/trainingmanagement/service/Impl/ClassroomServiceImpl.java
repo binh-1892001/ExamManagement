@@ -370,4 +370,9 @@ public class ClassroomServiceImpl implements ClassroomService {
                 .classStatus(classroom.getClassStatus())
                 .build();
     }
+
+    @Override
+    public List<Classroom> getAllByTeacher(User teacher) {
+        return classroomRepository.getAllByTeacher(teacher);
+    }
 }
