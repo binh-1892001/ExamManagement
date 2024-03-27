@@ -1,9 +1,7 @@
-package trainingmanagement.controller.admin;
+package trainingmanagement.controller.teacher;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -13,169 +11,169 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
-import trainingmanagement.model.dto.request.admin.ASubjectRequest;
-import trainingmanagement.model.dto.response.admin.ASubjectResponse;
+import trainingmanagement.model.dto.request.admin.ATestRequest;
+import trainingmanagement.model.dto.response.admin.ATestResponse;
 import trainingmanagement.model.enums.EHttpStatus;
-import trainingmanagement.model.entity.Subject;
+import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.CommonService;
-import trainingmanagement.service.SubjectService;
+import trainingmanagement.service.TestService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/admin/subjects")
-public class ASubjectController {
+@RequestMapping("/v1/teacher/tests")
+public class TTestController {
+    private final TestService testService;
     private final CommonService commonService;
-    private final SubjectService subjectService;
+    private final UserLoggedIn userLoggedIn;
 
-    // * Get all subjects to pages.
-    @GetMapping
-    public ResponseEntity<?> getAllSubjectToPages(
+    //* lấy danh sách test theo examId
+    @GetMapping("/exam/{examId}")
+    public ResponseEntity<?> getAllTestByExamIdToPages(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "subjectName", name = "sort") String sort,
-            @RequestParam(defaultValue = "asc", name = "order") String order
+            @RequestParam(defaultValue = "testName", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order,
+            @PathVariable String examId
     ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ASubjectResponse> subjectResponses = subjectService.getAllSubjectResponsesToList();
-            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
-            if (!subjects.isEmpty()) {
+            Long idExam = Long.parseLong(examId);
+            List<ATestResponse> testResponses = testService.getAllByExamIdAndTeacher(idExam, userLoggedIn.getUserLoggedIn().getUsername());
+            Page<?> tests = commonService.convertListToPages(pageable, testResponses);
+            if (!tests.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
                                 EHttpStatus.SUCCESS,
                                 HttpStatus.OK.value(),
                                 HttpStatus.OK.name(),
-                                subjects.getContent()
+                                tests.getContent()
                         ), HttpStatus.OK);
             }
-            throw new CustomException("Subjects page is empty.");
+            throw new CustomException("Tests page is empty.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
-            throw new CustomException("Subjects page is out of range.");
+            throw new CustomException("Tests page is out of range.");
         }
     }
 
-    // * Get subject by id.
-    @GetMapping("/{subjectId}")
-    public ResponseEntity<?> getSubjectById(@PathVariable("subjectId") String subjectId) throws CustomException {
+    // * Get test by test id.
+    @GetMapping("/{testId}")
+    public ResponseEntity<?> getTestById(@PathVariable("testId") String testId) throws CustomException {
         try {
-            Long id = Long.parseLong(subjectId);
-            Optional<Subject> subject = subjectService.getById(id);
-            if (subject.isEmpty())
-                throw new CustomException("Subject is not exists.");
+            Long id = Long.parseLong(testId);
             return new ResponseEntity<>(
                     new ResponseWrapper<>(
                             EHttpStatus.SUCCESS,
                             HttpStatus.OK.value(),
                             HttpStatus.OK.name(),
-                            subject.get()
+                            testService.getATestResponseById(id)
                     ), HttpStatus.OK);
         } catch (NumberFormatException e) {
             throw new CustomException("Incorrect id number format");
         }
     }
 
-    // * Create new subject.
+    // * Create a new test.
     @PostMapping
-    public ResponseEntity<?> createSubject(@RequestBody @Valid ASubjectRequest subjectRequest) {
-        Subject subject = subjectService.save(subjectRequest);
+    public ResponseEntity<?> createTest(@RequestBody @Valid ATestRequest testRequest) {
+        ATestResponse testCreate = testService.save(testRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,
                         HttpStatus.CREATED.value(),
                         HttpStatus.CREATED.name(),
-                        subject
+                        testCreate
                 ), HttpStatus.CREATED);
     }
 
-    // * Update an existed subject.
-    @PatchMapping("/{subjectId}")
-    public ResponseEntity<?> pathUpdateSubject(
-            @PathVariable("subjectId") String updateSubjectId,
-            @RequestBody @Valid ASubjectRequest subjectRequest
-    ) throws CustomException {
+    // * patchUpdate an exists test.
+    @PatchMapping("/{testId}")
+    public ResponseEntity<?> patchUpdateTest(
+            @PathVariable("testId") String testId,
+            @RequestBody @Valid ATestRequest ATestRequest) throws CustomException {
         try {
-            Long id = Long.parseLong(updateSubjectId);
-            Subject subject = subjectService.patchUpdate(id, subjectRequest);
+            Long id = Long.parseLong(testId);
+            ATestResponse testUpdate = testService.patchUpdateATest(id, ATestRequest);
             return new ResponseEntity<>(
                     new ResponseWrapper<>(
                             EHttpStatus.SUCCESS,
                             HttpStatus.OK.value(),
                             HttpStatus.OK.name(),
-                            subject
+                            testUpdate
                     ), HttpStatus.OK);
         } catch (NumberFormatException e) {
             throw new CustomException("Incorrect id number format");
         }
     }
 
-    // * softDelete an existed subject.
-    @DeleteMapping("/{subjectId}")
-    public ResponseEntity<?> softDeleteSubjectById(@PathVariable("subjectId") String subjectId) throws CustomException {
+    // * softDelete an exists test.
+    @DeleteMapping("/{testId}")
+    public ResponseEntity<?> softDeleteTestById(@PathVariable("testId") String testId) throws CustomException {
         try {
-            Long id = Long.parseLong(subjectId);
-            subjectService.softDeleteById(id);
+            Long id = Long.parseLong(testId);
+            testService.softDeleteByTestId(id);
             return new ResponseEntity<>(
                     new ResponseWrapper<>(
                             EHttpStatus.SUCCESS,
                             HttpStatus.OK.value(),
                             HttpStatus.OK.name(),
-                            "Delete Subject successfully."
+                            "Delete test successfully."
                     ), HttpStatus.OK);
         } catch (NumberFormatException e) {
             throw new CustomException("Incorrect id number format");
         }
     }
 
-    // * hardDelete an existed subject.
-    @DeleteMapping("/delete/{subjectId}")
-    public ResponseEntity<?> hardDeleteSubjectById(@PathVariable("subjectId") String subjectId) throws CustomException {
+    // * hardDelete an exists test.
+    @DeleteMapping("delete/{testId}")
+    public ResponseEntity<?> hardDeleteTestById(@PathVariable("testId") String testId) throws CustomException {
         try {
-            Long id = Long.parseLong(subjectId);
-            subjectService.hardDeleteById(id);
+            Long id = Long.parseLong(testId);
+            testService.hardDeleteByTestId(id);
             return new ResponseEntity<>(
                     new ResponseWrapper<>(
                             EHttpStatus.SUCCESS,
                             HttpStatus.OK.value(),
                             HttpStatus.OK.name(),
-                            "Delete Subject successfully."
+                            "Delete test successfully."
                     ), HttpStatus.OK);
         } catch (NumberFormatException e) {
             throw new CustomException("Incorrect id number format");
         }
     }
 
-    // * Find subject by subjectName.
+    // * Find test by testName.
     @GetMapping("/search")
-    public ResponseEntity<?> searchAllSubjectToPages(
-            @RequestParam(name = "keyword") String keyword,
+    public ResponseEntity<?> findByTestName(
+            @RequestParam(name = "testName") String testName,
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "subjectName", name = "sort") String sort,
-            @RequestParam(defaultValue = "asc", name = "order") String order
+            @RequestParam(defaultValue = "testName", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "sortBy") String sortBy
     ) throws CustomException {
         Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<ASubjectResponse> subjectResponses = subjectService.findBySubjectName(keyword);
-            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
-            if (!subjects.isEmpty()) {
+            List<ATestResponse> testResponses = testService.getAllByTestNameAndTeacherName(testName, userLoggedIn.getUserLoggedIn().getUsername());
+            Page<?> tests = commonService.convertListToPages(pageable, testResponses);
+            if (!tests.isEmpty()) {
                 return new ResponseEntity<>(
                         new ResponseWrapper<>(
                                 EHttpStatus.SUCCESS,
                                 HttpStatus.OK.value(),
                                 HttpStatus.OK.name(),
-                                subjects.getContent()
+                                tests.getContent()
                         ), HttpStatus.OK);
             }
-            throw new CustomException("Subjects page is empty.");
+            throw new CustomException("Tests page is empty.");
         } catch (IllegalArgumentException e) {
-            throw new CustomException("Subjects page is out of range.");
+            throw new CustomException("Tests page is out of range.");
         }
     }
 }

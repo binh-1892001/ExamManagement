@@ -14,17 +14,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
-import trainingmanagement.model.dto.response.admin.ASubjectResponse;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
 import trainingmanagement.model.entity.Exam;
-import trainingmanagement.model.entity.Subject;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.ETestType;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.repository.TestRepository;
+import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.ExamService;
 import trainingmanagement.service.TestService;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +32,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
+    private final UserLoggedIn userLoggedIn;
     private final ExamService examService;
-
     @Override
     public List<Test> getAllTestsToList() {
         return testRepository.findAll();
@@ -61,12 +59,13 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public Test save(Test test) {
+        test.setCreateBy(userLoggedIn.getUserLoggedIn().getUsername());
         return testRepository.save(test);
     }
 
     @Override
     public ATestResponse save(ATestRequest ATestRequest) {
-        return entityAMap(testRepository.save(entityAMap(ATestRequest)));
+        return entityAMap(save(entityAMap(ATestRequest)));
     }
 
     @Override
@@ -150,7 +149,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<ATestResponse> getAllFromDateToDate(String dateStart, String dateEnd) {
+    public List<ATestResponse> getAllFromDateToDate(LocalDate dateStart, LocalDate dateEnd){
         List<Test> tests = testRepository.getAllFromDateToDate(dateStart,dateEnd);
         return tests.stream().map(this::entityAMap).toList();
     }
@@ -205,5 +204,16 @@ public class TestServiceImpl implements TestService {
             .build();
     }
 
+    //find by examId
+    @Override
+    public List<ATestResponse> getAllByExamIdAndTeacher(Long examId, String name) {
+        List<Test> tests = testRepository.getAllByExamIdAndTeacherName (examId, name);
+        return tests.stream().map(this::entityAMap).toList();
+    }
 
+    @Override
+    public List<ATestResponse> getAllByTestNameAndTeacherName(String testName, String name) {
+        List<Test> tests = testRepository.getAllByTestNameAndTestName(testName, name);
+        return tests.stream().map(this::entityAMap).toList();
+    }
 }

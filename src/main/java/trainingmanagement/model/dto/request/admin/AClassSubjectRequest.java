@@ -1,5 +1,6 @@
 package trainingmanagement.model.dto.request.admin;
 
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +12,10 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class AClassSubjectRequest {
-    @NotNull(message = "Không được bỏ trống chỗ này nha!!")
+    @NotEmpty(message = "Not empty!")
+    @NotNull(message = "Not null!")
     private Long classId;
-    @NotNull(message = "Không được bỏ trống chỗ này nha!!")
+    @NotEmpty(message = "Not empty!")
+    @NotNull(message = "Not null!")
     private Long subjectId;
 }

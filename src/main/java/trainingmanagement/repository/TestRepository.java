@@ -23,9 +23,13 @@ public interface TestRepository extends JpaRepository<Test,Long> {
     //Find All Test By ExamId
     @Query(value = "select * from Test t where t.exam_id=:examId", nativeQuery = true)
     List<Test> getAllByExamId(Long examId);
+    @Query(value = "select t from Test t where t.exam.id=:examId and t.createBy =:name")
+    List<Test> getAllByExamIdAndTeacherName(Long examId, String name);
+    @Query(value = "select t from Test t where t.testName LIKE CONCAT('%', :testName, '%') and t.createBy =:name")
+    List<Test> getAllByTestNameAndTestName(String testName, String name);
     //* find all test from date to date
     @Query(value = "select * from test where created_date between :dateStart and :dateEnd",nativeQuery = true)
-    List<Test> getAllFromDateToDate(String dateStart, String dateEnd);
+    List<Test> getAllFromDateToDate(LocalDate dateStart, LocalDate dateEnd);
     List<Test> getAllByTestType(ETestType testType);
     List<Test> getAllByCreatedDate(LocalDate createdDate);
     Test findByExam(Exam exam);

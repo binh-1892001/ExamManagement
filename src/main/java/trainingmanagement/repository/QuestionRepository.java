@@ -15,7 +15,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> getAllByTest(Test test);
     List<Question> getAllByCreatedDate(LocalDate date);
     @Query(value = "select * from question where created_date between :dateStart and :dateEnd",nativeQuery = true)
-    List<Question> getAllFromDateToDate(String dateStart,String dateEnd);
+    List<Question> getAllFromDateToDate(LocalDate dateStart,LocalDate dateEnd);
     List<Question> findAllByQuestionContentIsContainingIgnoreCase(String questionContent);
     List<Question> getAllByQuestionLevel(EQuestionLevel questionLevel);
     List<Question> getQuestionsByTestId(Long testId);

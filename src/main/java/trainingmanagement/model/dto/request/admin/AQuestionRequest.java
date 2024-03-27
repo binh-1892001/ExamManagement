@@ -27,15 +27,15 @@ import lombok.*;
 @Data
 @Builder
 public class AQuestionRequest {
-    @NotEmpty(message = "Không được bỏ trống chỗ này nha!!")
+    @NotEmpty(message = "Not empty!!")
     private String questionContent;
-    @Pattern(regexp = "^(?i)(EASY|NORMAL|DIFFICULTY)$", message = "Chuỗi phải là 'EASY' hoặc 'NORMAL' hoặc 'DIFFICULTY' ")
+    @Pattern(regexp = "^(?i)(EASY|NORMAL|DIFFICULTY)$", message = "String must be 'EASY' ,'NORMAL' or 'DIFFICULTY' ")
     private String questionLevel;
-    @Pattern(regexp = "^(?i)(MULTIPLE|SINGLE)$", message = "Chuỗi phải là 'MULTIPLE' hoặc 'SINGLE'")
+    @Pattern(regexp = "^(?i)(MULTIPLE|SINGLE)$", message = "String must be 'MULTIPLE' or 'SINGLE'")
     private String questionType;
     private String image;
-    @Pattern(regexp = "^(?i)(ACTIVE|INACTIVE)$", message = "Chuỗi phải là 'ACTIVE' hoặc 'INACTIVE'")
+    @Pattern(regexp = "^(?i)(ACTIVE|INACTIVE)$", message = "String must be 'ACTIVE' or 'INACTIVE'")
     private String status;
-    @NotNull(message = "Không được bỏ trống chỗ này nha!!")
+    @NotNull(message = "Not null!!")
     private Long testId;
 }

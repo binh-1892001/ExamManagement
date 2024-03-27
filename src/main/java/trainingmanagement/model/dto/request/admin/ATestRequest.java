@@ -25,16 +25,16 @@ import lombok.*;
 @Data
 @Builder
 public class ATestRequest {
-    @NotEmpty(message = "Không được bỏ trống chỗ này nha!!")
+    @NotEmpty(message = "Not empty!!")
     private String testName;
     @Min(15)
     @Max(150)
     private Integer testTime;
-    @Pattern(regexp = "^(?i)(WRITENTEST|QUIZTEST)$", message = "Chuỗi phải là 'WRITENTEST' hoặc 'QUIZTEST'")
+    @Pattern(regexp = "^(?i)(WRITENTEST|QUIZTEST)$", message = "String must be 'WRITENTEST' or 'QUIZTEST'")
     private String testType;
     private String resources;
-    @Pattern(regexp = "^(?i)(ACTIVE|INACTIVE)$", message = "Chuỗi phải là 'ACTIVE' hoặc 'INACTIVE'")
+    @Pattern(regexp = "^(?i)(ACTIVE|INACTIVE)$", message = "String must be 'ACTIVE' or 'INACTIVE'")
     private String status;
-    @NotNull(message = "Không được bỏ trống chỗ này nha!!")
+    @NotNull(message = "Not null!!")
     private Long examId;
 }

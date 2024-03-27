@@ -41,13 +41,14 @@ public class AClassUserController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "id", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @PathVariable("classId") Long classId
+            @PathVariable("classId") String classId
     ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<UserClass> userClasses = userClassService.findByClassId(classId);
+            Long idClass = Long.parseLong(classId);
+            List<UserClass> userClasses = userClassService.findByClassId(idClass);
             List<AUserResponse> users = new ArrayList<>();
             for (UserClass userClass : userClasses) {
                 users.add(userService.getAUserResponseById(userClass.getUser().getId()).orElse(null));
@@ -63,6 +64,8 @@ public class AClassUserController {
                         ), HttpStatus.OK);
             }
             throw new CustomException("Users page is empty.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Users page is out of range.");
         }
@@ -75,12 +78,13 @@ public class AClassUserController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "id", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @PathVariable("userId") Long id) throws CustomException {
+            @PathVariable("userId") String id) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<UserClass> userClasses = userClassService.findClassByStudent(id);
+            Long idUser = Long.parseLong(id);
+            List<UserClass> userClasses = userClassService.findClassByStudent(idUser);
             List<AClassResponse> classes = new ArrayList<>();
             for (UserClass userClass : userClasses) {
                 classes.add(classroomService.getAClassById(userClass.getClassroom().getId()));
@@ -96,6 +100,8 @@ public class AClassUserController {
                         ), HttpStatus.OK);
             }
             throw new CustomException("Classes page is empty.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Classes page is out of range.");
         }
@@ -119,28 +125,38 @@ public class AClassUserController {
     @PutMapping("/updateStudentClass/{id}")
     public ResponseEntity<?> updateStudentClass(
             @RequestBody @Valid AUserClassRequest userClassRequest
-            ,@PathVariable Long id) throws CustomException {
-        userClassService.update(userClassRequest, id);
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.CREATED.value(),
-                        HttpStatus.CREATED.name(),
-                        "Update success"
-                ), HttpStatus.CREATED);
+            , @PathVariable String id) throws CustomException {
+        try {
+            Long idUserClass = Long.parseLong(id);
+            userClassService.update(userClassRequest, idUserClass);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.CREATED.value(),
+                            HttpStatus.CREATED.name(),
+                            "Update success"
+                    ), HttpStatus.CREATED);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
 
     // * delete studentClass
     @DeleteMapping("/deleteStudentClass/{id}")
-    public ResponseEntity<?> deleteStudentClass(@PathVariable Long id){
-        userClassService.deleteById(id);
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.CREATED.value(),
-                        HttpStatus.CREATED.name(),
-                        "Delete success"
-                ), HttpStatus.CREATED);
+    public ResponseEntity<?> deleteStudentClass(@PathVariable String id) throws CustomException {
+        try {
+            Long idUserClass = Long.parseLong(id);
+            userClassService.deleteById(idUserClass);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.CREATED.value(),
+                            HttpStatus.CREATED.name(),
+                            "Delete success"
+                    ), HttpStatus.CREATED);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
 
 }

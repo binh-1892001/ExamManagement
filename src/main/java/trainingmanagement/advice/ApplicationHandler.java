@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import trainingmanagement.exception.CustomException;
+import trainingmanagement.exception.ResourceNotFoundException;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.enums.EHttpStatus;
 import java.util.HashMap;
@@ -36,5 +37,16 @@ public class ApplicationHandler {
 				HttpStatus.BAD_REQUEST.name(),
 				e.getMessage()
 			), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(ResourceNotFoundException.class)
+	public ResponseEntity<Object> handleNotFoundException(ResourceNotFoundException ex) {
+		return new ResponseEntity<>(
+				new ResponseWrapper<>(
+				EHttpStatus.FAILURE,
+				HttpStatus.NOT_FOUND.value(),
+				HttpStatus.NOT_FOUND.name(),
+				ex.getMessage()
+		), HttpStatus.NOT_FOUND);
 	}
 }

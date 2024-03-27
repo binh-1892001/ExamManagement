@@ -11,11 +11,9 @@
 package trainingmanagement.service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
-import trainingmanagement.model.dto.response.admin.AExamResponse;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.model.enums.ETestType;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -36,13 +34,13 @@ public interface TestService {
     ATestResponse entityAMap(Test test);
     //find by subjectId
     List<ATestResponse> getAllByExamId(Long examId);
+    List<ATestResponse> getAllByExamIdAndTeacher(Long examId, String name);
+    List<ATestResponse> getAllByTestNameAndTeacherName(String testName, String name);
     //* find by TestType
     List<ATestResponse> getAllByTestType(ETestType testType);
     //* find by created date
     List<ATestResponse> getAllByCreatedDate(LocalDate createdDate);
     //* find by from date to date
-    List<ATestResponse> getAllFromDateToDate(String dateStart, String dateEnd);
+    List<ATestResponse> getAllFromDateToDate(LocalDate dateStart, LocalDate dateEnd);
     List<Test> getAllTestByExamOfStudent();
-
-
 }

@@ -37,13 +37,14 @@ public class SUserController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "id", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @PathVariable Long classId
+            @PathVariable String classId
     ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<UserClass> userClasses = userClassService.findByClassId(classId);
+            Long idClass = Long.parseLong(classId);
+            List<UserClass> userClasses = userClassService.findByClassId(idClass);
             List<AUserResponse> users = new ArrayList<>();
             for (UserClass userClass : userClasses) {
                 EActiveStatus isActive = Objects.requireNonNull(userService.getUserById(userClass.getUser().getId()).orElse(null)).getStatus();
@@ -62,6 +63,8 @@ public class SUserController {
                         ), HttpStatus.OK);
             }
             throw new CustomException("Users page is empty.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Users page is out of range.");
         }
