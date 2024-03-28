@@ -13,7 +13,6 @@ import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
 import trainingmanagement.model.enums.EHttpStatus;
-
 import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.TestService;
@@ -49,7 +48,6 @@ public class TTestController {
                         HttpStatus.OK.name(),
                         testResponses.getContent()
                 ), HttpStatus.OK);
-
     }
 
     // * Get test by test id.
@@ -140,6 +138,4 @@ public class TTestController {
                         testResponses.getContent()
                 ), HttpStatus.OK);
     }
-
-
 }

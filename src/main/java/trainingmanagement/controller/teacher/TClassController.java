@@ -50,17 +50,22 @@ public class TClassController {
     }
 
     @GetMapping("/{classId}")
-    public ResponseEntity<?> getClassById(@PathVariable("classId") Long classId) throws CustomException {
-        Optional<TClassResponse> classroom = classroomService.getTClassById(classId);
-        if (classroom.isPresent())
-            return new ResponseEntity<>(
-                    new ResponseWrapper<>(
-                            EHttpStatus.SUCCESS,
-                            HttpStatus.OK.value(),
-                            HttpStatus.OK.name(),
-                            classroom.get()
-                    ), HttpStatus.OK);
-        throw new CustomException("Class is not exists.");
+    public ResponseEntity<?> getClassById(@PathVariable("classId") String classId) throws CustomException {
+        try {
+            Long id = Long.parseLong(classId);
+            Optional<TClassResponse> classroom = classroomService.getTClassById(id);
+            if (classroom.isPresent())
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                classroom.get()
+                        ), HttpStatus.OK);
+            throw new CustomException("Class is not exists.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
 
     @GetMapping("/search")

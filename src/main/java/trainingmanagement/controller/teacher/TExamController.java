@@ -15,7 +15,6 @@ import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.ExamService;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -24,6 +23,7 @@ import java.util.Optional;
 public class TExamController {
     private final ExamService examService;
     private final CommonService commonService;
+
     //Lấy danh sách Exam đã Active
     @GetMapping
     public ResponseEntity<?> getAllExamsToPages(
@@ -35,22 +35,15 @@ public class TExamController {
         Pageable pageable;
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<TExamResponse> examResponses = examService.getAllExamResponsesToListWithActiveStatus();
-            Page<?> exams = commonService.convertListToPages(pageable, examResponses);
-            if (!exams.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                exams.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Exams page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Exams page is out of range.");
-        }
+        Page<TExamResponse> examResponses = examService.getAllExamResponsesToListWithActiveStatus(pageable);
+        if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        examResponses.getContent()
+                ), HttpStatus.OK);
     }
 
     // * Get Exam by id.
@@ -58,7 +51,7 @@ public class TExamController {
     @GetMapping("/{examId}")
     public ResponseEntity<?> getExamById(@PathVariable("examId") Long examId) throws CustomException {
         Optional<TExamResponse> exam = examService.getExamResponsesByIdWithActiveStatus(examId);
-        if(exam.isPresent())
+        if (exam.isPresent())
             return new ResponseEntity<>(
                     new ResponseWrapper<>(
                             EHttpStatus.SUCCESS,

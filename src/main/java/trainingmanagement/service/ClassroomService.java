@@ -60,4 +60,5 @@ public interface ClassroomService {
     Classroom entityAMap(AClassRequest classRequest) throws CustomException;
     // ? EntityMap dùng để ép kiểu dành cho Teacher.
     TClassResponse entityTMap(Classroom classroom);
+    List<Classroom> getAllByTeacher(User teacher);
 }

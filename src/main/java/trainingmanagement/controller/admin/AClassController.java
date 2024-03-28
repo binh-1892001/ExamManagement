@@ -36,12 +36,11 @@ public class AClassController {
     /**
      * ? Controller lấy ra 1 Page đối tượng Class từ Db dành cho Admin.
      *
-     * @Param: keyword là từ khoá cần tìm kiếm (không phân biệt hoa thường).
-     * @Param: limit là giới hạn bao nhiêu bản ghi mỗi trang hiển thị.
-     * @Param: page là trang hiển thị tương ứng.
-     * @Param: sort là tên trường dùng để lọc và sắp xếp.
-     * @Param: order là asc/desc thể hiện việc sắp xếp ngược hay xuôi.
-     * @Return: trả về 1 ResponseEntity đại diện cho Page Class lấy ra được từ Db.
+     * @param limit là giới hạn bao nhiêu bản ghi mỗi trang hiển thị.
+     * @param page là trang hiển thị tương ứng.
+     * @param sort là tên trường dùng để lọc và sắp xếp.
+     * @param order là asc/desc thể hiện việc sắp xếp ngược hay xuôi.
+     * @return trả về 1 ResponseEntity đại diện cho Page Class lấy ra được từ Db.
      */
     @GetMapping
     public ResponseEntity<?> getAllClassesToPages(
@@ -64,8 +63,8 @@ public class AClassController {
     /**
      * ? Controller lấy ra 1 đối tượng Class từ Db dành cho Admin.
      *
-     * @Param: Long classId của đối tượng Class cần lấy ra.
-     * @Return: trả về 1 ResponseEntity đại diện cho Class lấy ra thành công.
+     * @param classId của đối tượng Class cần lấy ra.
+     * @return trả về 1 ResponseEntity đại diện cho Class lấy ra thành công.
      */
     @GetMapping("/{classId}")
     public ResponseEntity<?> getClassById(@PathVariable("classId") String classId) throws CustomException {
@@ -87,8 +86,8 @@ public class AClassController {
     /**
      * ? Controller tạo mới và lưu 1 đối tượng Class vào Db dành cho Admin.
      *
-     * @Param: AClassRequest dto của Admin dùng để lưu vào trong Db.
-     * @Return: trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
+     * @param classRequest dto của Admin dùng để lưu vào trong Db.
+     * @return trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
      */
     @PostMapping
     public ResponseEntity<?> createClass(@RequestBody @Valid AClassRequest classRequest) throws CustomException {
@@ -104,9 +103,9 @@ public class AClassController {
     /**
      * ? Controller sửa đổi thông tin của 1 đối tượng Class trong Db (nếu có) dành cho Admin, nếu không thì thêm mới.
      *
-     * @Param: Long classId của đối tượng Class cần lấy ra.
-     * @Param: AClassRequest dto của Admin dùng để lưu vào trong Db.
-     * @Return: trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
+     * @param updateClassId của đối tượng Class cần lấy ra.
+     * @param classRequest dto của Admin dùng để lưu vào trong Db.
+     * @return trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
      */
     @PutMapping("/{classId}")
     public ResponseEntity<?> putUpdateClass(
@@ -130,9 +129,9 @@ public class AClassController {
     /**
      * ? Controller sửa đổi thông tin của 1 đối tượng Class trong Db (nếu có) dành cho Admin.
      *
-     * @Param: Long classId của đối tượng Class cần lấy ra.
-     * @Param: AClassRequest dto của Admin dùng để lưu vào trong Db.
-     * @Return: trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
+     * @param updateClassId classId của đối tượng Class cần lấy ra.
+     * @param classRequest dto của Admin dùng để lưu vào trong Db.
+     * @return trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
      */
     @PatchMapping("/{classId}")
     public ResponseEntity<?> patchUpdateClass(
@@ -156,8 +155,8 @@ public class AClassController {
     /**
      * ? Controller xoá mềm 1 đối tượng Class trong Db (nếu có) dành cho Admin.
      *
-     * @Param: Long classId của đối tượng Class cần lấy ra.
-     * @Return: trả về 1 ResponseEntity thông báo đã xoá thành công.
+     * @param classId của đối tượng Class cần lấy ra.
+     * @return trả về 1 ResponseEntity thông báo đã xoá thành công.
      */
     @DeleteMapping("{classId}")
     public ResponseEntity<?> softDeleteClassById(@PathVariable("classId") String classId) throws CustomException {
@@ -179,8 +178,8 @@ public class AClassController {
     /**
      * ? Controller xoá cứng 1 đối tượng Class trong Db (nếu có) dành cho Admin.
      *
-     * @Param: Long classId của đối tượng Class cần lấy ra.
-     * @Return: trả về 1 ResponseEntity thông báo đã xoá thành công.
+     * @param classId của đối tượng Class cần lấy ra.
+     * @return trả về 1 ResponseEntity thông báo đã xoá thành công.
      */
     @DeleteMapping("/delete/{classId}")
     public ResponseEntity<?> hardDeleteClassById(@PathVariable("classId") String classId) throws CustomException {
@@ -202,12 +201,12 @@ public class AClassController {
     /**
      * ? Controller tìm kiếm và lấy ra 1 Page đối tượng Class từ Db dành cho Admin.
      *
-     * @Param: keyword là từ khoá cần tìm kiếm (không phân biệt hoa thường).
-     * @Param: limit là giới hạn bao nhiêu bản ghi mỗi trang hiển thị.
-     * @Param: page là trang hiển thị tương ứng.
-     * @Param: sort là tên trường dùng để lọc và sắp xếp.
-     * @Param: order là asc/desc thể hiện việc sắp xếp ngược hay xuôi.
-     * @Return: trả về 1 ResponseEntity đại diện cho Page Class lấy ra được từ Db.
+     * @param keyword là từ khoá cần tìm kiếm (không phân biệt hoa thường).
+     * @param limit là giới hạn bao nhiêu bản ghi mỗi trang hiển thị.
+     * @param page là trang hiển thị tương ứng.
+     * @param sort là tên trường dùng để lọc và sắp xếp.
+     * @param order là asc/desc thể hiện việc sắp xếp ngược hay xuôi.
+     * @return trả về 1 ResponseEntity đại diện cho Page Class lấy ra được từ Db.
      */
     @GetMapping("/search")
     public ResponseEntity<?> searchProduct(

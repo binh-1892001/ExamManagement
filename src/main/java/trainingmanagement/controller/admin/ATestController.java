@@ -236,7 +236,7 @@ public class ATestController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "testName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @RequestBody @Valid DateSearch dateSearch
+            @RequestBody DateSearch dateSearch
     ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());

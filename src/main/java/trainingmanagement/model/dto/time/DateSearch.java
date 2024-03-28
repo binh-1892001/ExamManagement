@@ -15,10 +15,10 @@ public class DateSearch {
     @NotNull(message = "Not null")
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Not correct format date! Date must be 'yyyy-mm-dd'")
     private String createDate;
-    @NotNull(message = "msg")
+    @NotNull(message = "Not null")
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Not correct format date! Date must be 'yyyy-mm-dd'")
     private String startDate;
-    @NotNull(message = "msg")
+    @NotNull(message = "Not null")
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Not correct format date! Date must be 'yyyy-mm-dd'")
     private String endDate;
 }

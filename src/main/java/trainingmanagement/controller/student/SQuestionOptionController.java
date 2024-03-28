@@ -35,12 +35,13 @@ public class SQuestionOptionController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @PathVariable Long testId) throws CustomException {
+            @PathVariable String testId) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            Optional<Test> test = testService.getTestById(testId);
+            Long id = Long.parseLong(testId);
+            Optional<Test> test = testService.getTestById(id);
             if (test.isEmpty()){
                 throw new CustomException("Test is not exists.");
             }
@@ -56,6 +57,8 @@ public class SQuestionOptionController {
                         ), HttpStatus.OK);
             }
             throw new CustomException("Questions page is empty.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
         }
