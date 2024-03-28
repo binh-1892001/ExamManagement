@@ -135,8 +135,6 @@ public class AQuestionOptionController {
             throw new CustomException("Questions page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
-        } catch (NullPointerException e) {
-            throw new CustomException("Data input must not be null or empty");
         }
     }
 
@@ -242,8 +240,6 @@ public class AQuestionOptionController {
                     ), HttpStatus.OK);
         } catch (NumberFormatException e) {
             throw new CustomException("Incorrect id number format");
-        }catch (NullPointerException e){
-            throw new CustomException("All of input data must not be null");
         }
     }
 
@@ -251,7 +247,8 @@ public class AQuestionOptionController {
     @Transactional
     @DeleteMapping("/{questionId}")
     public ResponseEntity<?> deleteQuestionAndOption(
-            @PathVariable("questionId") String questionId) throws CustomException {
+            @PathVariable("questionId") String questionId
+    ) throws CustomException {
         try {
             Long idQuestion = Long.parseLong(questionId);
             Optional<Question> question = questionService.getById(idQuestion);

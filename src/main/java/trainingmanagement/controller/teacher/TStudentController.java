@@ -17,6 +17,7 @@ import trainingmanagement.model.entity.UserClass;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.UserService;
 import trainingmanagement.service.UserClassService;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,36 +29,48 @@ public class TStudentController {
     private final UserClassService userClassService;
     private final UserService userService;
     private final CommonService commonService;
+
     @GetMapping("/class/{classId}")
-    public ResponseEntity<?> getStudentByClassId(@PathVariable("classId") Long id) throws CustomException{
-        List<UserClass> userClasses = userClassService.findByClassId(id);
-        List<AUserResponse> users = new ArrayList<>();
-        for (UserClass userClass : userClasses) {
-            EActiveStatus isActive = userService.getUserById(userClass.getUser().getId()).orElse(null).getStatus();
-            if (isActive == EActiveStatus.ACTIVE) {
-                users.add(userService.getAUserResponseById(userClass.getUser().getId()).orElse(null));
+    public ResponseEntity<?> getStudentByClassId(@PathVariable("classId") String classId) throws CustomException {
+        try {
+            Long id = Long.parseLong(classId);
+            List<UserClass> userClasses = userClassService.findByClassId(id);
+            List<AUserResponse> users = new ArrayList<>();
+            for (UserClass userClass : userClasses) {
+                EActiveStatus isActive = userService.getUserById(userClass.getUser().getId()).orElse(null).getStatus();
+                if (isActive == EActiveStatus.ACTIVE) {
+                    users.add(userService.getAUserResponseById(userClass.getUser().getId()).orElse(null));
+                }
             }
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            users), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
         }
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        users), HttpStatus.OK);
     }
+
     // * Get user by id.
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getUserById(@PathVariable("userId") Long userId) throws CustomException {
-        Optional<AUserResponse> user = userService.getAUserResponseById(userId);
-        if (user.isEmpty())
-            throw new CustomException("User is not exists.");
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        user.get()
-                ), HttpStatus.OK);
+    public ResponseEntity<?> getUserById(@PathVariable("userId") String userId) throws CustomException {
+        try {
+            Long id = Long.parseLong(userId);
+            Optional<AUserResponse> user = userService.getAUserResponseById(id);
+            if (user.isEmpty())
+                throw new CustomException("User is not exists.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            user.get()
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
 
     @GetMapping("/search")

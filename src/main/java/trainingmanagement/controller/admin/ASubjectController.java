@@ -41,22 +41,15 @@ public class ASubjectController {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<ASubjectResponse> subjectResponses = subjectService.getAllSubjectResponsesToList();
-            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
-            if (!subjects.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                subjects.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Subjects page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Subjects page is out of range.");
-        }
+        Page<ASubjectResponse> subjectResponses = subjectService.getAllSubjectResponsesToList(pageable);
+        if (subjectResponses.getContent().isEmpty()) throw new CustomException("Classes page is empty.");
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        subjectResponses.getContent()
+                ), HttpStatus.OK);
     }
 
     // * Get subject by id.
@@ -161,21 +154,8 @@ public class ASubjectController {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<ASubjectResponse> subjectResponses = subjectService.findBySubjectName(keyword);
-            Page<?> subjects = commonService.convertListToPages(pageable, subjectResponses);
-            if (!subjects.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                subjects.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Subjects page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Subjects page is out of range.");
-        }
+        Page<ASubjectResponse> subjectResponses = subjectService.findBySubjectName(keyword,pageable);
+        if (subjectResponses.getContent().isEmpty()) throw new CustomException("Classes page is empty.");
+        return new ResponseEntity<>(new ResponseWrapper<>(EHttpStatus.SUCCESS, HttpStatus.OK.value(), HttpStatus.OK.name(), subjectResponses.getContent()),HttpStatus.OK);
     }
 }

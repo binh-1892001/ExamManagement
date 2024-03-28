@@ -35,7 +35,7 @@ public class AClassSubjectController {
 
     // * get all subject by classId
     @GetMapping("/getAllSubject/{classId}")
-    public ResponseEntity<?> getStudentByClassId(
+    public ResponseEntity<?> getSubjectByClassId(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "id", name = "sort") String sort,
@@ -72,7 +72,7 @@ public class AClassSubjectController {
 
     // * get all class by subjectId
     @GetMapping("/getAllClass/{subjectId}")
-    public ResponseEntity<?> getClassByUserId(
+    public ResponseEntity<?> getClassBySubjectId(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "id", name = "sort") String sort,

@@ -1,5 +1,6 @@
 package trainingmanagement.controller.student;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,19 +21,24 @@ public class SResultController {
     private final ResultService resultService;
 
     @PostMapping("/doTest/{testId}")
-    public ResponseEntity<?> doTest(@RequestBody ListStudentChoice listStudentChoice, @PathVariable Long testId) throws CustomException {
-        Result result = resultService.checkAndResultTest(listStudentChoice,testId);
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        result
-                ), HttpStatus.OK);
+    public ResponseEntity<?> doTest(@RequestBody @Valid ListStudentChoice listStudentChoice, @PathVariable String testId) throws CustomException {
+        try {
+            Long idTest = Long.parseLong(testId);
+            Result result = resultService.checkAndResultTest(listStudentChoice, idTest);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            result
+                    ), HttpStatus.OK);
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
 
     @GetMapping("/result/checkHistory")
-    public ResponseEntity<?> checkHistory(){
+    public ResponseEntity<?> checkHistory() {
         List<Result> results = resultService.getAllByStudent();
         return new ResponseEntity<>(
                 new ResponseWrapper<>(

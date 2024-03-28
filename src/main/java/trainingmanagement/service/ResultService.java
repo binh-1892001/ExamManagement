@@ -17,15 +17,15 @@ public interface ResultService {
     List<Result> getAllByStudent();
 
     // <----- ROLE TEACHER BEGIN
-    List<Result> getAllToList(User teacher);
-    List<TResultResponse> getAllResultResponsesToList(User teacher);
+    List<Result> getAllToListByClassIdAndTeacher(Long classId) throws CustomException;
+    List<TResultResponse> getAllResultResponsesToList(Long classId) throws CustomException;
     Optional<Result> getById(Long id);
     Result save(Result result);
     Result save(TResultRequest resultRequest) throws CustomException;
     Result patchUpdateResult(Long resultId, TResultRequest resultRequest) throws CustomException;
     void hardDeleteById(Long id);
     void softDeleteById(Long id) throws CustomException;
-    List<TResultResponse> searchByStudentFullName(String fullName);
+    List<TResultResponse> searchByStudentFullName(String fullName,Long classId) throws CustomException;
     TResultResponse entityTMap(Result result);
     Result entityTMap(TResultRequest tResultRequest);
     // END ------>

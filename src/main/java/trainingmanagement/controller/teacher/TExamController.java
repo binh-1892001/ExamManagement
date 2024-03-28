@@ -15,7 +15,6 @@ import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.ExamService;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController

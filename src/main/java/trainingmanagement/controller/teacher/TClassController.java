@@ -24,49 +24,57 @@ import java.util.Optional;
 public class TClassController {
     private final CommonService commonService;
     private final ClassroomService classroomService;
+
     @GetMapping()
     public ResponseEntity<?> getAllClassesPage(
-            @RequestParam(defaultValue = "5",name = "limit" ) int limit,
-            @RequestParam(defaultValue = "0" ,name="page") int page,
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "className", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
-    )throws CustomException {
+    ) throws CustomException {
         Pageable pageable;
-        if(order.equals("asc")){
-            pageable = PageRequest.of(page,limit, Sort.by(sort).ascending());
-        }else {
-            pageable = PageRequest.of(page,limit,Sort.by(sort).descending());
+        if (order.equals("asc")) {
+            pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+        } else {
+            pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         }
         try {
             List<TClassResponse> classResponses = classroomService.getTAllToList();
             Page<?> classroom = commonService.convertListToPages(pageable, classResponses);
             if (!classroom.isEmpty()) {
                 return new ResponseEntity<>(
-                    new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        classroom.getContent()
-                    ), HttpStatus.OK);
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                classroom.getContent()
+                        ), HttpStatus.OK);
             }
             throw new CustomException("Classes page is empty.");
-        }catch (IllegalArgumentException illegalArgumentException){
+        } catch (IllegalArgumentException illegalArgumentException) {
             throw new CustomException("Classes pages out of range !!");
         }
     }
+
     @GetMapping("/{classId}")
-    public ResponseEntity<?> getClassById(@PathVariable("classId") Long classId) throws CustomException{
-        Optional<TClassResponse> classroom = classroomService.getTClassById(classId);
-        if(classroom.isPresent())
-            return new ResponseEntity<>(
-                    new ResponseWrapper<>(
-                            EHttpStatus.SUCCESS,
-                            HttpStatus.OK.value(),
-                            HttpStatus.OK.name(),
-                            classroom.get()
-                    ), HttpStatus.OK);
-        throw new CustomException("Class is not exists.");
+    public ResponseEntity<?> getClassById(@PathVariable("classId") String classId) throws CustomException {
+        try {
+            Long id = Long.parseLong(classId);
+            Optional<TClassResponse> classroom = classroomService.getTClassById(id);
+            if (classroom.isPresent())
+                return new ResponseEntity<>(
+                        new ResponseWrapper<>(
+                                EHttpStatus.SUCCESS,
+                                HttpStatus.OK.value(),
+                                HttpStatus.OK.name(),
+                                classroom.get()
+                        ), HttpStatus.OK);
+            throw new CustomException("Class is not exists.");
+        } catch (NumberFormatException e) {
+            throw new CustomException("Incorrect id number format");
+        }
     }
+
     @GetMapping("/search")
     public ResponseEntity<?> searchClass(
             @RequestParam(name = "keyword") String keyword,

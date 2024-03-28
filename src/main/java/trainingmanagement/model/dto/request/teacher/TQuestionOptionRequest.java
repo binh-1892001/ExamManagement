@@ -12,6 +12,6 @@ import java.util.List;
 @Setter
 @Builder
 public class TQuestionOptionRequest {
-    TQuestionRequest TQuestionRequest;
-    List<TOptionRequest> TOptionRequests;
+    TQuestionRequest questionRequest;
+    List<TOptionRequest> optionRequests;
 }
