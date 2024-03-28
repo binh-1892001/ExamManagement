@@ -38,22 +38,15 @@ public class TClassController {
         } else {
             pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         }
-        try {
-            List<TClassResponse> classResponses = classroomService.getTAllToList();
-            Page<?> classroom = commonService.convertListToPages(pageable, classResponses);
-            if (!classroom.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                classroom.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Classes page is empty.");
-        } catch (IllegalArgumentException illegalArgumentException) {
-            throw new CustomException("Classes pages out of range !!");
-        }
+        Page<TClassResponse> classResponses = classroomService.getTAllToList(pageable);
+        if (classResponses.getContent().isEmpty()) throw new CustomException("Classes page is empty.");
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        classResponses.getContent()
+                ), HttpStatus.OK);
     }
 
     @GetMapping("/{classId}")
@@ -86,21 +79,16 @@ public class TClassController {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<TClassResponse> classResponses = classroomService.findTClassByClassName(keyword);
-            Page<?> classrooms = commonService.convertListToPages(pageable, classResponses);
-            if (!classrooms.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                classrooms.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Classes page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Classes page is out of range.");
-        }
+        Page<TClassResponse> classResponses = classroomService.findTClassByClassName(keyword, pageable);
+        if (classResponses.getContent().isEmpty()) throw new CustomException("Classes page is empty.");
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        classResponses.getContent()
+                ), HttpStatus.OK);
     }
+
+
 }

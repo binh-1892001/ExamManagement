@@ -41,6 +41,7 @@ public class TStudentController {
                 if (isActive == EActiveStatus.ACTIVE) {
                     users.add(userService.getAUserResponseById(userClass.getUser().getId()).orElse(null));
                 }
+
             }
             return new ResponseEntity<>(
                     new ResponseWrapper<>(
@@ -84,21 +85,15 @@ public class TStudentController {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<AUserResponse> userResponses = userService.findByUsernameOrFullNameContainingIgnoreCase(keyword);
-            Page<?> users = commonService.convertListToPages(pageable, userResponses);
-            if (!users.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                users.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Users page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Users page is out of range.");
-        }
+        Page<AUserResponse> userResponses = userService.findByUsernameOrFullNameContainingIgnoreCase(keyword, pageable);
+        if (userResponses.getContent().isEmpty()) throw new CustomException("Users page is empty.");
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        userResponses.getContent()
+                ), HttpStatus.OK);
+
     }
 }

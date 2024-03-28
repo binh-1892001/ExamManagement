@@ -268,8 +268,8 @@ public class ClassroomServiceImpl implements ClassroomService {
      * @return List<TClassResponse> trả về 1 List đối tượng Class dùng cho Teacher.
      * */
     @Override
-    public List<TClassResponse> getTAllToList() {
-        return classroomRepository.getAllByStatus(EActiveStatus.ACTIVE).stream().map(this::entityTMap).toList();
+    public Page<TClassResponse> getTAllToList(Pageable pageable) {
+        return classroomRepository.getAllByStatus(EActiveStatus.ACTIVE, pageable).map(this::entityTMap);
     }
     /**
      * ? Service dùng để lấy ra 1 đối tượng Class và chuyển về TClassResponse trong Db bằng method Get (dùng cho Teacher).
@@ -293,9 +293,9 @@ public class ClassroomServiceImpl implements ClassroomService {
      * @return List<TClassResponse> trả về 1 List đối tượng Classroom dùng cho Teacher.
      * */
     @Override
-    public List<TClassResponse> findTClassByClassName(String className) {
-        return classroomRepository.findByClassNameContainingIgnoreCase(className)
-                .stream().map(this::entityTMap).toList();
+    public Page<TClassResponse> findTClassByClassName(String className, Pageable pageable) {
+        return classroomRepository.findByClassNameContainingIgnoreCase(className, pageable)
+                .map(this::entityTMap);
     }
     /**
      * ? Service dùng để chuyển đổi đối tượng Class dùng cho Admin.

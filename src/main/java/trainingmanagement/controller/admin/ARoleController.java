@@ -17,6 +17,7 @@ import trainingmanagement.model.dto.response.admin.ARoleResponse;
 import trainingmanagement.model.enums.EHttpStatus;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.RoleService;
+
 import java.util.List;
 
 @RestController
@@ -25,59 +26,47 @@ import java.util.List;
 public class ARoleController {
     private final RoleService roleService;
     private final CommonService commonService;
+
     @GetMapping
     public ResponseEntity<?> getAllRolesToPages(
-        @RequestParam(defaultValue = "5", name = "limit") int limit,
-        @RequestParam(defaultValue = "0", name = "page") int page,
-        @RequestParam(defaultValue = "roleName", name = "sort") String sort,
-        @RequestParam(defaultValue = "asc", name = "order") String order
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "roleName", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<ARoleResponse> roleResponses = roleService.getAllRoleResponsesToList();
-            Page<?> roles = commonService.convertListToPages(pageable, roleResponses);
-            if (!roles.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                roles.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Roles page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Roles page is out of range.");
-        }
+        Page<ARoleResponse> roleResponses = roleService.getAllRoleResponsesToList(pageable);
+        if (roleResponses.getContent().isEmpty()) throw new CustomException("Roles page is empty.");
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        roleResponses.getContent()
+                ), HttpStatus.OK);
     }
+
     @GetMapping("/search")
     public ResponseEntity<?> getRolesByRoleNameToPages(
-        @RequestParam(name = "keyword") String keyword,
-        @RequestParam(defaultValue = "5", name = "limit") int limit,
-        @RequestParam(defaultValue = "0", name = "page") int page,
-        @RequestParam(defaultValue = "roleName", name = "sort") String sort,
-        @RequestParam(defaultValue = "asc", name = "order") String order
+            @RequestParam(name = "keyword") String keyword,
+            @RequestParam(defaultValue = "5", name = "limit") int limit,
+            @RequestParam(defaultValue = "0", name = "page") int page,
+            @RequestParam(defaultValue = "roleName", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<ARoleResponse> roleResponses = roleService.findAllByRoleNameContainingIgnoreCase(keyword);
-            Page<?> roles = commonService.convertListToPages(pageable, roleResponses);
-            if (!roles.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                roles.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Roles page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Roles page is out of range.");
-        }
+        Page<ARoleResponse> roleResponses = roleService.findAllByRoleNameContainingIgnoreCase(keyword, pageable);
+        if (roleResponses.getContent().isEmpty()) throw new CustomException("Roles page is empty.");
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        roleResponses.getContent()
+                ), HttpStatus.OK);
     }
 }

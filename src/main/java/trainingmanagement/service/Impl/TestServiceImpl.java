@@ -11,6 +11,8 @@
 package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
@@ -35,13 +37,13 @@ public class TestServiceImpl implements TestService {
     private final UserLoggedIn userLoggedIn;
     private final ExamService examService;
     @Override
-    public List<Test> getAllTestsToList() {
-        return testRepository.findAll();
+    public Page<Test> getAllTestsToList(Pageable pageable) {
+        return testRepository.findAll(pageable);
     }
 
     @Override
-    public List<ATestResponse> getAllATestResponsesToList() {
-        return getAllTestsToList().stream().map(this::entityAMap).toList();
+    public Page<ATestResponse> getAllATestResponsesToList(Pageable pageable) {
+        return getAllTestsToList(pageable).map(this::entityAMap);
     }
 
     @Override
@@ -125,33 +127,33 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public List<ATestResponse> findAllTestsByTestNameToList (String testName) {
-        return testRepository.findByTestNameContainingIgnoreCase(testName)
-                .stream().map(this::entityAMap).toList();
+    public Page<ATestResponse> findAllTestsByTestNameToList (String testName, Pageable pageable) {
+        return testRepository.findByTestNameContainingIgnoreCase(testName, pageable)
+                .map(this::entityAMap);
     }
     //find by examId
     @Override
-    public List<ATestResponse> getAllByExamId(Long examId) {
-        List<Test> tests = testRepository.getAllByExamId (examId);
-        return tests.stream().map(this::entityAMap).toList();
+    public Page<ATestResponse> getAllByExamId(Long examId, Pageable pageable) {
+        Page<Test> tests = testRepository.getAllByExamId (examId, pageable);
+        return tests.map(this::entityAMap);
     }
 
     @Override
-    public List<ATestResponse> getAllByTestType(ETestType testType) {
-        List<Test> tests = testRepository.getAllByTestType(testType);
-        return tests.stream().map(this::entityAMap).toList();
+    public Page<ATestResponse> getAllByTestType(ETestType testType, Pageable pageable) {
+        Page<Test> tests = testRepository.getAllByTestType(testType, pageable);
+        return tests.map(this::entityAMap);
     }
 
     @Override
-    public List<ATestResponse> getAllByCreatedDate(LocalDate createdDate) {
-        List<Test> tests = testRepository.getAllByCreatedDate(createdDate);
-        return tests.stream().map(this::entityAMap).toList();
+    public Page<ATestResponse> getAllByCreatedDate(LocalDate createdDate, Pageable pageable) {
+        Page<Test> tests = testRepository.getAllByCreatedDate(createdDate, pageable);
+        return tests.map(this::entityAMap);
     }
 
     @Override
-    public List<ATestResponse> getAllFromDateToDate(LocalDate dateStart, LocalDate dateEnd){
-        List<Test> tests = testRepository.getAllFromDateToDate(dateStart,dateEnd);
-        return tests.stream().map(this::entityAMap).toList();
+    public Page<ATestResponse> getAllFromDateToDate(LocalDate dateStart, LocalDate dateEnd, Pageable pageable){
+        Page<Test> tests = testRepository.getAllFromDateToDate(dateStart,dateEnd, pageable);
+        return tests.map(this::entityAMap);
     }
 
     @Override
@@ -206,14 +208,14 @@ public class TestServiceImpl implements TestService {
 
     //find by examId
     @Override
-    public List<ATestResponse> getAllByExamIdAndTeacher(Long examId, String name) {
-        List<Test> tests = testRepository.getAllByExamIdAndTeacherName (examId, name);
-        return tests.stream().map(this::entityAMap).toList();
+    public Page<ATestResponse> getAllByExamIdAndTeacher(Long examId, String name, Pageable pageable) {
+        Page<Test> tests = testRepository.getAllByExamIdAndTeacherName (examId, name, pageable);
+        return tests.map(this::entityAMap);
     }
 
     @Override
-    public List<ATestResponse> getAllByTestNameAndTeacherName(String testName, String name) {
-        List<Test> tests = testRepository.getAllByTestNameAndTestName(testName, name);
-        return tests.stream().map(this::entityAMap).toList();
+    public Page<ATestResponse> getAllByTestNameAndTeacherName(String testName, String name, Pageable pageable) {
+        Page<Test> tests = testRepository.getAllByTestNameAndTestName(testName, name, pageable );
+        return tests.map(this::entityAMap);
     }
 }

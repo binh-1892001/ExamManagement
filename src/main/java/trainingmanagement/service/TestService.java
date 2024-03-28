@@ -9,6 +9,8 @@
  * */
 
 package trainingmanagement.service;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
@@ -19,11 +21,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TestService {
-    List<Test> getAllTestsToList();
-    List<ATestResponse> getAllATestResponsesToList();
+    Page<Test> getAllTestsToList(Pageable pageable);
+    Page<ATestResponse> getAllATestResponsesToList(Pageable pageable);
     Optional<Test> getTestById(Long testId);
     ATestResponse getATestResponseById(Long testId) throws CustomException;
-    List<ATestResponse> findAllTestsByTestNameToList(String testName);
+    Page<ATestResponse> findAllTestsByTestNameToList(String testName, Pageable pageable);
     ATestResponse putUpdateATest(Long testId, ATestRequest testRequest);
     ATestResponse patchUpdateATest(Long testId, ATestRequest testRequest) throws CustomException;
     Test save(Test test);
@@ -33,14 +35,14 @@ public interface TestService {
     Test entityAMap(ATestRequest testRequest);
     ATestResponse entityAMap(Test test);
     //find by subjectId
-    List<ATestResponse> getAllByExamId(Long examId);
-    List<ATestResponse> getAllByExamIdAndTeacher(Long examId, String name);
-    List<ATestResponse> getAllByTestNameAndTeacherName(String testName, String name);
+    Page<ATestResponse> getAllByExamId(Long examId, Pageable pageable);
+    Page<ATestResponse> getAllByExamIdAndTeacher(Long examId, String name, Pageable pageable);
+    Page<ATestResponse> getAllByTestNameAndTeacherName(String testName, String name, Pageable pageable);
     //* find by TestType
-    List<ATestResponse> getAllByTestType(ETestType testType);
+    Page<ATestResponse> getAllByTestType(ETestType testType, Pageable pageable);
     //* find by created date
-    List<ATestResponse> getAllByCreatedDate(LocalDate createdDate);
+    Page<ATestResponse> getAllByCreatedDate(LocalDate createdDate, Pageable pageable);
     //* find by from date to date
-    List<ATestResponse> getAllFromDateToDate(LocalDate dateStart, LocalDate dateEnd);
+    Page<ATestResponse> getAllFromDateToDate(LocalDate dateStart, LocalDate dateEnd, Pageable pageable);
     List<Test> getAllTestByExamOfStudent();
 }
