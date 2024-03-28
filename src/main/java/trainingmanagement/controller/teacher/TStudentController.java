@@ -17,6 +17,7 @@ import trainingmanagement.model.entity.UserClass;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.UserService;
 import trainingmanagement.service.UserClassService;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +29,9 @@ public class TStudentController {
     private final UserClassService userClassService;
     private final UserService userService;
     private final CommonService commonService;
+
     @GetMapping("/class/{classId}")
-    public ResponseEntity<?> getStudentByClassId(@PathVariable("classId") Long id) throws CustomException{
+    public ResponseEntity<?> getStudentByClassId(@PathVariable("classId") Long id) throws CustomException {
         List<UserClass> userClasses = userClassService.findByClassId(id);
         List<AUserResponse> users = new ArrayList<>();
         for (UserClass userClass : userClasses) {
@@ -45,6 +47,7 @@ public class TStudentController {
                         HttpStatus.OK.name(),
                         users), HttpStatus.OK);
     }
+
     // * Get user by id.
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable("userId") Long userId) throws CustomException {
@@ -71,21 +74,15 @@ public class TStudentController {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<AUserResponse> userResponses = userService.findByUsernameOrFullNameContainingIgnoreCase(keyword);
-            Page<?> users = commonService.convertListToPages(pageable, userResponses);
-            if (!users.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                users.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Users page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Users page is out of range.");
-        }
+        Page<AUserResponse> userResponses = userService.findByUsernameOrFullNameContainingIgnoreCase(keyword, pageable);
+        if (userResponses.getContent().isEmpty()) throw new CustomException("Users page is empty.");
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        userResponses.getContent()
+                ), HttpStatus.OK);
+
     }
 }

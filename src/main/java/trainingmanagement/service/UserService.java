@@ -1,5 +1,7 @@
 package trainingmanagement.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.ChangeInformation;
 import trainingmanagement.model.dto.ChangePassword;
@@ -15,8 +17,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface UserService {
-    List<User> getAllToList();
-    List<AUserResponse> getAllUserResponsesToList();
+    Page<User> getAllToList(Pageable pageable);
+    Page<AUserResponse> getAllUserResponsesToList(Pageable pageable);
     Optional<User> getUserById(Long userId);
     Optional<User> getUserByUsername(String username);
     Optional<AUserResponse> getAUserResponseById(Long userId);
@@ -27,9 +29,9 @@ public interface UserService {
     User updatePassword(ChangePassword newPassword, Long userId) throws CustomException;
     User handleRegister(RegisterRequest registerRequest) throws CustomException;
     Set<Role> getAllRolesByUser(User user);
-    List<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword);
+    Page<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword, Pageable pageable);
     User entityMap(RegisterRequest userRequest);
     InformationAccount entityMap(User user);
-    List<AUserResponse> getAllTeacher();
+    Page<AUserResponse> getAllTeacher(Pageable pageable);
     AUserResponse entityAMap(User user);
 }

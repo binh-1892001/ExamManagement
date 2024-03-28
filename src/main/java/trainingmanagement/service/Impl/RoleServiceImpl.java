@@ -1,6 +1,8 @@
 package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import trainingmanagement.model.dto.response.admin.ARoleResponse;
 import trainingmanagement.model.enums.ERoleName;
@@ -16,13 +18,13 @@ import java.util.Set;
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
     @Override
-    public List<Role> getAllToList() {
-        return roleRepository.findAll();
+    public Page<Role> getAllToList(Pageable pageable) {
+        return roleRepository.findAll(pageable);
     }
 
     @Override
-    public List<ARoleResponse> getAllRoleResponsesToList() {
-        return getAllToList().stream().map(this::entityAMap).toList();
+    public Page<ARoleResponse> getAllRoleResponsesToList(Pageable pageable) {
+        return getAllToList(pageable).map(this::entityAMap);
     }
 
     @Override
@@ -30,8 +32,8 @@ public class RoleServiceImpl implements RoleService {
         return roleRepository.findByRoleName(roleName);
     }
     @Override
-    public List<ARoleResponse> findAllByRoleNameContainingIgnoreCase(String roleName) {
-        return roleRepository.findAllByRoleNameContainingIgnoreCase(roleName).stream().map(this::entityAMap).toList();
+    public Page<ARoleResponse> findAllByRoleNameContainingIgnoreCase(String roleName, Pageable pageable) {
+        return roleRepository.findAllByRoleNameContainingIgnoreCase(roleName, pageable).map(this::entityAMap);
     }
     @Override
     public ARoleResponse entityAMap(Role role) {

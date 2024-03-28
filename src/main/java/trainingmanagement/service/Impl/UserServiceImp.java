@@ -1,6 +1,8 @@
 package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,14 +47,14 @@ public class UserServiceImp implements UserService {
     private final AuthenticationProvider authenticationProvider;
 
     @Override
-    public List<User> getAllToList() {
-        return userRepository.getAllUserExceptAdmin();
+    public Page<User> getAllToList(Pageable pageable) {
+        return userRepository.getAllUserExceptAdmin(pageable);
     }
 
     // *lấy danh sách người dùng ngoại trừ admin
     @Override
-    public List<AUserResponse> getAllUserResponsesToList() {
-        return getAllToList().stream().map(this::entityAMap).toList();
+    public Page<AUserResponse> getAllUserResponsesToList(Pageable pageable) {
+        return getAllToList(pageable).map(this::entityAMap);
     }
 
     @Override
@@ -184,9 +186,8 @@ public class UserServiceImp implements UserService {
 
     //* tìm kiếm theo username or fullname
     @Override
-    public List<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword) {
-        return userRepository.findByUsernameOrFullNameContainingIgnoreCase(keyword)
-                .stream().map(this::entityAMap).toList();
+    public Page<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword, Pageable pageable) {
+        return userRepository.findByUsernameOrFullNameContainingIgnoreCase(keyword, pageable).map(this::entityAMap);
     }
 
     @Override
@@ -219,9 +220,9 @@ public class UserServiceImp implements UserService {
 
     //* lấy tất cả danh sách giáo viên
     @Override
-    public List<AUserResponse> getAllTeacher() {
-        List<User> users = userRepository.getAllTeacher();
-        return users.stream().map(this::entityAMap).toList();
+    public Page<AUserResponse> getAllTeacher(Pageable pageable) {
+        Page<User> users = userRepository.getAllTeacher(pageable);
+        return users.map(this::entityAMap);
     }
 
     @Override

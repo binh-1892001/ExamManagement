@@ -13,9 +13,11 @@ import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
 import trainingmanagement.model.enums.EHttpStatus;
-import trainingmanagement.security.UserDetail.UserLogin;
+
+import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.CommonService;
 import trainingmanagement.service.TestService;
+
 import java.util.List;
 
 @RestController
@@ -24,7 +26,8 @@ import java.util.List;
 public class TTestController {
     private final TestService testService;
     private final CommonService commonService;
-    private final UserLogin userLogin;
+    private final UserLoggedIn userLoggedIn;
+
     //* lấy danh sách test theo examId
     @GetMapping("/exam/{examId}")
     public ResponseEntity<?> getAllTestByExamIdToPages(
@@ -33,27 +36,22 @@ public class TTestController {
             @RequestParam(defaultValue = "testName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
             @PathVariable Long examId
-    ) throws CustomException{
+    ) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<ATestResponse> testResponses = testService.getAllByExamIdAndTeacher (examId,userLogin.userLogin().getUsername());
-            Page<?> tests = commonService.convertListToPages(pageable, testResponses);
-            if (!tests.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                tests.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Tests page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Tests page is out of range.");
-        }
+        Page<ATestResponse> testResponses = testService.getAllByExamIdAndTeacher(examId, userLoggedIn.getUserLoggedIn().getUsername(), pageable);
+        if (testResponses.getContent().isEmpty()) throw new CustomException("Tests page is empty.");
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        testResponses.getContent()
+                ), HttpStatus.OK);
+
     }
+
     // * Get test by test id.
     @GetMapping("/{testId}")
     public ResponseEntity<?> getTestById(@PathVariable("testId") Long testId) throws CustomException {
@@ -65,6 +63,7 @@ public class TTestController {
                         testService.getATestResponseById(testId)
                 ), HttpStatus.OK);
     }
+
     // * Create a new test.
     @PostMapping
     public ResponseEntity<?> createTest(@RequestBody ATestRequest testRequest) {
@@ -77,11 +76,12 @@ public class TTestController {
                         testCreate
                 ), HttpStatus.CREATED);
     }
+
     // * patchUpdate an exists test.
     @PatchMapping("/{testId}")
     public ResponseEntity<?> patchUpdateTest(
             @PathVariable("testId") Long testId,
-            @RequestBody ATestRequest ATestRequest) throws CustomException{
+            @RequestBody ATestRequest ATestRequest) throws CustomException {
         ATestResponse testUpdate = testService.patchUpdateATest(testId, ATestRequest);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
@@ -91,9 +91,10 @@ public class TTestController {
                         testUpdate
                 ), HttpStatus.OK);
     }
+
     // * softDelete an exists test.
     @DeleteMapping("/{testId}")
-    public ResponseEntity<?> softDeleteTestById(@PathVariable("testId") Long testId) throws CustomException{
+    public ResponseEntity<?> softDeleteTestById(@PathVariable("testId") Long testId) throws CustomException {
         testService.softDeleteByTestId(testId);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
@@ -103,9 +104,10 @@ public class TTestController {
                         "Delete test successfully."
                 ), HttpStatus.OK);
     }
+
     // * hardDelete an exists test.
     @DeleteMapping("delete/{testId}")
-    public ResponseEntity<?> hardDeleteTestById(@PathVariable("testId") Long testId) throws CustomException{
+    public ResponseEntity<?> hardDeleteTestById(@PathVariable("testId") Long testId) throws CustomException {
         testService.hardDeleteByTestId(testId);
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
@@ -115,6 +117,7 @@ public class TTestController {
                         "Delete test successfully."
                 ), HttpStatus.OK);
     }
+
     // * Find test by testName.
     @GetMapping("/search")
     public ResponseEntity<?> findByTestName(
@@ -127,22 +130,15 @@ public class TTestController {
         Pageable pageable;
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        try {
-            List<ATestResponse> testResponses = testService.getAllByTestNameAndTeacherName(testName, userLogin.userLogin().getUsername());
-            Page<?> tests = commonService.convertListToPages(pageable, testResponses);
-            if (!tests.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                tests.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Tests page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Tests page is out of range.");
-        }
+        Page<ATestResponse> testResponses = testService.getAllByTestNameAndTeacherName(testName, userLoggedIn.getUserLoggedIn().getUsername(), pageable);
+        if (testResponses.getContent().isEmpty()) throw new CustomException("Tests page is empty.");
+        return new ResponseEntity<>(
+                new ResponseWrapper<>(
+                        EHttpStatus.SUCCESS,
+                        HttpStatus.OK.value(),
+                        HttpStatus.OK.name(),
+                        testResponses.getContent()
+                ), HttpStatus.OK);
     }
 
 
