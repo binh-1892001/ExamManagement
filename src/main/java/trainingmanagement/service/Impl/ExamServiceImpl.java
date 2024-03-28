@@ -1,14 +1,13 @@
 package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.AExamRequest;
 import trainingmanagement.model.dto.response.admin.AExamResponse;
-import trainingmanagement.model.dto.response.admin.ATestResponse;
 import trainingmanagement.model.dto.response.teacher.TExamResponse;
-import trainingmanagement.model.entity.Classroom;
-import trainingmanagement.model.entity.Test;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.entity.Exam;
 import trainingmanagement.model.entity.Subject;
@@ -26,12 +25,12 @@ public class ExamServiceImpl implements ExamService {
     private final ExamRepository examRepository;
     private final SubjectService subjectService;
     @Override
-    public List<Exam> getAllToList() {
-        return examRepository.findAll();
+    public Page<Exam> getAllToList(Pageable pageable) {
+        return examRepository.findAll(pageable);
     }
     @Override
-    public List<AExamResponse> getAllExamResponsesToList() {
-        return getAllToList().stream().map(this::entityAMap).toList();
+    public Page<AExamResponse> getAllExamResponsesToList(Pageable pageable) {
+        return getAllToList(pageable).map(this::entityAMap);
     }
     @Override
     public Optional<Exam> getById(Long examId) {
@@ -85,17 +84,17 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public List<AExamResponse> searchByExamName(String examName) {
-        return examRepository.findByExamNameContainingIgnoreCase(examName).stream().map(this::entityAMap).toList();
+    public Page<AExamResponse> searchByExamName(String examName, Pageable pageable) {
+        return examRepository.searchByExamNameContainingIgnoreCase(pageable,examName).map(this::entityAMap);
     }
     //Lấy danh sách Exam với trạng thái Active (Teacher)
     @Override
-    public List<Exam> getAllExamsToListWithActiveStatus() {
-        return examRepository.getAllByStatus(EActiveStatus.ACTIVE);
+    public Page<Exam> getAllExamsToListWithActiveStatus(Pageable pageable) {
+        return examRepository.getAllByStatus(EActiveStatus.ACTIVE, pageable);
     }
     @Override
-    public List<TExamResponse> getAllExamResponsesToListWithActiveStatus() {
-        return getAllExamsToListWithActiveStatus().stream().map(this::entityTMap).toList();
+    public Page<TExamResponse> getAllExamResponsesToListWithActiveStatus(Pageable pageable) {
+        return getAllExamsToListWithActiveStatus(pageable).map(this::entityTMap);
     }
     // Lấy ra Exam theo id với trang thái Active(Teacher)
     @Override
@@ -113,21 +112,19 @@ public class ExamServiceImpl implements ExamService {
     }
     //*Lấy danh sách Exam theo ngày tạo
     @Override
-    public List<AExamResponse> getAllExamByCreatedDate(LocalDate date) {
-        return examRepository.findByCreatedDate(date).stream().map(this::entityAMap).toList();
+    public Page<AExamResponse> getAllExamByCreatedDate(LocalDate date, Pageable pageable) {
+        return examRepository.findByCreatedDate(date,pageable).map(this::entityAMap);
     }
     //*Lấy danh sách Exam theo khoảng thời gian tạo
     @Override
-    public List<AExamResponse> getAllExamFromDateToDate(String dateStart, String dateEnd) {
-        List<Exam> exams = examRepository.getAllFromDateToDate(dateStart,dateEnd);
-        return exams.stream().map(this::entityAMap).toList();
+    public Page<AExamResponse> getAllExamFromDateToDate(String dateStart, String dateEnd,Pageable pageable) {
+        return examRepository.getAllFromDateToDate(dateStart,dateEnd,pageable).map(this::entityAMap);
     }
 
     //find by subjectId
     @Override
-    public List<AExamResponse> getAllBySubjectId(Long subjectId) {
-        List<Exam> exams = examRepository.getAllBySubjectId(subjectId);
-        return exams.stream().map(this::entityAMap).toList();
+    public Page<AExamResponse> getAllBySubjectId(Long subjectId, Pageable pageable) {
+        return examRepository.getAllBySubjectId(subjectId, pageable).map(this::entityAMap);
     }
 
     @Override

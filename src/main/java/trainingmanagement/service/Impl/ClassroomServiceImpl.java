@@ -97,9 +97,8 @@ public class ClassroomServiceImpl implements ClassroomService {
      * @return Page<AClassResponse> trả về 1 Page đối tượng Classroom dùng cho Admin.
      * */
     @Override
-    public Page<AClassResponse> entityAMap(Page<Classroom> classPage){
-        List<AClassResponse> classes = classPage.stream().map(this::entityAMap).toList();
-        return new PageImpl<>(classes, classPage.getPageable(), classPage.getTotalPages());
+    public Page<AClassResponse> entityAMap(Page<Classroom> classes){
+        return classes.map(this::entityAMap);
     }
     /**
      * ? Service dùng để lấy ra Class theo Id.
