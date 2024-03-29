@@ -5,6 +5,7 @@ import trainingmanagement.model.dto.request.student.ListStudentChoice;
 import trainingmanagement.model.dto.request.teacher.TResultRequest;
 import trainingmanagement.model.dto.response.teacher.TResultResponse;
 import trainingmanagement.model.entity.Result;
+import trainingmanagement.model.entity.Test;
 import trainingmanagement.model.entity.User;
 
 import java.util.List;
@@ -15,7 +16,6 @@ public interface ResultService {
     Result checkAndResultTest(ListStudentChoice listStudentChoice, Long testId) throws CustomException;
     //* học sinh xem lịch sử điểm các bài đã làm
     List<Result> getAllByStudent();
-
     // <----- ROLE TEACHER BEGIN
     List<Result> getAllToListByClassIdAndTeacher(Long classId) throws CustomException;
     List<TResultResponse> getAllResultResponsesToList(Long classId) throws CustomException;
@@ -27,6 +27,7 @@ public interface ResultService {
     void softDeleteById(Long id) throws CustomException;
     List<TResultResponse> searchByStudentFullName(String fullName,Long classId) throws CustomException;
     TResultResponse entityTMap(Result result);
+    List<Result> findAllByUserAndTest(User user, Test test);
     Result entityTMap(TResultRequest tResultRequest);
     // END ------>
 }

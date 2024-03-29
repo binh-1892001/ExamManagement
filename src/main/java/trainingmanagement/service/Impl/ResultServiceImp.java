@@ -16,7 +16,11 @@ import trainingmanagement.repository.ResultRepository;
 import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.*;
 
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -53,12 +57,14 @@ public class ResultServiceImp implements ResultService {
                     }
                 }
             }
+            List<Result> results = findAllByUserAndTest(userLoggedIn.getUserLoggedIn(),testOptional.get());
+            int count = results.size();
             Result result = Result.builder()
                     .user(userLoggedIn.getUserLoggedIn())
                     .test(testOptional.get())
                     .status(EActiveStatus.ACTIVE)
                     .mark(myMark)
-                    .examTimes(1)
+                    .examTimes(++count)
                     .build();
             return resultRepository.save(result);
         }
@@ -178,6 +184,11 @@ public class ResultServiceImp implements ResultService {
                 .test(result.getTest())
                 .mark(result.getMark())
                 .build();
+    }
+
+    @Override
+    public List<Result> findAllByUserAndTest(User user, Test test) {
+        return resultRepository.findAllByUserAndTest(user,test);
     }
 
     @Override
