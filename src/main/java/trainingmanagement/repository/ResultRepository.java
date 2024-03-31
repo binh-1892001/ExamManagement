@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import trainingmanagement.model.entity.Result;
+import trainingmanagement.model.entity.Test;
 import trainingmanagement.model.entity.User;
 
 import java.util.List;
@@ -22,4 +23,5 @@ public interface ResultRepository extends JpaRepository<Result,Long> {
 //    List<Result> findByStudentFullName(String keyword, User teacher);
     Optional<Result> findByIdAndTeacher(Long id,User teacher);
     void deleteByIdAndTeacher(Long id,User teacher);
+    List<Result> findAllByUserAndTest(User user, Test test);
 }

@@ -36,18 +36,22 @@ public class TTestController {
             @RequestParam(defaultValue = "asc", name = "order") String order,
             @PathVariable Long examId
     ) throws CustomException {
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        Page<ATestResponse> testResponses = testService.getAllByExamIdAndTeacher(examId, userLoggedIn.getUserLoggedIn().getUsername(), pageable);
-        if (testResponses.getContent().isEmpty()) throw new CustomException("Tests page is empty.");
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        testResponses.getContent()
-                ), HttpStatus.OK);
+        try {
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            Page<ATestResponse> testResponses = testService.getAllByExamIdAndTeacher(examId, userLoggedIn.getUserLoggedIn().getUsername(), pageable);
+            if (testResponses.getContent().isEmpty()) throw new CustomException("Tests page is empty.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            testResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
     // * Get test by test id.
@@ -125,17 +129,21 @@ public class TTestController {
             @RequestParam(defaultValue = "testName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "sortBy") String sortBy
     ) throws CustomException {
-        Pageable pageable;
-        if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        Page<ATestResponse> testResponses = testService.getAllByTestNameAndTeacherName(testName, userLoggedIn.getUserLoggedIn().getUsername(), pageable);
-        if (testResponses.getContent().isEmpty()) throw new CustomException("Tests page is empty.");
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        testResponses.getContent()
-                ), HttpStatus.OK);
+        try {
+            Pageable pageable;
+            if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            Page<ATestResponse> testResponses = testService.getAllByTestNameAndTeacherName(testName, userLoggedIn.getUserLoggedIn().getUsername(), pageable);
+            if (testResponses.getContent().isEmpty()) throw new CustomException("Tests page is empty.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            testResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 }

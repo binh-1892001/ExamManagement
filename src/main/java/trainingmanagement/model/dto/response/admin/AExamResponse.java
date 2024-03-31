@@ -34,7 +34,7 @@ public class AExamResponse {
     private Long examId;
     private String examName;
     private EActiveStatus status;
-    private Subject subject;
+    private String subjectName;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate createdDate;
     @JsonFormat(pattern = "dd-MM-yyyy")

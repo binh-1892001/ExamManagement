@@ -53,12 +53,14 @@ public class ResultServiceImp implements ResultService {
                     }
                 }
             }
+            List<Result> results = findAllByUserAndTest(userLoggedIn.getUserLoggedIn(),testOptional.get());
+            int count = results.size();
             Result result = Result.builder()
                     .user(userLoggedIn.getUserLoggedIn())
                     .test(testOptional.get())
                     .status(EActiveStatus.ACTIVE)
                     .mark(myMark)
-                    .examTimes(1)
+                    .examTimes(++count)
                     .build();
             return resultRepository.save(result);
         }
@@ -68,6 +70,11 @@ public class ResultServiceImp implements ResultService {
     @Override
     public List<Result> getAllByStudent() {
         return resultRepository.getAllByUser(userLoggedIn.getUserLoggedIn());
+    }
+
+    @Override
+    public List<Result> findAllByUserAndTest(User user, Test test) {
+        return resultRepository.findAllByUserAndTest(user,test);
     }
 
     @Override

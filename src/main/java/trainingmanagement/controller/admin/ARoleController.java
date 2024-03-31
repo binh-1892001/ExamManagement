@@ -34,6 +34,7 @@ public class ARoleController {
             @RequestParam(defaultValue = "roleName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
+        try {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -46,6 +47,9 @@ public class ARoleController {
                         HttpStatus.OK.name(),
                         roleResponses.getContent()
                 ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
     @GetMapping("/search")
@@ -56,6 +60,7 @@ public class ARoleController {
             @RequestParam(defaultValue = "roleName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
+        try {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -68,5 +73,8 @@ public class ARoleController {
                         HttpStatus.OK.name(),
                         roleResponses.getContent()
                 ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 }

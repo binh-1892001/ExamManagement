@@ -5,6 +5,7 @@ import trainingmanagement.model.dto.request.student.ListStudentChoice;
 import trainingmanagement.model.dto.request.teacher.TResultRequest;
 import trainingmanagement.model.dto.response.teacher.TResultResponse;
 import trainingmanagement.model.entity.Result;
+import trainingmanagement.model.entity.Test;
 import trainingmanagement.model.entity.User;
 
 import java.util.List;
@@ -15,6 +16,7 @@ public interface ResultService {
     Result checkAndResultTest(ListStudentChoice listStudentChoice, Long testId) throws CustomException;
     //* học sinh xem lịch sử điểm các bài đã làm
     List<Result> getAllByStudent();
+    List<Result> findAllByUserAndTest(User user, Test test);
 
     // <----- ROLE TEACHER BEGIN
     List<Result> getAllToListByClassIdAndTeacher(Long classId) throws CustomException;

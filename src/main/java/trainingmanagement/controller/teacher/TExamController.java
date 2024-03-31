@@ -32,18 +32,22 @@ public class TExamController {
             @RequestParam(defaultValue = "examName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "sortBy") String sortBy
     ) throws CustomException {
-        Pageable pageable;
-        if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        Page<TExamResponse> examResponses = examService.getAllExamResponsesToListWithActiveStatus(pageable);
-        if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        examResponses.getContent()
-                ), HttpStatus.OK);
+        try {
+            Pageable pageable;
+            if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            Page<TExamResponse> examResponses = examService.getAllExamResponsesToListWithActiveStatus(pageable);
+            if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            examResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
     // * Get Exam by id.

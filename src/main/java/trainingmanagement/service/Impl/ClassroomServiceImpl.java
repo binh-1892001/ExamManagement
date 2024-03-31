@@ -340,9 +340,9 @@ public class ClassroomServiceImpl implements ClassroomService {
      * */
     @Override
     public AClassResponse entityAMap(Classroom classroom) {
-        AUserResponse teacher = null;
-        if(classroom.getTeacher() != null)
-            teacher = userService.entityAMap(classroom.getTeacher());
+//        AUserResponse teacher = null;
+//        if(classroom.getTeacher() != null)
+//            teacher = userService.entityAMap(classroom.getTeacher());
         return AClassResponse.builder()
             .classId(classroom.getId())
             .className(classroom.getClassName())
@@ -352,7 +352,7 @@ public class ClassroomServiceImpl implements ClassroomService {
             .createdBy(classroom.getCreateBy())
             .modifyDate(classroom.getModifyDate())
             .modifyBy(classroom.getModifyBy())
-            .teacher(teacher)
+            .teacherName(classroom.getTeacher().getFullName())
             .build();
     }
     /**
