@@ -17,7 +17,6 @@ public interface ResultService {
     //* học sinh xem lịch sử điểm các bài đã làm
     List<Result> getAllByStudent();
     List<Result> findAllByUserAndTest(User user, Test test);
-
     // <----- ROLE TEACHER BEGIN
     List<Result> getAllToListByClassIdAndTeacher(Long classId) throws CustomException;
     List<TResultResponse> getAllResultResponsesToList(Long classId) throws CustomException;

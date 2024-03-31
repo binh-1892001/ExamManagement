@@ -15,7 +15,6 @@ import trainingmanagement.model.enums.ERoleName;
 import trainingmanagement.repository.ResultRepository;
 import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.*;
-
 import java.util.*;
 
 @Service
@@ -186,7 +185,6 @@ public class ResultServiceImp implements ResultService {
                 .mark(result.getMark())
                 .build();
     }
-
     @Override
     public Result entityTMap(TResultRequest tResultRequest){
         EActiveStatus activeStatus = switch (tResultRequest.getStatus().toUpperCase()) {
