@@ -17,6 +17,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class RoleServiceImpl implements RoleService {
     private final RoleRepository roleRepository;
+
     @Override
     public Page<Role> getAllToList(Pageable pageable) {
         return roleRepository.findAll(pageable);
@@ -31,14 +32,17 @@ public class RoleServiceImpl implements RoleService {
     public Role findByRoleName(ERoleName roleName) {
         return roleRepository.findByRoleName(roleName);
     }
+
     @Override
     public Page<ARoleResponse> findAllByRoleNameContainingIgnoreCase(String roleName, Pageable pageable) {
         return roleRepository.findAllByRoleNameContainingIgnoreCase(roleName, pageable).map(this::entityAMap);
     }
+
     @Override
     public ARoleResponse entityAMap(Role role) {
         return ARoleResponse.builder()
-            .roleName(role.getRoleName())
-            .build();
+                .roleId(role.getId())
+                .roleName(role.getRoleName())
+                .build();
     }
 }

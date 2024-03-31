@@ -156,7 +156,7 @@ public class ExamServiceImpl implements ExamService {
                 .examId(exam.getId())
                 .examName(exam.getExamName())
                 .status(exam.getStatus())
-                .subject(exam.getSubject())
+                .subjectName(exam.getSubject().getSubjectName())
                 .createdDate(exam.getCreatedDate())
                 .build();
     }

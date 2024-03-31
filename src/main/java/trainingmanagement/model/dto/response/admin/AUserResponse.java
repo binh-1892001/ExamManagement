@@ -26,10 +26,16 @@
 package trainingmanagement.model.dto.response.admin;
 
 import lombok.*;
+import trainingmanagement.model.entity.Role;
 import trainingmanagement.model.enums.EActiveStatus;
 import trainingmanagement.model.enums.EGender;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Stream;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+import trainingmanagement.model.enums.ERoleName;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -52,4 +58,5 @@ public class AUserResponse {
     private LocalDate modifyDate;
     private String createdBy;
     private String modifyBy;
+    private Stream<ERoleName> roles;
 }

@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.time.DateSearch;
+import trainingmanagement.model.dto.time.DateSearchCreatedDate;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.ATestRequest;
 import trainingmanagement.model.dto.response.admin.ATestResponse;
@@ -41,6 +42,7 @@ public class ATestController {
             @RequestParam(defaultValue = "testName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "sortBy") String sortBy
     ) throws CustomException {
+        try {
         Pageable pageable;
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -53,8 +55,9 @@ public class ATestController {
                         HttpStatus.OK.name(),
                         testResponses.getContent()
                 ), HttpStatus.OK);
-
-
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
     // * Get test by test id.
@@ -152,6 +155,7 @@ public class ATestController {
             @RequestParam(defaultValue = "testName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "sortBy") String sortBy
     ) throws CustomException {
+        try {
         Pageable pageable;
         if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -164,6 +168,9 @@ public class ATestController {
                         HttpStatus.OK.name(),
                         testResponses.getContent()
                 ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
 
@@ -190,10 +197,10 @@ public class ATestController {
                             HttpStatus.OK.name(),
                             testResponses.getContent()
                     ), HttpStatus.OK);
-
-
         } catch (NumberFormatException e) {
             throw new CustomException("Incorrect id number format");
+        } catch (Exception exception) {
+        throw new CustomException("An error occurred while processing the query!");
         }
     }
 
@@ -206,6 +213,7 @@ public class ATestController {
             @RequestParam(defaultValue = "asc", name = "order") String order,
             @RequestParam(defaultValue = "QUIZTEST", name = "typeTest") String typeTest
     ) throws CustomException {
+        try {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -226,7 +234,9 @@ public class ATestController {
                         HttpStatus.OK.name(),
                         testResponses.getContent()
                 ), HttpStatus.OK);
-
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
     //* lấy danh sách test ngày tháng tạo
@@ -236,12 +246,13 @@ public class ATestController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "testName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @RequestBody DateSearch dateSearch
+            @RequestBody @Valid DateSearchCreatedDate dateSearchCreatedDate
     ) throws CustomException {
+        try {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        LocalDate date = LocalDate.parse(dateSearch.getCreateDate());
+        LocalDate date = LocalDate.parse(dateSearchCreatedDate.getCreateDate());
         Page<ATestResponse> testResponses = testService.getAllByCreatedDate(date, pageable);
         if (testResponses.getContent().isEmpty()) throw new CustomException("Tests page is empty.");
         return new ResponseEntity<>(
@@ -251,6 +262,9 @@ public class ATestController {
                         HttpStatus.OK.name(),
                         testResponses.getContent()
                 ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
 
@@ -263,6 +277,7 @@ public class ATestController {
             @RequestParam(defaultValue = "asc", name = "order") String order,
             @RequestBody @Valid DateSearch dateSearch
     ) throws CustomException {
+        try {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -277,6 +292,8 @@ public class ATestController {
                         HttpStatus.OK.name(),
                         testResponses.getContent()
                 ), HttpStatus.OK);
-
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 }

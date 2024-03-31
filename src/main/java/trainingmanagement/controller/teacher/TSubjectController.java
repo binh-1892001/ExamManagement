@@ -37,18 +37,22 @@ public class TSubjectController {
             @RequestParam(defaultValue = "subjectName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "sortBy") String sortBy
     ) throws CustomException {
-        Pageable pageable;
-        if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        Page<TSubjectResponse> examResponses = subjectService.getAllSubjectResponsesToListRoleTeacher(pageable);
-        if (examResponses.getContent().isEmpty()) throw new CustomException("Classes page is empty.");
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        examResponses.getContent()
-                ), HttpStatus.OK);
+        try {
+            Pageable pageable;
+            if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            Page<TSubjectResponse> examResponses = subjectService.getAllSubjectResponsesToListRoleTeacher(pageable);
+            if (examResponses.getContent().isEmpty()) throw new CustomException("Classes page is empty.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            examResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
     // * Get Subject by id.
@@ -80,11 +84,15 @@ public class TSubjectController {
             @RequestParam(defaultValue = "subjectName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
-        Pageable pageable;
-        if (order.equals ( "asc" )) pageable = PageRequest.of ( page, limit, Sort.by ( sort ).ascending () );
-        else pageable = PageRequest.of ( page, limit, Sort.by ( sort ).descending () );
-        Page<TSubjectResponse> subjectResponses = subjectService.findBySubjectNameRoleTeacher(keyword,pageable);
-        if (subjectResponses.getContent().isEmpty()) throw new CustomException("Classes page is empty.");
-        return new ResponseEntity<>(new ResponseWrapper<>(EHttpStatus.SUCCESS, HttpStatus.OK.value(), HttpStatus.OK.name(), subjectResponses.getContent()),HttpStatus.OK);
+        try {
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            Page<TSubjectResponse> subjectResponses = subjectService.findBySubjectNameRoleTeacher(keyword, pageable);
+            if (subjectResponses.getContent().isEmpty()) throw new CustomException("Classes page is empty.");
+            return new ResponseEntity<>(new ResponseWrapper<>(EHttpStatus.SUCCESS, HttpStatus.OK.value(), HttpStatus.OK.name(), subjectResponses.getContent()), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 }

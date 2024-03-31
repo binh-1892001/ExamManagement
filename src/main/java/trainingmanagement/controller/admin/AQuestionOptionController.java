@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.time.DateSearchCreatedDate;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.AOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionOptionRequest;
@@ -74,6 +75,8 @@ public class AQuestionOptionController {
             throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 
@@ -84,12 +87,12 @@ public class AQuestionOptionController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @RequestBody @Valid DateSearch dateSearch) throws CustomException {
+            @RequestBody @Valid DateSearchCreatedDate dateSearchCreatedDate) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            LocalDate date = LocalDate.parse(dateSearch.getCreateDate());
+            LocalDate date = LocalDate.parse(dateSearchCreatedDate.getCreateDate());
             List<AQuestionResponse> questionResponses = questionService.getAllByCreatedDate(date);
             Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
@@ -104,6 +107,8 @@ public class AQuestionOptionController {
             throw new CustomException("Questions page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 
@@ -121,7 +126,7 @@ public class AQuestionOptionController {
         try {
             LocalDate dateStart = LocalDate.parse(dateSearch.getStartDate());
             LocalDate dateEnd = LocalDate.parse(dateSearch.getEndDate());
-            List<AQuestionResponse> questionResponses = questionService.getAllFromDayToDay(dateStart,dateEnd);
+            List<AQuestionResponse> questionResponses = questionService.getAllFromDayToDay(dateStart, dateEnd);
             Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
                 return new ResponseEntity<>(
@@ -135,6 +140,8 @@ public class AQuestionOptionController {
             throw new CustomException("Questions page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 
@@ -171,6 +178,8 @@ public class AQuestionOptionController {
             throw new CustomException("Questions page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 
@@ -208,7 +217,7 @@ public class AQuestionOptionController {
                             HttpStatus.CREATED.name(),
                             questionResponse
                     ), HttpStatus.CREATED);
-        }catch (NullPointerException e){
+        } catch (NullPointerException e) {
             throw new CustomException("All of input data must not be null");
         }
     }

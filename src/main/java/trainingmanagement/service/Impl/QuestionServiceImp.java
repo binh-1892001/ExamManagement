@@ -2,6 +2,7 @@ package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.admin.AOptionRequest;
 import trainingmanagement.model.dto.request.admin.AQuestionOptionRequest;
@@ -26,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Service
 @RequiredArgsConstructor
 public class QuestionServiceImp implements QuestionService {
     private final QuestionRepository questionRepository;
@@ -226,7 +227,7 @@ public class QuestionServiceImp implements QuestionService {
                 .image(question.getImage())
                 .status(question.getStatus())
                 .createdDate(question.getCreatedDate())
-                .test(question.getTest())
+                .testName(question.getTest().getTestName())
                 .options(question.getOptions().stream().map(optionService::entityAMap).toList())
                 .build();
     }

@@ -15,12 +15,7 @@ import trainingmanagement.model.enums.ERoleName;
 import trainingmanagement.repository.ResultRepository;
 import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.*;
-
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +69,11 @@ public class ResultServiceImp implements ResultService {
     @Override
     public List<Result> getAllByStudent() {
         return resultRepository.getAllByUser(userLoggedIn.getUserLoggedIn());
+    }
+
+    @Override
+    public List<Result> findAllByUserAndTest(User user, Test test) {
+        return resultRepository.findAllByUserAndTest(user,test);
     }
 
     @Override
@@ -185,12 +185,6 @@ public class ResultServiceImp implements ResultService {
                 .mark(result.getMark())
                 .build();
     }
-
-    @Override
-    public List<Result> findAllByUserAndTest(User user, Test test) {
-        return resultRepository.findAllByUserAndTest(user,test);
-    }
-
     @Override
     public Result entityTMap(TResultRequest tResultRequest){
         EActiveStatus activeStatus = switch (tResultRequest.getStatus().toUpperCase()) {

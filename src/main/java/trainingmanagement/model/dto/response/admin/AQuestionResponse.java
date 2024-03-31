@@ -44,12 +44,13 @@ public class AQuestionResponse {
     private EQuestionLevel questionLevel;
     private String image;
     private EActiveStatus status;
-    private Test test;
-    private List<AOptionResponse> options;
+    private String testName;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate createdDate;
     @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate modifyDate;
     private String createdBy;
     private String modifyBy;
+    private List<AOptionResponse> options;
+
 }

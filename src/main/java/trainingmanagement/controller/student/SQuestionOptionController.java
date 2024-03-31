@@ -61,6 +61,8 @@ public class SQuestionOptionController {
             throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 }

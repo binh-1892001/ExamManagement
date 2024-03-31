@@ -117,6 +117,7 @@ public class SubjectServiceImpl implements SubjectService {
     @Override
     public ASubjectResponse entityAMap(Subject subject) {
         return ASubjectResponse.builder()
+                .subjectId(subject.getId())
                 .subjectName(subject.getSubjectName())
                 .status(subject.getStatus())
                 .build();

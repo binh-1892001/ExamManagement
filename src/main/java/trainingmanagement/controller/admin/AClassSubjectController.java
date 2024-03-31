@@ -67,6 +67,8 @@ public class AClassSubjectController {
             throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Subjects page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 
@@ -103,6 +105,8 @@ public class AClassSubjectController {
             throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Classes page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 

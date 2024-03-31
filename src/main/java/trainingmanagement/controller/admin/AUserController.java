@@ -2,6 +2,7 @@ package trainingmanagement.controller.admin;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.query.sqm.InterpretationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +25,7 @@ import trainingmanagement.service.CommonService;
 import trainingmanagement.service.RoleService;
 import trainingmanagement.service.UserService;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +36,6 @@ import java.util.Set;
 @RequestMapping("/v1/admin/users")
 public class AUserController {
     private final UserService userService;
-    private final CommonService commonService;
     private final UserLoggedIn userLogin;
     private final RoleService roleService;
 
@@ -46,6 +47,7 @@ public class AUserController {
             @RequestParam(defaultValue = "username", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
+        try{
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -58,6 +60,9 @@ public class AUserController {
                         HttpStatus.OK.name(),
                         userResponses.getContent()
                 ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
     //* Create account
@@ -136,7 +141,7 @@ public class AUserController {
                                 EHttpStatus.SUCCESS,
                                 HttpStatus.OK.value(),
                                 HttpStatus.OK.name(),
-                                updatedUser
+                                userService.entityAMap(updatedUser)
                         ), HttpStatus.OK);
             }
             // ? Xử lý Exception cần tìm được user theo id trước khi khoá/mở khoá trong Controller.
@@ -176,7 +181,7 @@ public class AUserController {
                                 EHttpStatus.SUCCESS,
                                 HttpStatus.OK.value(),
                                 HttpStatus.OK.name(),
-                                updatedUser
+                                userService.entityAMap(updatedUser)
                         ), HttpStatus.OK);
             }
             // ? Xử lý Exception cần tìm được user theo id trước khi khoá/mở khoá trong Controller.
@@ -195,6 +200,7 @@ public class AUserController {
             @RequestParam(defaultValue = "username", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
+        try {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
@@ -207,6 +213,9 @@ public class AUserController {
                         HttpStatus.OK.name(),
                         userResponses.getContent()
                 ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
     // * lấy về danh sách teacher
@@ -217,17 +226,21 @@ public class AUserController {
             @RequestParam(defaultValue = "username", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        Page<AUserResponse> userResponses = userService.getAllTeacher(pageable);
-        if (userResponses.getContent().isEmpty()) throw new CustomException("Users page is empty.");
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        userResponses.getContent()
-                ), HttpStatus.OK);
+        try {
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            Page<AUserResponse> userResponses = userService.getAllTeacher(pageable);
+            if (userResponses.getContent().isEmpty()) throw new CustomException("Users page is empty.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            userResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 }

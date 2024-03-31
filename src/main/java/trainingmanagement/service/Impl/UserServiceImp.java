@@ -120,13 +120,14 @@ public class UserServiceImp implements UserService {
                 .email(registerRequest.getEmail())
                 .avatar(registerRequest.getAvatar())
                 .phone(registerRequest.getPhone())
-                .dateOfBirth( LocalDate.parse ( registerRequest.getDateOfBirth() ) )
+                .dateOfBirth(LocalDate.parse(registerRequest.getDateOfBirth()))
                 .status(EActiveStatus.INACTIVE)
                 .gender(userGender)
                 .roles(userRoles)
                 .build();
         return userRepository.save(users);
     }
+
     // * xóa tài khoản
     @Override
     public void deleteById(Long userId) {
@@ -140,7 +141,7 @@ public class UserServiceImp implements UserService {
 
     //* cập nhật tài khoản
     @Override
-    public User updateAcc(ChangeInformation changeInformation, Long userId) throws CustomException{
+    public User updateAcc(ChangeInformation changeInformation, Long userId) throws CustomException {
         Optional<User> userOldOptional = getUserById(userId);
         User userOld = userOldOptional.get();
         Set<Role> roles = userOld.getRoles();
@@ -150,7 +151,7 @@ public class UserServiceImp implements UserService {
                 .email(changeInformation.getEmail())
                 .avatar(changeInformation.getAvatar())
                 .phone(changeInformation.getPhone())
-                .dateOfBirth( LocalDate.parse ( changeInformation.getDateOfBirth() ) )
+                .dateOfBirth(LocalDate.parse(changeInformation.getDateOfBirth()))
                 .status(EActiveStatus.ACTIVE)
                 .gender(changeInformation.getGender().equalsIgnoreCase(EGender.MALE.name())
                         ? EGender.MALE : EGender.FEMALE)
@@ -168,11 +169,11 @@ public class UserServiceImp implements UserService {
     public User updatePassword(ChangePassword changePassword, Long userId) throws CustomException {
         Optional<User> userOptional = getUserById(userId);
         User user = userOptional.get();
-        if (!passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
+        if (!passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
             throw new CustomException("Old password not true!");
-        }else if (changePassword.getOldPassword().equals(changePassword.getNewPassword())){
+        } else if (changePassword.getOldPassword().equals(changePassword.getNewPassword())) {
             throw new CustomException("New password like old password!");
-        }else if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
+        } else if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
             throw new CustomException("Confirm password not like new password");
         }
         user.setPassword(passwordEncoder.encode(changePassword.getConfirmPassword()));
@@ -198,7 +199,7 @@ public class UserServiceImp implements UserService {
                 .email(userRequest.getEmail())
                 .phone(userRequest.getPhone())
                 .avatar(userRequest.getAvatar())
-                .dateOfBirth( LocalDate.parse ( userRequest.getDateOfBirth() ) )
+                .dateOfBirth(LocalDate.parse(userRequest.getDateOfBirth()))
                 .gender(userRequest.getGender().equalsIgnoreCase(EGender.MALE.name()) ? EGender.MALE : EGender.FEMALE)
                 .status(EActiveStatus.INACTIVE)
                 .build();
@@ -228,19 +229,20 @@ public class UserServiceImp implements UserService {
     @Override
     public AUserResponse entityAMap(User user) {
         return AUserResponse.builder()
-            .userId(user.getId())
-            .fullName(user.getFullName())
-            .username(user.getUsername())
-            .avatar(user.getAvatar())
-            .email(user.getEmail())
-            .phone(user.getPhone())
-            .dateOfBirth(user.getDateOfBirth())
-            .gender(user.getGender())
-            .status(user.getStatus())
-            .createdDate(user.getCreatedDate())
-            .modifyDate(user.getModifyDate())
-            .createdBy(user.getCreateBy())
-            .modifyBy(user.getModifyBy())
-            .build();
+                .userId(user.getId())
+                .fullName(user.getFullName())
+                .username(user.getUsername())
+                .avatar(user.getAvatar())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .dateOfBirth(user.getDateOfBirth())
+                .gender(user.getGender())
+                .status(user.getStatus())
+                .createdDate(user.getCreatedDate())
+                .modifyDate(user.getModifyDate())
+                .createdBy(user.getCreateBy())
+                .modifyBy(user.getModifyBy())
+                .roles(user.getRoles().stream().map(Role::getRoleName))
+                .build();
     }
 }

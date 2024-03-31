@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.time.DateSearchCreatedDate;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.AExamRequest;
 import trainingmanagement.model.dto.response.admin.AExamResponse;
@@ -38,18 +39,22 @@ public class AExamController {
             @RequestParam(defaultValue = "examName", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        Page<AExamResponse> examResponses = examService.getAllExamResponsesToList(pageable);
-        if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        examResponses.getContent()
-                ), HttpStatus.OK);
+        try {
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            Page<AExamResponse> examResponses = examService.getAllExamResponsesToList(pageable);
+            if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            examResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
 
@@ -156,18 +161,22 @@ public class AExamController {
             @RequestParam(defaultValue = "id", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        Page<AExamResponse> examResponses = examService.searchByExamName(keyword, pageable);
-        if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        examResponses.getContent()
-                ), HttpStatus.OK);
+        try {
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            Page<AExamResponse> examResponses = examService.searchByExamName(keyword, pageable);
+            if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            examResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
     //* Tìm kiếm theo ngày tạo Exam
@@ -177,20 +186,24 @@ public class AExamController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "id", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @RequestBody DateSearch dateSearch) throws CustomException {
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        LocalDate date = LocalDate.parse(dateSearch.getCreateDate());
-        Page<AExamResponse> examResponses = examService.getAllExamByCreatedDate(date, pageable);
-        if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        examResponses.getContent()
-                ), HttpStatus.OK);
+            @RequestBody @Valid DateSearchCreatedDate dateSearchCreatedDate) throws CustomException {
+        try {
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            LocalDate date = LocalDate.parse(dateSearchCreatedDate.getCreateDate());
+            Page<AExamResponse> examResponses = examService.getAllExamByCreatedDate(date, pageable);
+            if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            examResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
 
     }
 
@@ -201,18 +214,22 @@ public class AExamController {
             @RequestParam(defaultValue = "id", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
             @RequestBody @Valid DateSearch dateSearch) throws CustomException {
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        Page<AExamResponse> examResponses = examService.getAllExamFromDateToDate(dateSearch.getStartDate(), dateSearch.getEndDate(), pageable);
-        if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        examResponses.getContent()
-                ), HttpStatus.OK);
+        try {
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            Page<AExamResponse> examResponses = examService.getAllExamFromDateToDate(dateSearch.getStartDate(), dateSearch.getEndDate(), pageable);
+            if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            examResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
     //* lấy danh sách exam theo subjectId
@@ -224,17 +241,21 @@ public class AExamController {
             @RequestParam(defaultValue = "asc", name = "order") String order,
             @PathVariable String subjectId
     ) throws CustomException {
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
-        Long idSubject = Long.parseLong(subjectId);
-        Page<AExamResponse> examResponses = examService.getAllBySubjectId(idSubject, pageable);
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        examResponses.getContent()
-                ), HttpStatus.OK);
+        try {
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            Long idSubject = Long.parseLong(subjectId);
+            Page<AExamResponse> examResponses = examService.getAllBySubjectId(idSubject, pageable);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            examResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 }
