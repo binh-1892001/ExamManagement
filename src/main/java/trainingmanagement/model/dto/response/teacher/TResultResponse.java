@@ -1,9 +1,6 @@
 package trainingmanagement.model.dto.response.teacher;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import trainingmanagement.model.entity.Test;
 import trainingmanagement.model.entity.User;
 
@@ -11,7 +8,8 @@ import java.time.LocalDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class TResultResponse {
     private User student;

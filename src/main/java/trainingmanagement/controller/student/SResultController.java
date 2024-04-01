@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.student.ListStudentChoice;
+import trainingmanagement.model.dto.response.student.SResultResponse;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.entity.Result;
 import trainingmanagement.model.enums.EHttpStatus;
@@ -30,7 +31,7 @@ public class SResultController {
                             EHttpStatus.SUCCESS,
                             HttpStatus.OK.value(),
                             HttpStatus.OK.name(),
-                            result
+                            resultService.entitySMap(result)
                     ), HttpStatus.OK);
         } catch (NumberFormatException e) {
             throw new CustomException("Incorrect id number format");
@@ -39,7 +40,7 @@ public class SResultController {
 
     @GetMapping("/result/checkHistory")
     public ResponseEntity<?> checkHistory() {
-        List<Result> results = resultService.getAllByStudent();
+        List<SResultResponse> results = resultService.displayResultsStudent();
         return new ResponseEntity<>(
                 new ResponseWrapper<>(
                         EHttpStatus.SUCCESS,

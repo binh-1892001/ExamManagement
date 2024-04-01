@@ -5,7 +5,8 @@ import trainingmanagement.model.enums.EClassStatus;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class TClassResponse {
     private String className;

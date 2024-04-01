@@ -1,13 +1,11 @@
 package trainingmanagement.model.dto.response.teacher;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import trainingmanagement.model.entity.Subject;
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class TExamResponse {
         private Long examId;

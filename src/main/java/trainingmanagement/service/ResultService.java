@@ -3,6 +3,7 @@ package trainingmanagement.service;
 import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.student.ListStudentChoice;
 import trainingmanagement.model.dto.request.teacher.TResultRequest;
+import trainingmanagement.model.dto.response.student.SResultResponse;
 import trainingmanagement.model.dto.response.teacher.TResultResponse;
 import trainingmanagement.model.entity.Result;
 import trainingmanagement.model.entity.User;
@@ -15,7 +16,7 @@ public interface ResultService {
     Result checkAndResultTest(ListStudentChoice listStudentChoice, Long testId) throws CustomException;
     //* học sinh xem lịch sử điểm các bài đã làm
     List<Result> getAllByStudent();
-
+    List<SResultResponse> displayResultsStudent();
     // <----- ROLE TEACHER BEGIN
     List<Result> getAllToListByClassIdAndTeacher(Long classId) throws CustomException;
     List<TResultResponse> getAllResultResponsesToList(Long classId) throws CustomException;
@@ -28,5 +29,6 @@ public interface ResultService {
     List<TResultResponse> searchByStudentFullName(String fullName,Long classId) throws CustomException;
     TResultResponse entityTMap(Result result);
     Result entityTMap(TResultRequest tResultRequest);
+     SResultResponse entitySMap(Result Result);
     // END ------>
 }
