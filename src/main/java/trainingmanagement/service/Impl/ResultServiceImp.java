@@ -7,6 +7,7 @@ import trainingmanagement.exception.CustomException;
 import trainingmanagement.model.dto.request.student.ListStudentChoice;
 import trainingmanagement.model.dto.request.student.StudentChoice;
 import trainingmanagement.model.dto.request.teacher.TResultRequest;
+import trainingmanagement.model.dto.response.student.SResultResponse;
 import trainingmanagement.model.dto.response.teacher.TResultResponse;
 import trainingmanagement.model.entity.*;
 import trainingmanagement.model.enums.EActiveStatus;
@@ -15,6 +16,8 @@ import trainingmanagement.model.enums.ERoleName;
 import trainingmanagement.repository.ResultRepository;
 import trainingmanagement.security.UserDetail.UserLoggedIn;
 import trainingmanagement.service.*;
+
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -69,6 +72,11 @@ public class ResultServiceImp implements ResultService {
     @Override
     public List<Result> getAllByStudent() {
         return resultRepository.getAllByUser(userLoggedIn.getUserLoggedIn());
+    }
+
+    @Override
+    public List<SResultResponse> displayResultsStudent() {
+        return getAllByStudent().stream().map(this::entitySMap).toList();
     }
 
     @Override
@@ -185,6 +193,7 @@ public class ResultServiceImp implements ResultService {
                 .mark(result.getMark())
                 .build();
     }
+
     @Override
     public Result entityTMap(TResultRequest tResultRequest){
         EActiveStatus activeStatus = switch (tResultRequest.getStatus().toUpperCase()) {
@@ -200,6 +209,21 @@ public class ResultServiceImp implements ResultService {
                 .status(activeStatus)
                 .mark(tResultRequest.getMark())
                 .examTimes(tResultRequest.getExamTimes())
+                .build();
+    }
+
+    @Override
+    public SResultResponse entitySMap(Result result) {
+        return SResultResponse.builder()
+                .id(result.getId())
+                .createdDate(result.getCreatedDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
+                .userId(result.getUser().getId())
+                .userName(result.getUser().getFullName())
+                .testId(result.getTest().getId())
+                .testName(result.getTest().getTestName())
+                .status(result.getStatus().toString())
+                .mark(result.getMark())
+                .examTimes(result.getExamTimes())
                 .build();
     }
 

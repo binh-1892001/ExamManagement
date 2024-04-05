@@ -1,12 +1,10 @@
 package trainingmanagement.model.dto.response.teacher;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Setter
+@Getter
 @Builder
 public class TSubjectResponse {
     private String subjectName;
