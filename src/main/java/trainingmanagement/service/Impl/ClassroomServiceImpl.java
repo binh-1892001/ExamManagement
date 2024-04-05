@@ -97,9 +97,8 @@ public class ClassroomServiceImpl implements ClassroomService {
      * @return Page<AClassResponse> trả về 1 Page đối tượng Classroom dùng cho Admin.
      * */
     @Override
-    public Page<AClassResponse> entityAMap(Page<Classroom> classPage){
-        List<AClassResponse> classes = classPage.stream().map(this::entityAMap).toList();
-        return new PageImpl<>(classes, classPage.getPageable(), classPage.getTotalPages());
+    public Page<AClassResponse> entityAMap(Page<Classroom> classes){
+        return classes.map(this::entityAMap);
     }
     /**
      * ? Service dùng để lấy ra Class theo Id.
@@ -269,8 +268,8 @@ public class ClassroomServiceImpl implements ClassroomService {
      * @return List<TClassResponse> trả về 1 List đối tượng Class dùng cho Teacher.
      * */
     @Override
-    public List<TClassResponse> getTAllToList() {
-        return classroomRepository.getAllByStatus(EActiveStatus.ACTIVE).stream().map(this::entityTMap).toList();
+    public Page<TClassResponse> getTAllToList(Pageable pageable) {
+        return classroomRepository.getAllByStatus(EActiveStatus.ACTIVE, pageable).map(this::entityTMap);
     }
     /**
      * ? Service dùng để lấy ra 1 đối tượng Class và chuyển về TClassResponse trong Db bằng method Get (dùng cho Teacher).
@@ -294,9 +293,9 @@ public class ClassroomServiceImpl implements ClassroomService {
      * @return List<TClassResponse> trả về 1 List đối tượng Classroom dùng cho Teacher.
      * */
     @Override
-    public List<TClassResponse> findTClassByClassName(String className) {
-        return classroomRepository.findByClassNameContainingIgnoreCase(className)
-                .stream().map(this::entityTMap).toList();
+    public Page<TClassResponse> findTClassByClassName(String className, Pageable pageable) {
+        return classroomRepository.findByClassNameContainingIgnoreCase(className, pageable)
+                .map(this::entityTMap);
     }
     /**
      * ? Service dùng để chuyển đổi đối tượng Class dùng cho Admin.
@@ -341,9 +340,9 @@ public class ClassroomServiceImpl implements ClassroomService {
      * */
     @Override
     public AClassResponse entityAMap(Classroom classroom) {
-        AUserResponse teacher = null;
-        if(classroom.getTeacher() != null)
-            teacher = userService.entityAMap(classroom.getTeacher());
+//        AUserResponse teacher = null;
+//        if(classroom.getTeacher() != null)
+//            teacher = userService.entityAMap(classroom.getTeacher());
         return AClassResponse.builder()
             .classId(classroom.getId())
             .className(classroom.getClassName())
@@ -353,7 +352,7 @@ public class ClassroomServiceImpl implements ClassroomService {
             .createdBy(classroom.getCreateBy())
             .modifyDate(classroom.getModifyDate())
             .modifyBy(classroom.getModifyBy())
-            .teacher(teacher)
+            .teacherName(classroom.getTeacher().getFullName())
             .build();
     }
     /**

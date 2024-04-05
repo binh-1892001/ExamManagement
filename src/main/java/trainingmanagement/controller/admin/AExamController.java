@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import trainingmanagement.exception.CustomException;
+import trainingmanagement.model.dto.time.DateSearchCreatedDate;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.dto.request.admin.AExamRequest;
 import trainingmanagement.model.dto.response.admin.AExamResponse;
@@ -36,28 +37,26 @@ public class AExamController {
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "examName", name = "sort") String sort,
-            @RequestParam(defaultValue = "asc", name = "sortBy") String sortBy
+            @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
-        Pageable pageable;
-        if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AExamResponse> examResponses = examService.getAllExamResponsesToList();
-            Page<?> exams = commonService.convertListToPages(pageable, examResponses);
-            if (!exams.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                exams.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Exams page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Exams page is out of range.");
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            Page<AExamResponse> examResponses = examService.getAllExamResponsesToList(pageable);
+            if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            examResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
+
 
     // * Get Exam by id.
     @GetMapping("/{examId}")
@@ -159,27 +158,24 @@ public class AExamController {
             @RequestParam(name = "keyword") String keyword,
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "className", name = "sort") String sort,
-            @RequestParam(defaultValue = "asc", name = "order") String sortBy
+            @RequestParam(defaultValue = "id", name = "sort") String sort,
+            @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
-        Pageable pageable;
-        if (sortBy.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AExamResponse> examResponses = examService.searchByExamName(keyword);
-            Page<?> exams = commonService.convertListToPages(pageable, examResponses);
-            if (!exams.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                exams.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Exams page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Exams page is out of range.");
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            Page<AExamResponse> examResponses = examService.searchByExamName(keyword, pageable);
+            if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            examResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 
@@ -188,56 +184,51 @@ public class AExamController {
     public ResponseEntity<?> findByCreatedDate(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
+            @RequestParam(defaultValue = "id", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @RequestBody @Valid DateSearch dateSearch) throws CustomException {
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            @RequestBody @Valid DateSearchCreatedDate dateSearchCreatedDate) throws CustomException {
         try {
-            LocalDate date = LocalDate.parse(dateSearch.getCreateDate());
-            List<AExamResponse> examResponses = examService.getAllExamByCreatedDate(date);
-            Page<?> questions = commonService.convertListToPages(pageable, examResponses);
-            if (!questions.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                questions.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Exam page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Exam page is out of range.");
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            LocalDate date = LocalDate.parse(dateSearchCreatedDate.getCreateDate());
+            Page<AExamResponse> examResponses = examService.getAllExamByCreatedDate(date, pageable);
+            if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            examResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
+
     }
 
     @PostMapping("/fromDateToDate")
     public ResponseEntity<?> findFromDateToDate(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
+            @RequestParam(defaultValue = "id", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
             @RequestBody @Valid DateSearch dateSearch) throws CustomException {
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            List<AExamResponse> examResponses = examService.getAllExamFromDateToDate(dateSearch.getStartDate(), dateSearch.getEndDate());
-            Page<?> questions = commonService.convertListToPages(pageable, examResponses);
-            if (!questions.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                questions.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Exam page is empty.");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Exam page is out of range.");
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
+            Page<AExamResponse> examResponses = examService.getAllExamFromDateToDate(dateSearch.getStartDate(), dateSearch.getEndDate(), pageable);
+            if (examResponses.getContent().isEmpty()) throw new CustomException("exams page is empty.");
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            examResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 
@@ -246,31 +237,25 @@ public class AExamController {
     public ResponseEntity<?> getAllExamBySubjectIdToPages(
             @RequestParam(defaultValue = "5", name = "limit") int limit,
             @RequestParam(defaultValue = "0", name = "page") int page,
-            @RequestParam(defaultValue = "examName", name = "sort") String sort,
+            @RequestParam(defaultValue = "id", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
             @PathVariable String subjectId
     ) throws CustomException {
-        Pageable pageable;
-        if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
-        else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
+            Pageable pageable;
+            if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
+            else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
             Long idSubject = Long.parseLong(subjectId);
-            List<AExamResponse> examResponses = examService.getAllBySubjectId(idSubject);
-            Page<?> exams = commonService.convertListToPages(pageable, examResponses);
-            if (!exams.isEmpty()) {
-                return new ResponseEntity<>(
-                        new ResponseWrapper<>(
-                                EHttpStatus.SUCCESS,
-                                HttpStatus.OK.value(),
-                                HttpStatus.OK.name(),
-                                exams.getContent()
-                        ), HttpStatus.OK);
-            }
-            throw new CustomException("Exams page is empty.");
-        } catch (NumberFormatException e) {
-            throw new CustomException("Incorrect id number format");
-        } catch (IllegalArgumentException e) {
-            throw new CustomException("Exams page is out of range.");
+            Page<AExamResponse> examResponses = examService.getAllBySubjectId(idSubject, pageable);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            examResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 }

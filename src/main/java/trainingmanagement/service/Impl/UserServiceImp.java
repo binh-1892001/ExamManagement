@@ -1,6 +1,8 @@
 package trainingmanagement.service.Impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,14 +47,14 @@ public class UserServiceImp implements UserService {
     private final AuthenticationProvider authenticationProvider;
 
     @Override
-    public List<User> getAllToList() {
-        return userRepository.getAllUserExceptAdmin();
+    public Page<User> getAllToList(Pageable pageable) {
+        return userRepository.getAllUserExceptAdmin(pageable);
     }
 
     // *lấy danh sách người dùng ngoại trừ admin
     @Override
-    public List<AUserResponse> getAllUserResponsesToList() {
-        return getAllToList().stream().map(this::entityAMap).toList();
+    public Page<AUserResponse> getAllUserResponsesToList(Pageable pageable) {
+        return getAllToList(pageable).map(this::entityAMap);
     }
 
     @Override
@@ -118,13 +120,14 @@ public class UserServiceImp implements UserService {
                 .email(registerRequest.getEmail())
                 .avatar(registerRequest.getAvatar())
                 .phone(registerRequest.getPhone())
-                .dateOfBirth( LocalDate.parse ( registerRequest.getDateOfBirth() ) )
+                .dateOfBirth(LocalDate.parse(registerRequest.getDateOfBirth()))
                 .status(EActiveStatus.INACTIVE)
                 .gender(userGender)
                 .roles(userRoles)
                 .build();
         return userRepository.save(users);
     }
+
     // * xóa tài khoản
     @Override
     public void deleteById(Long userId) {
@@ -138,7 +141,7 @@ public class UserServiceImp implements UserService {
 
     //* cập nhật tài khoản
     @Override
-    public User updateAcc(ChangeInformation changeInformation, Long userId) throws CustomException{
+    public User updateAcc(ChangeInformation changeInformation, Long userId) throws CustomException {
         Optional<User> userOldOptional = getUserById(userId);
         User userOld = userOldOptional.get();
         Set<Role> roles = userOld.getRoles();
@@ -148,7 +151,7 @@ public class UserServiceImp implements UserService {
                 .email(changeInformation.getEmail())
                 .avatar(changeInformation.getAvatar())
                 .phone(changeInformation.getPhone())
-                .dateOfBirth( LocalDate.parse ( changeInformation.getDateOfBirth() ) )
+                .dateOfBirth(LocalDate.parse(changeInformation.getDateOfBirth()))
                 .status(EActiveStatus.ACTIVE)
                 .gender(changeInformation.getGender().equalsIgnoreCase(EGender.MALE.name())
                         ? EGender.MALE : EGender.FEMALE)
@@ -166,11 +169,11 @@ public class UserServiceImp implements UserService {
     public User updatePassword(ChangePassword changePassword, Long userId) throws CustomException {
         Optional<User> userOptional = getUserById(userId);
         User user = userOptional.get();
-        if (!passwordEncoder.matches(changePassword.getOldPassword(),user.getPassword())){
+        if (!passwordEncoder.matches(changePassword.getOldPassword(), user.getPassword())) {
             throw new CustomException("Old password not true!");
-        }else if (changePassword.getOldPassword().equals(changePassword.getNewPassword())){
+        } else if (changePassword.getOldPassword().equals(changePassword.getNewPassword())) {
             throw new CustomException("New password like old password!");
-        }else if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())){
+        } else if (!changePassword.getNewPassword().equals(changePassword.getConfirmPassword())) {
             throw new CustomException("Confirm password not like new password");
         }
         user.setPassword(passwordEncoder.encode(changePassword.getConfirmPassword()));
@@ -184,9 +187,8 @@ public class UserServiceImp implements UserService {
 
     //* tìm kiếm theo username or fullname
     @Override
-    public List<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword) {
-        return userRepository.findByUsernameOrFullNameContainingIgnoreCase(keyword)
-                .stream().map(this::entityAMap).toList();
+    public Page<AUserResponse> findByUsernameOrFullNameContainingIgnoreCase(String keyword, Pageable pageable) {
+        return userRepository.findByUsernameOrFullNameContainingIgnoreCase(keyword, pageable).map(this::entityAMap);
     }
 
     @Override
@@ -197,7 +199,7 @@ public class UserServiceImp implements UserService {
                 .email(userRequest.getEmail())
                 .phone(userRequest.getPhone())
                 .avatar(userRequest.getAvatar())
-                .dateOfBirth( LocalDate.parse ( userRequest.getDateOfBirth() ) )
+                .dateOfBirth(LocalDate.parse(userRequest.getDateOfBirth()))
                 .gender(userRequest.getGender().equalsIgnoreCase(EGender.MALE.name()) ? EGender.MALE : EGender.FEMALE)
                 .status(EActiveStatus.INACTIVE)
                 .build();
@@ -219,27 +221,28 @@ public class UserServiceImp implements UserService {
 
     //* lấy tất cả danh sách giáo viên
     @Override
-    public List<AUserResponse> getAllTeacher() {
-        List<User> users = userRepository.getAllTeacher();
-        return users.stream().map(this::entityAMap).toList();
+    public Page<AUserResponse> getAllTeacher(Pageable pageable) {
+        Page<User> users = userRepository.getAllTeacher(pageable);
+        return users.map(this::entityAMap);
     }
 
     @Override
     public AUserResponse entityAMap(User user) {
         return AUserResponse.builder()
-            .userId(user.getId())
-            .fullName(user.getFullName())
-            .username(user.getUsername())
-            .avatar(user.getAvatar())
-            .email(user.getEmail())
-            .phone(user.getPhone())
-            .dateOfBirth(user.getDateOfBirth())
-            .gender(user.getGender())
-            .status(user.getStatus())
-            .createdDate(user.getCreatedDate())
-            .modifyDate(user.getModifyDate())
-            .createdBy(user.getCreateBy())
-            .modifyBy(user.getModifyBy())
-            .build();
+                .userId(user.getId())
+                .fullName(user.getFullName())
+                .username(user.getUsername())
+                .avatar(user.getAvatar())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .dateOfBirth(user.getDateOfBirth())
+                .gender(user.getGender())
+                .status(user.getStatus())
+                .createdDate(user.getCreatedDate())
+                .modifyDate(user.getModifyDate())
+                .createdBy(user.getCreateBy())
+                .modifyBy(user.getModifyBy())
+                .roles(user.getRoles().stream().map(Role::getRoleName))
+                .build();
     }
 }

@@ -62,6 +62,8 @@ public class TResultController {
             throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Results page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
         throw new CustomException("Results page is empty.");
     }
@@ -190,6 +192,8 @@ public class TResultController {
             throw new CustomException("results page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("results page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 }

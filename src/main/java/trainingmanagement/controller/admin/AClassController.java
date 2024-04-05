@@ -37,8 +37,8 @@ public class AClassController {
      * ? Controller lấy ra 1 Page đối tượng Class từ Db dành cho Admin.
      *
      * @param limit là giới hạn bao nhiêu bản ghi mỗi trang hiển thị.
-     * @param page là trang hiển thị tương ứng.
-     * @param sort là tên trường dùng để lọc và sắp xếp.
+     * @param page  là trang hiển thị tương ứng.
+     * @param sort  là tên trường dùng để lọc và sắp xếp.
      * @param order là asc/desc thể hiện việc sắp xếp ngược hay xuôi.
      * @return trả về 1 ResponseEntity đại diện cho Page Class lấy ra được từ Db.
      */
@@ -49,15 +49,19 @@ public class AClassController {
             @RequestParam(defaultValue = "Id", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order
     ) throws CustomException {
-        Page<Classroom> classes = classroomService.getAllClassToPages(limit, page, sort, order);
-        Page<AClassResponse> classResponses = classroomService.entityAMap(classes);
-        return new ResponseEntity<>(
-                new ResponseWrapper<>(
-                        EHttpStatus.SUCCESS,
-                        HttpStatus.OK.value(),
-                        HttpStatus.OK.name(),
-                        classResponses.getContent()
-                ), HttpStatus.OK);
+        try {
+            Page<Classroom> classes = classroomService.getAllClassToPages(limit, page, sort, order);
+            Page<AClassResponse> classResponses = classroomService.entityAMap(classes);
+            return new ResponseEntity<>(
+                    new ResponseWrapper<>(
+                            EHttpStatus.SUCCESS,
+                            HttpStatus.OK.value(),
+                            HttpStatus.OK.name(),
+                            classResponses.getContent()
+                    ), HttpStatus.OK);
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
+        }
     }
 
     /**
@@ -104,7 +108,7 @@ public class AClassController {
      * ? Controller sửa đổi thông tin của 1 đối tượng Class trong Db (nếu có) dành cho Admin, nếu không thì thêm mới.
      *
      * @param updateClassId của đối tượng Class cần lấy ra.
-     * @param classRequest dto của Admin dùng để lưu vào trong Db.
+     * @param classRequest  dto của Admin dùng để lưu vào trong Db.
      * @return trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
      */
     @PutMapping("/{classId}")
@@ -130,7 +134,7 @@ public class AClassController {
      * ? Controller sửa đổi thông tin của 1 đối tượng Class trong Db (nếu có) dành cho Admin.
      *
      * @param updateClassId classId của đối tượng Class cần lấy ra.
-     * @param classRequest dto của Admin dùng để lưu vào trong Db.
+     * @param classRequest  dto của Admin dùng để lưu vào trong Db.
      * @return trả về 1 ResponseEntity đại diện cho Class đã lưu thành công vào Db.
      */
     @PatchMapping("/{classId}")
@@ -202,10 +206,10 @@ public class AClassController {
      * ? Controller tìm kiếm và lấy ra 1 Page đối tượng Class từ Db dành cho Admin.
      *
      * @param keyword là từ khoá cần tìm kiếm (không phân biệt hoa thường).
-     * @param limit là giới hạn bao nhiêu bản ghi mỗi trang hiển thị.
-     * @param page là trang hiển thị tương ứng.
-     * @param sort là tên trường dùng để lọc và sắp xếp.
-     * @param order là asc/desc thể hiện việc sắp xếp ngược hay xuôi.
+     * @param limit   là giới hạn bao nhiêu bản ghi mỗi trang hiển thị.
+     * @param page    là trang hiển thị tương ứng.
+     * @param sort    là tên trường dùng để lọc và sắp xếp.
+     * @param order   là asc/desc thể hiện việc sắp xếp ngược hay xuôi.
      * @return trả về 1 ResponseEntity đại diện cho Page Class lấy ra được từ Db.
      */
     @GetMapping("/search")

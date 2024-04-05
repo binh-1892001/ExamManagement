@@ -11,11 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class DateSearch {
+public class DateSearchCreatedDate {
     @NotNull(message = "Not null")
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Not correct format date! Date must be 'yyyy-mm-dd'")
-    private String startDate;
-    @NotNull(message = "Not null")
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Not correct format date! Date must be 'yyyy-mm-dd'")
-    private String endDate;
+    private String createDate;
 }

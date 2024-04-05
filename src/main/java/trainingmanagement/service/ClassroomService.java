@@ -13,6 +13,7 @@
 package trainingmanagement.service;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import trainingmanagement.model.dto.request.admin.AClassRequest;
 import trainingmanagement.model.dto.response.admin.AClassResponse;
 import trainingmanagement.model.dto.response.teacher.TClassResponse;
@@ -51,9 +52,9 @@ public interface ClassroomService {
     void softDeleteByClassId(Long classId) throws CustomException;
     void hardDeleteByClassId(Long classId) throws CustomException;
     // ? Functional dành cho Teacher.
-    List<TClassResponse> getTAllToList();
+    Page<TClassResponse> getTAllToList(Pageable pageable);
     Optional<TClassResponse> getTClassById(Long classId);
-    List<TClassResponse> findTClassByClassName(String className);
+    Page<TClassResponse> findTClassByClassName(String className, Pageable pageable);
     // ? EntityMap dùng để ép kiểu dành cho Admin.
     AClassResponse entityAMap(Classroom classroom);
     Classroom entityAMap(AClassRequest classRequest) throws CustomException;

@@ -17,6 +17,7 @@ import trainingmanagement.model.dto.request.teacher.TQuestionOptionRequest;
 import trainingmanagement.model.dto.response.admin.AQuestionResponse;
 import trainingmanagement.model.dto.response.teacher.TQuestionResponse;
 import trainingmanagement.model.dto.time.DateSearch;
+import trainingmanagement.model.dto.time.DateSearchCreatedDate;
 import trainingmanagement.model.dto.wrapper.ResponseWrapper;
 import trainingmanagement.model.entity.Option;
 import trainingmanagement.model.entity.Question;
@@ -71,6 +72,8 @@ public class TQuestionOptionController {
             throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 
@@ -81,12 +84,12 @@ public class TQuestionOptionController {
             @RequestParam(defaultValue = "0", name = "page") int page,
             @RequestParam(defaultValue = "contentQuestion", name = "sort") String sort,
             @RequestParam(defaultValue = "asc", name = "order") String order,
-            @RequestBody @Valid DateSearch dateSearch) throws CustomException {
+            @RequestBody @Valid DateSearchCreatedDate dateSearchCreatedDate) throws CustomException {
         Pageable pageable;
         if (order.equals("asc")) pageable = PageRequest.of(page, limit, Sort.by(sort).ascending());
         else pageable = PageRequest.of(page, limit, Sort.by(sort).descending());
         try {
-            LocalDate date = LocalDate.parse(dateSearch.getCreateDate());
+            LocalDate date = LocalDate.parse(dateSearchCreatedDate.getCreateDate());
             List<AQuestionResponse> questionResponses = questionService.getAllByCreatedDate(date);
             Page<?> questions = commonService.convertListToPages(pageable, questionResponses);
             if (!questions.isEmpty()) {
@@ -101,6 +104,8 @@ public class TQuestionOptionController {
             throw new CustomException("Questions page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 
@@ -132,6 +137,8 @@ public class TQuestionOptionController {
             throw new CustomException("Questions page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 
@@ -168,6 +175,8 @@ public class TQuestionOptionController {
             throw new CustomException("Questions page is empty.");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 
@@ -290,6 +299,8 @@ public class TQuestionOptionController {
             throw new CustomException("Incorrect id number format");
         } catch (IllegalArgumentException e) {
             throw new CustomException("Questions page is out of range.");
+        } catch (Exception exception) {
+            throw new CustomException("An error occurred while processing the query!");
         }
     }
 }
